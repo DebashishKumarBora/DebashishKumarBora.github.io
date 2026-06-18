@@ -170,12 +170,11 @@ section{padding:90px 0; position:relative}
   display:flex;flex-direction:column;transition:.45s var(--ease);position:relative}
 .proj:hover{transform:translateY(-6px);border-color:var(--border2);box-shadow:var(--card-shadow)}
 .proj .thumb{aspect-ratio:16/10;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bg2),var(--surface2));border-bottom:1px solid var(--border);display:grid;place-items:center}
-.proj .thumb img{width:100%;height:100%;object-fit:cover;display:none}
-.proj .thumb.has-img img{display:block}
-.proj .thumb.has-img .mini{display:none}
-.proj .mini{width:82%;height:72%}
+.proj .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.proj .thumb.img-failed img{display:none}
+.proj .mini{width:82%;height:72%;position:relative;z-index:1}
 .proj .tool-tag{position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:.68rem;padding:5px 10px;border-radius:20px;
-  background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(8px);border:1px solid var(--border2);color:var(--text);z-index:2}
+  background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(8px);border:1px solid var(--border2);color:var(--text);z-index:3}
 .proj .body{padding:22px;display:flex;flex-direction:column;flex:1}
 .proj h3{font-size:1.15rem;margin-bottom:12px}
 .proj .pbr{display:flex;flex-direction:column;gap:9px;font-size:.86rem;flex:1}
@@ -205,10 +204,9 @@ section{padding:90px 0; position:relative}
 /* about */
 .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:center}
 .about-photo{aspect-ratio:1;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--bg2),var(--surface2));border:1px solid var(--border);position:relative;overflow:hidden;display:grid;place-items:center}
-.about-photo img{width:100%;height:100%;object-fit:cover;display:none}
-.about-photo.has-img img{display:block}
-.about-photo.has-img .ph{display:none}
-.about-photo .ph{text-align:center;color:var(--faint);font-family:var(--mono);font-size:.8rem;padding:20px}
+.about-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.about-photo.img-failed img{display:none}
+.about-photo .ph{text-align:center;color:var(--faint);font-family:var(--mono);font-size:.8rem;padding:20px;position:relative;z-index:1}
 .about-photo .ph .ring{width:90px;height:90px;border-radius:50%;border:2px dashed var(--border2);margin:0 auto 14px;display:grid;place-items:center;font-size:2rem}
 .about-text h2{font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:18px}
 .about-text p{color:var(--muted);margin-bottom:16px}
@@ -489,7 +487,7 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
 <section class="wrap" id="about">
   <div class="about-grid">
     <div class="about-photo reveal" id="aboutPhoto">
-      <img src="images/profile.jpg" alt="Debashish Kumar Bora" onerror="this.parentElement.classList.remove('has-img')">
+      <img src="images/profile.jpg" alt="Debashish Kumar Bora" onerror="this.parentElement.classList.add('img-failed')">
       <div class="ph"><div class="ring">🧑‍💻</div>Drop a photo at<br><b>images/profile.jpg</b></div>
     </div>
     <div class="about-text reveal">
@@ -691,9 +689,8 @@ function renderProjects(f='all'){
     <div class="proj reveal" data-tags="${p.tag.join(' ')}">
       <div class="thumb">
         <span class="tool-tag">${p.tool}</span>
-        <img src="images/${p.file}" alt="${p.t} dashboard" loading="lazy"
-             onload="this.parentElement.classList.add('has-img')"
-             onerror="this.parentElement.classList.remove('has-img')">
+        <img src="images/${p.file}" alt="${p.t} dashboard"
+             onerror="this.parentElement.classList.add('img-failed')">
         ${mini(charts[i%charts.length])}
       </div>
       <div class="body">
@@ -717,11 +714,6 @@ document.getElementById('filters').addEventListener('click',e=>{
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   e.target.classList.add('active'); renderProjects(e.target.dataset.f);
 });
-
-/* ============ ABOUT PHOTO ============ */
-const ap=document.getElementById('aboutPhoto'),apImg=ap.querySelector('img');
-if(apImg.complete&&apImg.naturalWidth>0)ap.classList.add('has-img');
-apImg.addEventListener('load',()=>{if(apImg.naturalWidth>0)ap.classList.add('has-img');});
 
 /* ============ AI ASSISTANT (DataBot) ============ */
 const fab=document.getElementById('chatFab'),panel=document.getElementById('chatPanel'),
