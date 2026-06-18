@@ -159,6 +159,40 @@ section{padding:90px 0; position:relative}
 .svc .more{margin-top:22px;font-family:var(--mono);font-size:.8rem;color:var(--indigo);display:inline-flex;align-items:center;gap:6px;transition:.3s}
 .svc:hover .more{gap:11px}
 
+/* flagship */
+.flagship{position:relative;border:1px solid var(--border2);border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(135deg,var(--surface),var(--bg2));box-shadow:var(--card-shadow);margin-bottom:10px}
+.flag-bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 50% 120% at 92% -10%,rgba(109,94,248,.22),transparent 60%),
+  radial-gradient(ellipse 45% 120% at 4% 120%,rgba(34,211,238,.16),transparent 60%);pointer-events:none}
+.flag-inner{position:relative;display:grid;grid-template-columns:1fr 1.05fr;gap:36px;padding:40px 40px 28px;align-items:center}
+.flag-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;
+  color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--amber) 34%,transparent);padding:7px 14px;border-radius:30px}
+.flag-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.flag-left h3{font-size:clamp(2.4rem,4.6vw,3.4rem);margin:18px 0 0;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.flag-tag{font-size:1.12rem;color:var(--text);margin-top:12px;line-height:1.5}
+.flag-tag b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+.flag-desc{color:var(--muted);margin-top:14px;font-size:.96rem}
+.flag-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.flag-chips span{font-family:var(--mono);font-size:.74rem;padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted)}
+.flag-arch{margin-top:20px;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+.flag-arch span{color:var(--faint);letter-spacing:.12em;margin-right:8px}
+.flag-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px}
+.flag-private{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+.flag-hero{border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;box-shadow:0 20px 50px -20px rgba(0,0,0,.6);background:var(--bg2)}
+.flag-hero img{width:100%;display:block}
+.flag-gallery{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 40px 40px}
+.flag-shot{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--bg2);position:relative;transition:.4s var(--ease)}
+.flag-shot:hover{transform:translateY(-4px);border-color:var(--border2)}
+.flag-shot img{width:100%;display:block}
+.flag-shot.img-failed{aspect-ratio:16/10}
+.flag-shot.img-failed img{display:none}
+.flag-shot-cap{position:absolute;bottom:10px;left:12px;font-family:var(--mono);font-size:.72rem;padding:4px 10px;border-radius:18px;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(8px);border:1px solid var(--border2);color:var(--text)}
+@media(max-width:900px){.flag-inner{grid-template-columns:1fr;gap:26px;padding:30px 24px 22px}.flag-gallery{padding:0 24px 30px}}
+@media(max-width:640px){.flag-gallery{grid-template-columns:1fr}}
+
 /* work */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
 .chip{font-family:var(--mono);font-size:.78rem;padding:9px 16px;border-radius:30px;border:1px solid var(--border);
@@ -442,7 +476,42 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
   <div class="sec-head reveal">
     <span class="eyebrow">Selected work</span>
     <h2>Dashboards built to be used, not just admired.</h2>
-    <p>Real builds across marketing, finance and operations — each one turning raw data into decisions. Filter by tool below.</p>
+    <p>Real builds across marketing, finance and operations — each one turning raw data into decisions.</p>
+  </div>
+
+  <!-- FLAGSHIP -->
+  <div class="flagship reveal">
+    <div class="flag-bg"></div>
+    <div class="flag-inner">
+      <div class="flag-left">
+        <span class="flag-badge"><span class="dot"></span>FLAGSHIP PROJECT</span>
+        <h3>AdCommand</h3>
+        <p class="flag-tag">An AI-powered command center that manages Google Ads across <b>16 accounts</b> — with a live Claude AI analyst built in.</p>
+        <p class="flag-desc">A full web application, not a report. It pulls live data straight from the Google Ads API, blends it with budgets and occupancy, and lets a marketing team see everything — and ask an AI analyst anything — in one place.</p>
+        <div class="flag-chips">
+          <span>Live Google Ads API</span><span>Claude AI Insights</span><span>AI Chat &amp; Voice</span>
+          <span>Geo-Visualization</span><span>Budget Intelligence</span><span>Automated Reporting</span><span>9 integrated modules</span>
+        </div>
+        <p class="flag-arch"><span>ARCHITECTURE</span> API → clean → model → visualize → AI layer</p>
+        <div class="flag-actions">
+          <a class="btn btn-primary" href="mailto:debashishbora30@gmail.com?subject=AdCommand%20walkthrough%20request">Request a walkthrough →</a>
+          <span class="flag-private">🔒 Private enterprise project · demo on request</span>
+        </div>
+      </div>
+      <div class="flag-hero">
+        <img src="images/adcommand-hero.png" alt="AdCommand overview dashboard" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div class="flag-gallery">
+      <div class="flag-shot"><img src="images/adcommand-ai.png" alt="AI insights" onerror="this.parentElement.classList.add('img-failed')"><span class="flag-shot-cap">AI Insights</span></div>
+      <div class="flag-shot"><img src="images/adcommand-geo.png" alt="Geo visualization" onerror="this.parentElement.classList.add('img-failed')"><span class="flag-shot-cap">Geo Globe</span></div>
+      <div class="flag-shot"><img src="images/adcommand-budget.png" alt="Budget pacing" onerror="this.parentElement.classList.add('img-failed')"><span class="flag-shot-cap">Budget Pacing</span></div>
+    </div>
+  </div>
+
+  <div class="sec-head reveal" style="margin-top:60px;margin-bottom:30px">
+    <span class="eyebrow">More work</span>
+    <h2 style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Dashboards by tool.</h2>
   </div>
   <div class="filters reveal" id="filters">
     <button class="chip active" data-f="all">All</button>
@@ -742,6 +811,7 @@ const KB=[
   {k:['dashboard','looker','power bi','report','visual'],a:"Dashboards are his specialty — branded, interactive, auto-refreshing, blending sources like Google Ads, GA4, Meta &amp; CRMs. Check the <b>Work</b> section to see examples (live versions are being added)."},
   {k:['where','location','based','india','country'],a:"He's based in <b>Guwahati, India</b> 🇮🇳 and works remotely with clients across the US, UK and globally."},
   {k:['education','study','degree','mba','college'],a:"He holds an <b>MBA from IIT Dhanbad</b> and a BCA from Kaziranga University, plus Google Data Analytics &amp; Microsoft Power BI certifications."},
+  {k:['flagship','adcommand','best','biggest','command center','impressive','ai dashboard','best project'],a:"His flagship is <b>AdCommand</b> — an AI-powered command center that manages Google Ads across <b>16 accounts</b>. It pulls live data from the Google Ads API, has a built-in <b>Claude AI analyst</b> (insights, chat &amp; voice), geo-visualization, budget intelligence and automated reporting — 9 modules in one web app. It's a private enterprise project; he can give a walkthrough on request. 📧"},
   {k:['hi','hello','hey','yo','sup'],a:"Hey there! 👋 Want to know about Debashish's work, results, tools, or how to start a project? Just ask."},
   {k:['thank','thanks','great','nice','cool','awesome'],a:"Anytime! 🙌 If you're ready, the <b>Book a call</b> button up top is the fastest way to reach him."}
 ];
