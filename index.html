@@ -180,18 +180,37 @@ section{padding:90px 0; position:relative}
 .flag-arch span{color:var(--faint);letter-spacing:.12em;margin-right:8px}
 .flag-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:26px}
 .flag-private{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
-.flag-hero{border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;box-shadow:0 20px 50px -20px rgba(0,0,0,.6);background:var(--bg2)}
-.flag-hero img{width:100%;display:block}
-.flag-gallery{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 40px 40px}
-.flag-shot{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--bg2);position:relative;transition:.4s var(--ease)}
-.flag-shot:hover{transform:translateY(-4px);border-color:var(--border2)}
-.flag-shot img{width:100%;display:block}
-.flag-shot.img-failed{aspect-ratio:16/10}
-.flag-shot.img-failed img{display:none}
-.flag-shot-cap{position:absolute;bottom:10px;left:12px;font-family:var(--mono);font-size:.72rem;padding:4px 10px;border-radius:18px;
-  background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(8px);border:1px solid var(--border2);color:var(--text)}
-@media(max-width:900px){.flag-inner{grid-template-columns:1fr;gap:26px;padding:30px 24px 22px}.flag-gallery{padding:0 24px 30px}}
-@media(max-width:640px){.flag-gallery{grid-template-columns:1fr}}
+/* carousel */
+.flag-carousel{position:relative;border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;background:var(--bg2);box-shadow:0 24px 60px -24px rgba(0,0,0,.7)}
+.fc-window{position:relative;overflow:hidden}
+.fc-track{display:flex;transition:transform .6s cubic-bezier(.5,0,.2,1)}
+.fc-slide{min-width:100%;position:relative;cursor:zoom-in}
+.fc-slide img{width:100%;display:block;aspect-ratio:16/9.1;object-fit:cover;object-position:top left}
+.fc-cap{position:absolute;left:0;right:0;bottom:0;padding:46px 22px 16px;
+  background:linear-gradient(to top,rgba(7,8,14,.96),rgba(7,8,14,.72) 55%,transparent);pointer-events:none}
+.fc-cap .step{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
+.fc-cap h4{font-size:1.12rem;margin:5px 0 4px;color:#fff}
+.fc-cap p{font-size:.86rem;color:var(--muted2);line-height:1.45;max-width:92%}
+.fc-nav{position:absolute;top:42%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border2);background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(8px);
+  color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;transition:.2s var(--ease)}
+.fc-nav:hover{background:var(--indigo);border-color:transparent}
+.fc-nav.prev{left:14px}.fc-nav.next{right:14px}
+.fc-bar{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid var(--border)}
+.fc-dots{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.fc-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);border:none;cursor:pointer;padding:0;transition:.25s var(--ease)}
+.fc-dot.on{background:var(--indigo);width:22px;border-radius:5px}
+.fc-count{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.fc-play{background:none;border:1px solid var(--border2);color:var(--muted2);border-radius:8px;width:30px;height:26px;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center}
+.fc-play:hover{color:var(--text)}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:200;background:rgba(5,6,11,.92);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-width:96vw;max-height:88vh;border-radius:12px;border:1px solid var(--border2);box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.lb-cap{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:var(--muted2);font-size:.9rem;padding:0 20px}
+.lb-cap b{color:#fff}
+.lb-x{position:absolute;top:18px;right:22px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border2);background:color-mix(in srgb,var(--bg) 60%,transparent);color:#fff;font-size:1.3rem;cursor:pointer}
+@media(max-width:900px){.flag-inner{grid-template-columns:1fr;gap:24px;padding:30px 22px 8px}.fc-cap p{max-width:100%}}
 
 /* work */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
@@ -498,16 +517,21 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
           <span class="flag-private">🔒 Private enterprise project · demo on request</span>
         </div>
       </div>
-      <div class="flag-hero">
-        <img src="images/adcommand-hero.png" alt="AdCommand overview dashboard" onerror="this.style.display='none'">
+      <div class="flag-carousel" id="flagCarousel">
+        <div class="fc-window">
+          <div class="fc-track" id="fcTrack"></div>
+          <button class="fc-nav prev" id="fcPrev" aria-label="Previous">‹</button>
+          <button class="fc-nav next" id="fcNext" aria-label="Next">›</button>
+        </div>
+        <div class="fc-bar">
+          <div class="fc-dots" id="fcDots"></div>
+          <span class="fc-count" id="fcCount"></span>
+          <button class="fc-play" id="fcPlay" title="Pause / play">❚❚</button>
+        </div>
       </div>
     </div>
-    <div class="flag-gallery">
-      <div class="flag-shot"><img src="images/adcommand-ai.png" alt="AI insights" onerror="this.parentElement.classList.add('img-failed')"><span class="flag-shot-cap">AI Insights</span></div>
-      <div class="flag-shot"><img src="images/adcommand-geo.png" alt="Geo visualization" onerror="this.parentElement.classList.add('img-failed')"><span class="flag-shot-cap">Geo Globe</span></div>
-      <div class="flag-shot"><img src="images/adcommand-budget.png" alt="Budget pacing" onerror="this.parentElement.classList.add('img-failed')"><span class="flag-shot-cap">Budget Pacing</span></div>
-    </div>
   </div>
+  <div class="lb" id="lb"><button class="lb-x" id="lbX">✕</button><img id="lbImg" src="" alt=""><div class="lb-cap" id="lbCap"></div></div>
 
   <div class="sec-head reveal" style="margin-top:60px;margin-bottom:30px">
     <span class="eyebrow">More work</span>
@@ -825,6 +849,61 @@ function respond(q){
 function sendMsg(){const v=input.value.trim();if(!v)return;addUser(v);input.value='';respond(v);}
 send.addEventListener('click',sendMsg);
 input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
+</script>
+<script>
+(function(){
+  var S=[
+    ["01","Command-center overview","Live portfolio spend, clicks and conversions across all 16 accounts — 30-day trends, sparklines and vs-previous deltas, pulled straight from the Google Ads API."],
+    ["02","Per-account deep dive","Every account expands into campaign-level detail: impressions, clicks, CTR, spend and conversions, with active/paused status at a glance."],
+    ["03","Visual performance breakdown","Rank properties by any metric and see spend share instantly — with rankings, quadrant, compare, geo, matrix and timing views in one place."],
+    ["04","Where the audience is","An interactive 3D globe plots demand by location — spin it, zoom in, switch map styles. Real WebGL, not a static picture."],
+    ["05","When the leads come in","A day-by-hour heatmap reveals the best day, best hour and peak window — so budget goes where conversions actually happen."],
+    ["06","Find the wasted spend","Surfaces the exact search terms burning budget with zero conversions, alongside the top converters worth scaling up."],
+    ["07","Keyword intelligence","Match-type breakdown across 600+ active keywords, with wasted spend flagged and the best converters ranked."],
+    ["08","Ad & creative performance","Spots budget-draining ads and best-performing creatives, with top converters broken out by account."],
+    ["09","Creative scoring","Every image asset rated — low performers flagged for replacement, best performers highlighted to repeat."],
+    ["10","Video performance","Video assets scored best / good / low, so the team knows exactly what to keep, cut or refresh."],
+    ["11","Budget pacing & occupancy","Blends live ad spend with budget and occupancy — pace/day, projected spend, and over/under flags per property."],
+    ["12","Claude-powered analysis","One click: Claude reads the live data, grades portfolio health and returns a prioritized, graded action plan."],
+    ["13","Ask anything — chat or voice","A built-in Claude assistant answers natural-language questions about campaigns, budgets and creatives — even hands-free by voice."]
+  ];
+  var track=document.getElementById('fcTrack'), dots=document.getElementById('fcDots'),
+      countEl=document.getElementById('fcCount'), playBtn=document.getElementById('fcPlay');
+  if(!track) return;
+  var i=0, timer=null, playing=true;
+  S.forEach(function(s,idx){
+    var sl=document.createElement('div'); sl.className='fc-slide';
+    sl.innerHTML='<img src="images/adc-'+s[0]+'.png" alt="'+s[1]+'" loading="lazy">'+
+      '<div class="fc-cap"><div class="step">Module '+(idx+1)+' / '+S.length+'</div><h4>'+s[1]+'</h4><p>'+s[2]+'</p></div>';
+    sl.addEventListener('click',function(){openLB(idx);});
+    track.appendChild(sl);
+    var d=document.createElement('button'); d.className='fc-dot'+(idx===0?' on':''); d.addEventListener('click',function(){go(idx);});
+    dots.appendChild(d);
+  });
+  function render(){
+    track.style.transform='translateX(-'+(i*100)+'%)';
+    Array.prototype.forEach.call(dots.children,function(d,x){d.classList.toggle('on',x===i);});
+    countEl.textContent=(i+1)+' / '+S.length;
+  }
+  function go(n){i=(n+S.length)%S.length;render();}
+  function next(){go(i+1);} function prev(){go(i-1);}
+  function start(){stop();if(playing)timer=setInterval(next,5000);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  document.getElementById('fcNext').addEventListener('click',function(){next();start();});
+  document.getElementById('fcPrev').addEventListener('click',function(){prev();start();});
+  playBtn.addEventListener('click',function(){playing=!playing;playBtn.textContent=playing?'❚❚':'▶';playing?start():stop();});
+  var car=document.getElementById('flagCarousel');
+  car.addEventListener('mouseenter',stop);
+  car.addEventListener('mouseleave',start);
+  render(); start();
+  // lightbox
+  var lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCap');
+  function openLB(idx){lbImg.src='images/adc-'+S[idx][0]+'.png';lbCap.innerHTML='<b>'+S[idx][1]+'</b> — '+S[idx][2];lb.classList.add('open');stop();}
+  function closeLB(){lb.classList.remove('open');start();}
+  lb.addEventListener('click',function(e){if(e.target!==lbImg)closeLB();});
+  document.getElementById('lbX').addEventListener('click',closeLB);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();if(lb.classList.contains('open'))return;if(e.key==='ArrowRight'){next();start();}if(e.key==='ArrowLeft'){prev();start();}});
+})();
 </script>
 </body>
 </html>
