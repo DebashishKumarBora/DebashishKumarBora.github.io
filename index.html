@@ -444,14 +444,12 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
   <div class="sec-head reveal">
     <span class="eyebrow">Selected work</span>
     <h2>Dashboards built to be used, not just admired.</h2>
-    <p>Each one solved a real reporting problem. Filter by tool — live, interactive versions are being added one by one.</p>
+    <p>Real builds across marketing, finance and operations — each one turning raw data into decisions. Filter by tool below.</p>
   </div>
   <div class="filters reveal" id="filters">
     <button class="chip active" data-f="all">All</button>
     <button class="chip" data-f="looker">Looker Studio</button>
     <button class="chip" data-f="powerbi">Power BI</button>
-    <button class="chip" data-f="ga4">GA4</button>
-    <button class="chip" data-f="ads">Google Ads</button>
   </div>
   <div class="work-grid" id="workGrid"></div>
   <p class="work-note">More projects on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a> · live interactive dashboards coming soon</p>
@@ -645,15 +643,38 @@ bio.observe(barsEl);
 
 /* ============ PROJECTS ============ */
 const projects=[
-  {t:'Client Campaign Performance',tool:'Looker Studio',tag:['looker','ads'],p:'Clients couldn\'t see which keywords and locations actually paid off.',b:'Looker Studio dashboard pulling Google Ads + Search Console, with KPI, keyword, match-type & geo analysis.',r:'Real-time optimization → improved ROI.',chart:'bar'},
-  {t:'Revenue / 360° Dashboard',tool:'Power BI',tag:['powerbi'],p:'Marketing performance was scattered across paid, email, social & organic.',b:'A single source of truth with YoY & MoM deep-dives surfacing growth trends and revenue leakage.',r:'Drove budget optimization decisions.',chart:'area'},
-  {t:'GA4 Traffic Analytics',tool:'GA4',tag:['ga4','looker'],p:'No clear read on traffic quality or long-term engagement.',b:'GA4 dashboard analyzing acquisition, behaviour & conversions with WoW / MoM / YoY views.',r:'Clear view of traffic quality & trends.',chart:'line'},
-  {t:'Google Ads Opportunity Lost',tool:'Google Ads',tag:['ads','looker'],p:'Spend was capped and impressions were leaking — invisibly.',b:'Dashboard quantifying missed impressions, clicks & revenue from budget limits and low ad rank.',r:'Found high-impact optimization wins.',chart:'bar'},
-  {t:'Meta Ads Performance',tool:'Looker Studio',tag:['looker','ads'],p:'Hard to judge Facebook/Instagram cost efficiency at a glance.',b:'Tracks CPM, CPC, CTR, engagement & audience conversion patterns in one view.',r:'Faster spend-efficiency calls.',chart:'donut'},
-  {t:'Sales Analytics',tool:'Power BI',tag:['powerbi'],p:'Sales managers had no read on pipeline health by product or region.',b:'Interactive Power BI dashboard tracking revenue pipeline, top products & regional performance.',r:'More targeted sales strategy.',chart:'bar'},
-  {t:'Weather-API Analytics',tool:'Power BI',tag:['powerbi'],p:'Wanted to correlate business metrics with external conditions.',b:'End-to-end pipeline connecting Power BI to a live weather API.',r:'Proved real-time API integration.',chart:'line'},
-  {t:'HR Analytics',tool:'Power BI',tag:['powerbi'],p:'Attrition was rising with no clear "why".',b:'Dashboard on attrition, demographics, performance & satisfaction.',r:'Pinpointed attrition drivers.',chart:'donut'},
-  {t:'Finance Dashboard',tool:'Power BI',tag:['powerbi'],p:'Income, expense & savings data lived in silos.',b:'Unified financial dashboard with clear income/expense/savings analysis.',r:'Clearer financial decisions.',chart:'area'}
+  {t:'Client Campaign Performance',tool:'Looker Studio',tag:['looker'],file:'client-campaign-performance.png',
+   p:'A travel client needed paid and organic performance in one place — across millions of impressions.',
+   b:'Looker Studio dashboard blending Google Ads + Search Console: KPIs, Brand vs Generic keywords, match-type performance and location insights.',
+   r:'Surfaced 121M+ impressions, 2.1M clicks & 86K conversions — with clear wins in low-CTR, cost-heavy queries.'},
+  {t:'GA4 Traffic Analytics',tool:'Looker Studio',tag:['looker'],file:'ga4-traffic-analytics.png',
+   p:'The team couldn\'t tell where quality traffic came from, or how engagement was trending.',
+   b:'GA4-powered Looker Studio dashboard: channel performance (paid vs organic), device split, landing-page conversions and YoY/MoM views.',
+   r:'Mapped 157K sessions & 70K users — revealing 79.7% mobile traffic and the pages actually converting.'},
+  {t:'ATM Transaction Analytics',tool:'Power BI',tag:['powerbi'],file:'atm-transaction-dashboard.png',
+   p:'A financial network needed to understand ATM cost, uptime and revenue across states.',
+   b:'Power BI dashboard analyzing transactions, cost breakdown (AMC, CRA, maintenance), uptime and revenue by region and month.',
+   r:'Tracked 616M ATM revenue at 91.89% uptime — exposing cost drivers and top-earning states.'},
+  {t:'Car Sales Analytics',tool:'Power BI',tag:['powerbi'],file:'car-sales-dashboard.png',
+   p:'A dealership group had no clear view of what drove sales — by model, color or region.',
+   b:'Power BI dashboard with YTD KPIs, weekly trend, body-style & color breakdowns, dealer-region map and company comparison.',
+   r:'Visualized $371M YTD sales & 13.3K cars sold — pinpointing the top styles, colors and regions.'},
+  {t:'Food Delivery Analytics',tool:'Power BI',tag:['powerbi'],file:'food-delivery-dashboard.png',
+   p:'Sales, ratings and city performance for a food-delivery brand lived in disconnected reports.',
+   b:'Power BI dashboard covering revenue & orders, Veg/Non-Veg split, customer ratings, top-city ranking and year-over-year trends.',
+   r:'Unified 987M revenue across 150K orders — highlighting top cities and seasonal swings.'},
+  {t:'Finance Analysis',tool:'Power BI',tag:['powerbi'],file:'finance-analysis-dashboard.png',
+   p:'Income, expenses and savings were impossible to compare across years.',
+   b:'Power BI dashboard with income/expense/savings KPIs, year filters, monthly breakdowns and category donuts.',
+   r:'Showed a 64% savings rate on 2.8M income — making peak-spend months and saving patterns obvious.'},
+  {t:'Hospital Analytics',tool:'Power BI',tag:['powerbi'],file:'hospital-analytics.png',
+   p:'Hospital operations — patients, doctors, pharmacy and finance — had no single view.',
+   b:'Power BI dashboard on a MySQL backend with patient & doctor metrics, medicine tracking, charges and appointments, plus drill-through and bookmarks.',
+   r:'One operational view spanning a 73% discharge rate, staffing and pharmacy demand.'},
+  {t:'Weather Analytics (Live API)',tool:'Power BI',tag:['powerbi'],file:'weather-analytics.png',
+   p:'A build to prove Power BI can tell a live story straight from an external API.',
+   b:'End-to-end pipeline connecting Power BI to a real-time WeatherAPI feed: temperature, humidity, AQI, forecasts and rain probability.',
+   r:'A live, auto-updating dashboard — real API integration in action.'}
 ];
 function mini(type){
   if(type==='bar'){let b='';const vs=[40,65,50,80,60,90,72];vs.forEach((v,i)=>{b+=`<rect x="${i*70+12}" y="${170-v}" width="42" height="${v}" rx="6" fill="url(#mg)"><animate attributeName="height" from="0" to="${v}" dur=".9s" begin="${i*.08}s" fill="freeze"/><animate attributeName="y" from="170" to="${170-v}" dur=".9s" begin="${i*.08}s" fill="freeze"/></rect>`;});return svgWrap(b);}
@@ -664,13 +685,16 @@ function mini(type){
 function svgWrap(inner){return `<svg class="mini" viewBox="0 0 480 180" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--indigo)"/><stop offset="50%" stop-color="var(--cyan)"/><stop offset="100%" stop-color="var(--magenta)"/></linearGradient><linearGradient id="ag2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--cyan)" stop-opacity=".3"/><stop offset="100%" stop-color="var(--cyan)" stop-opacity="0"/></linearGradient></defs>${inner}</svg>`;}
 function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 const grid=document.getElementById('workGrid');
+const charts=['line','bar','area','donut'];
 function renderProjects(f='all'){
-  grid.innerHTML=projects.filter(p=>f==='all'||p.tag.includes(f)).map(p=>`
+  grid.innerHTML=projects.filter(p=>f==='all'||p.tag.includes(f)).map((p,i)=>`
     <div class="proj reveal" data-tags="${p.tag.join(' ')}">
-      <div class="thumb" data-img="images/${slug(p.t)}.png">
+      <div class="thumb">
         <span class="tool-tag">${p.tool}</span>
-        <img src="images/${slug(p.t)}.png" alt="${p.t}" onerror="this.parentElement.classList.remove('has-img')">
-        ${mini(p.chart)}
+        <img src="images/${p.file}" alt="${p.t} dashboard" loading="lazy"
+             onload="this.parentElement.classList.add('has-img')"
+             onerror="this.parentElement.classList.remove('has-img')">
+        ${mini(charts[i%charts.length])}
       </div>
       <div class="body">
         <h3>${p.t}</h3>
@@ -680,13 +704,11 @@ function renderProjects(f='all'){
           <div class="row"><span class="k">Result</span><span class="v result">${p.r}</span></div>
         </div>
         <div class="links">
-          <a class="live" href="#contact">View live ↗</a>
-          <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener">Code</a>
+          <a class="live" href="#contact">Discuss this →</a>
+          <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener">Code ↗</a>
         </div>
       </div>
     </div>`).join('');
-  // try load real screenshots
-  grid.querySelectorAll('.thumb').forEach(th=>{const img=th.querySelector('img');if(img&&img.complete&&img.naturalWidth>0)th.classList.add('has-img');});
   grid.querySelectorAll('.reveal').forEach(el=>{io.observe(el);});
 }
 renderProjects();
