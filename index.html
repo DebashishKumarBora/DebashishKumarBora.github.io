@@ -999,38 +999,116 @@ const fab=document.getElementById('chatFab'),panel=document.getElementById('chat
   send=document.getElementById('chatSend'),closeBtn=document.getElementById('chatClose'),
   quickEl=document.getElementById('quickReplies');
 let greeted=false;
-const QUICK=['What does Debashish do?','See his results','Tools he uses','How to hire him','Is he available?'];
-function renderQuick(){quickEl.innerHTML=QUICK.map(q=>`<button>${q}</button>`).join('');
+const QUICK=['What does he do?','See his results','Show me his best project','How do I hire him?'];
+const DEFAULTQ=QUICK;
+function setQuick(arr){quickEl.innerHTML=arr.map(q=>`<button>${q}</button>`).join('');
   quickEl.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{addUser(b.textContent);respond(b.textContent);}));}
-function openChat(){panel.classList.add('open');fab.querySelector('.badge').style.display='none';
-  if(!greeted){greeted=true;setTimeout(()=>botSay("Hey! 👋 I'm <b>DataBot</b> — Debashish's assistant. Ask me anything about his dashboards, results, tools, or how to start a project."),300);renderQuick();}}
+function openChat(){panel.classList.add('open');var bd=fab.querySelector('.badge');if(bd)bd.style.display='none';
+  if(!greeted){greeted=true;setQuick(QUICK);setTimeout(()=>botSay("Hey! &#128075; I'm Debashish's assistant. Ask me about his <b>dashboards</b>, <b>results</b>, <b>tools &amp; AI skills</b>, his <b>AdCommand</b> command center, or how to <b>start a project</b>."),300);}}
 fab.addEventListener('click',()=>panel.classList.contains('open')?panel.classList.remove('open'):openChat());
 closeBtn.addEventListener('click',()=>panel.classList.remove('open'));
 function addMsg(html,cls){const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;}
 function addUser(t){addMsg(t.replace(/</g,'&lt;'),'user');}
-function botSay(html){const ty=document.createElement('div');ty.className='typing';ty.innerHTML='<i></i><i></i><i></i>';log.appendChild(ty);log.scrollTop=log.scrollHeight;
-  setTimeout(()=>{ty.remove();addMsg(html,'bot');},650+Math.random()*400);}
-const KB=[
-  {k:['what','do','role','about','who'],a:"Debashish is a <b>Data &amp; Automation Analyst</b> with 4+ years of experience. He builds AI-powered, auto-updating dashboards in <b>Looker Studio</b> and <b>Power BI</b> that turn scattered marketing data into one live source of truth — so teams stop doing manual reports. He's worked with US &amp; UK clients."},
-  {k:['result','achiev','metric','number','roi','revenue','proof'],a:"Real outcomes he's delivered:<br>• <b>+15%</b> marketing-driven revenue in 6 months<br>• <b>+8%</b> average client ROI<br>• <b>+12%</b> qualified organic leads<br>• Eliminated <b>hours</b> of manual reporting through automation."},
-  {k:['tool','tech','stack','software','skill'],a:"His toolkit: <b>Power BI</b> (DAX, Power Query), <b>Looker Studio</b>, <b>Google Apps Script</b>, <b>Azure &amp; cloud</b>, <b>SQL/BigQuery</b>, GA4, Google Ads, Meta — plus <b>Claude AI</b> for built-in <b>AI chatbots</b> and <b>smart recommendations</b> inside the dashboards he builds. 🤖"},
-  {k:['hire','work with','start','project','cost','price','rate','book','contact','reach'],a:"Easiest way: hit <b>Book a call</b> 📧 or message him on <b>WhatsApp</b> 💬. Tell him your reporting headache and he'll show you what a live automated dashboard could look like. Email: <b>debashishbora30@gmail.com</b>"},
-  {k:['available','free','capacity','busy'],a:"Yes — he's <b>currently available</b> for freelance dashboard &amp; automation projects. ✅ Reach out via Book a call or WhatsApp to grab a slot."},
-  {k:['google ads','ppc','campaign','ads'],a:"Google Ads is core for him: campaign optimization, keyword strategy, A/B testing, GA4 conversion tracking, and 'opportunity lost' analysis to recover wasted spend."},
-  {k:['dashboard','looker','power bi','report','visual'],a:"Dashboards are his specialty — branded, interactive, auto-refreshing, blending sources like Google Ads, GA4, Meta &amp; CRMs. Check the <b>Work</b> section to see examples (live versions are being added)."},
-  {k:['where','location','based','india','country'],a:"He's based in <b>Guwahati, India</b> 🇮🇳 and works remotely with clients across the US, UK and globally."},
-  {k:['education','study','degree','mba','college'],a:"He holds an <b>MBA from IIT Dhanbad</b> and a BCA from Kaziranga University, plus Google Data Analytics &amp; Microsoft Power BI certifications."},
-  {k:['flagship','adcommand','best','biggest','command center','impressive','ai dashboard','best project'],a:"His flagship is <b>AdCommand</b> — an AI-powered command center that manages Google Ads across <b>16 accounts</b>. It pulls live data from the Google Ads API, has a built-in <b>Claude AI analyst</b> (insights, chat &amp; voice), geo-visualization, budget intelligence and automated reporting — 9 modules in one web app. It's a private enterprise project; he can give a walkthrough on request. 📧"},
-  {k:['hi','hello','hey','yo','sup'],a:"Hey there! 👋 Want to know about Debashish's work, results, tools, or how to start a project? Just ask."},
-  {k:['thank','thanks','great','nice','cool','awesome'],a:"Anytime! 🙌 If you're ready, the <b>Book a call</b> button up top is the fastest way to reach him."}
+function botSay(html,next){const ty=document.createElement('div');ty.className='typing';ty.innerHTML='<i></i><i></i><i></i>';log.appendChild(ty);log.scrollTop=log.scrollHeight;
+  setTimeout(()=>{ty.remove();addMsg(html,'bot');if(next)setQuick(next);},560+Math.random()*460);}
+const INTENTS=[
+ {kw:['who','about','bio','introduce','background'],ph:['what does he do','what does debashish do','who is he','tell me about','about him','his story','what is he'],
+  a:["Debashish is a <b>Data &amp; Automation Analyst</b> (4+ yrs, US &amp; UK clients). He turns scattered marketing data into <b>one live, AI-powered dashboard</b> &mdash; in Looker Studio, Power BI, Google Apps Script &amp; Azure &mdash; with built-in AI chat &amp; smart recommendations. In short: he kills manual reporting and tells teams what to do next. &#128640;"],
+  next:['See his results','What tools does he use?','Show me his best project','How do I hire him?']},
+ {kw:['bot','robot','human','chatgpt','gpt'],ph:['are you a bot','are you real','are you ai','who are you','what are you','are you a robot','are you human','are you chatgpt','you a bot'],
+  a:["Guilty &mdash; I'm a bot &#129302;, running right here in your browser (no servers). The fun part: building AI assistants like me, and far smarter ones wired to <b>live data</b>, is literally one of Debashish's services. Want to see how?","I'm Debashish's site assistant &#129302;. Fittingly, he <b>builds</b> AI chatbots and AI-recommendation engines into the dashboards he ships &mdash; I'm just the little demo out front. Ask me about his work!"],
+  next:['What can he do with AI?','Show me his best project','How do I hire him?']},
+ {kw:['ai','chatbot','chatbots','recommendation','recommendations','ml'],ph:['ai dashboard','ai chatbot','ai chat','smart recommendation','machine learning','artificial intelligence','ai analyst','ai powered','ai recommendation','built in ai','what can he do with ai','build with ai'],
+  a:["This is his edge &#129302;: he bakes <b>AI right into the dashboards</b>. Your team can ask questions in plain English and get answers, plus <b>smart recommendations</b> like &lsquo;shift 12% budget to your top performer &rarr; +$4.2k projected&rsquo;. Not just charts of what happened &mdash; AI that says what to do next."],
+  next:['Show me his AI command center','What tools does he use?','How do I hire him?']},
+ {kw:['result','results','metric','metrics','roi','revenue','proof','outcome','outcomes','impact','achieve','achievement','success'],ph:['his results','what results','case study','track record','how good'],
+  a:["A few real outcomes &#128200;:<br>&bull; <b>+15%</b> marketing-driven revenue in 6 months<br>&bull; <b>+8%</b> average client ROI<br>&bull; <b>+12%</b> qualified organic leads<br>&bull; Wiped out <b>hours</b> of weekly manual reporting via automation.<br>One build surfaced <b>121M+ impressions &amp; 86K conversions</b> for a travel client."],
+  next:['Show me his best project','What does he do?','How do I hire him?']},
+ {kw:['tool','tools','tech','stack','software','skill','skills','technology','use','uses'],ph:['what tools','his stack','tech stack','what does he use','tools he uses','what can he use'],
+  a:["His toolkit &#128736;&#65039;:<br>&bull; <b>BI:</b> Power BI (DAX, Power Query), Looker Studio, Looker, Tableau<br>&bull; <b>Data:</b> SQL, MySQL, BigQuery, modeling &amp; cleaning<br>&bull; <b>Marketing:</b> GA4, Google Ads, Meta, StackAdapt, SEM<br>&bull; <b>AI &amp; automation:</b> Google Apps Script, Azure, Claude AI &#129302;"],
+  next:['What can he do with AI?','See his results','How do I hire him?']},
+ {kw:['powerbi','dax'],ph:['power bi','power query'],
+  a:["Power BI is one of his strongest (~90%) &mdash; full <b>DAX</b>, Power Query, data modeling and polished interactive reports. It's one of his core build tools."],
+  next:['What other tools?','See his results','How do I hire him?']},
+ {kw:['looker','tableau'],ph:['looker studio','data studio'],
+  a:["Looker Studio is a specialty (~93%) &mdash; branded, auto-refreshing dashboards blending Google Ads, GA4 &amp; Search Console. His &lsquo;Client Campaign Performance&rsquo; build is a great example."],
+  next:['Show me his work','What other tools?','How do I hire him?']},
+ {kw:['sql','mysql','bigquery','query','querying','database'],ph:['data modeling','data cleaning'],
+  a:["On the data side he works in <b>SQL, MySQL and BigQuery</b> &mdash; modeling, cleaning and validating data so the dashboards on top are actually trustworthy."],
+  next:['What other tools?','See his results','How do I hire him?']},
+ {kw:['dashboard','dashboards','report','reports','visual','visualization','visualisation','charts'],ph:['build a dashboard','dashboard for','reporting dashboard'],
+  a:["Dashboards are his bread &amp; butter &#128202; &mdash; <b>auto-updating, branded, interactive</b>, blending Google Ads, GA4, Meta &amp; CRM data into one screen. Drill-downs, YoY/MoM, filters, and increasingly an AI chat layer on top. Scroll to the <b>Work</b> section for real ones."],
+  next:['Show me his best project','What tools does he use?','How do I hire him?']},
+ {kw:['ppc','adwords','campaign','campaigns'],ph:['google ads','meta ads','paid ads','ad spend','wasted spend','paid media'],
+  a:["Paid media is core for him &mdash; campaign optimization, keyword &amp; match-type strategy, A/B testing, GA4 conversion tracking and wasted-spend analysis to claw back budget. His AdCommand project manages <b>16 Google Ads accounts</b> at once."],
+  next:['Show me AdCommand','See his results','How do I hire him?']},
+ {kw:['automation','automate','automated','pipeline','refresh','scheduled','schedule'],ph:['reporting automation','automate reporting','manual report','automate my','data pipeline'],
+  a:["He kills the manual weekly report &#128260; &mdash; connecting your sources via APIs &amp; Google Apps Script so numbers refresh themselves, with AI-assisted summaries. Zero copy-paste, ever."],
+  next:['What tools does he use?','See his results','How do I hire him?']},
+ {kw:['flagship','adcommand','command'],ph:['best project','best work','command center','ai command','his flagship','most impressive','best dashboard','biggest project'],
+  a:["&#128681; His flagship is <b>AdCommand</b> &mdash; an AI-powered command center managing Google Ads across <b>16 accounts</b>. Live Google Ads API data, a built-in <b>Claude AI analyst</b> (insights, chat &amp; voice), a 3D geo globe, budget intelligence and automated reports &mdash; 9 modules in one web app. It's private/enterprise, but he'll give a walkthrough on request. &#128231;"],
+  next:['What other projects?','What can he do with AI?','How do I hire him?']},
+ {kw:['project','projects','work','portfolio','example','examples'],ph:['his work','show me his work','other projects','see his projects','what has he built','his projects','more work'],
+  a:["Beyond the flagship, his <b>Work</b> section has real builds &#128202;: Client Campaign Performance (121M+ impressions), GA4 Traffic Analytics, ATM Transaction, Car Sales, Food Delivery, Finance &amp; Hospital dashboards &mdash; across Looker Studio &amp; Power BI. Scroll up to the Work section to explore them."],
+  next:['Show me his best project','What tools does he use?','How do I hire him?']},
+ {kw:['hire','contact','reach','email','mail','message','whatsapp','linkedin','github','call','connect','talk','dm','book'],ph:['work with','get in touch','reach him','contact him','hire him','start a project','book a call','how do i hire','how to hire','his email','email address','reach out','get started','work together'],
+  a:["Easiest ways to reach him:<br>&bull; &#128231; <b>Email:</b> debashishbora30@gmail.com<br>&bull; &#128172; <b>WhatsApp</b> &amp; <b>LinkedIn</b> &mdash; buttons in the Contact section<br>&bull; Or hit <b>Book a call</b> up top.<br>Tell him your reporting headache and he'll show you what a live dashboard could do. He replies personally. &#128588;"],
+  next:['Is he available?','How much does it cost?','What does he do?']},
+ {kw:['price','cost','rate','rates','budget','fee','fees','charge','charges','pricing','expensive','afford','quote'],ph:['how much','what does it cost','your rates','price range','per hour','project cost','what do you charge'],
+  a:["Pricing depends on scope &mdash; a focused dashboard vs. a full automated system are different beasts &#128176;. Quickest path: tell him what you need, he'll scope it and give you a number. Most work is project-based. Reach out via <b>Book a call</b>."],
+  next:['How do I contact him?','How long does it take?','Is he available?']},
+ {kw:['available','availability','capacity','busy','hiring','freelance','freelancing','slots','slot'],ph:['is he available','taking clients','taking on','available for','free to take','open for work'],
+  a:["Yes &mdash; he's <b>currently available</b> for freelance dashboard &amp; automation work &#9989;. Grab a slot via <b>Book a call</b> or WhatsApp before it fills up."],
+  next:['How do I hire him?','How much does it cost?','What does he do?']},
+ {kw:['long','timeline','turnaround','fast','quick','quickly','duration','deadline'],ph:['how long','how fast','turnaround time','time frame','timeframe','how quickly','delivery time','when can'],
+  a:["Depends on complexity &#9201;&#65039; &mdash; a focused dashboard can take days; a full automated, multi-source system takes longer. He'll give you a clear timeline after a quick scoping chat."],
+  next:['How much does it cost?','How do I contact him?','Show me his work']},
+ {kw:['process','approach','workflow','method','steps','onboarding'],ph:['how do you work','how does he work','what is the process','how does it work','your process','getting started','how do we start'],
+  a:["His process is simple &#128736;&#65039;: 1) quick call to understand your data &amp; goals &rarr; 2) connect your sources &rarr; 3) build the dashboard/automation &rarr; 4) iterate with you. You walk away with something that <b>updates itself</b>."],
+  next:['How long does it take?','How much does it cost?','How do I hire him?']},
+ {kw:['why','different','better','unique','special','edge'],ph:['why you','why him','why hire','what makes','stand out','why should','what sets him'],
+  a:["His edge &#127919;: he sits <b>between marketing and data</b>. He's run the Google Ads campaigns AND built the dashboards &mdash; so he knows which numbers actually move revenue, not just how to plot them. Then he layers AI on top to recommend the next move."],
+  next:['See his results','Show me his best project','How do I hire him?']},
+ {kw:['where','location','based','country','remote','timezone','india'],ph:['where is he','based in','where based','work remotely','time zone','what country'],
+  a:["He's based in <b>Guwahati, India</b> &#127470;&#127475; and works <b>remotely</b> with clients across the US, UK and globally &mdash; comfortable overlapping time zones."],
+  next:['Is he available?','How do I contact him?','What does he do?']},
+ {kw:['education','study','studied','degree','mba','college','university','qualification'],ph:['his education','what degree','where did he study'],
+  a:["He holds an <b>MBA from IIT Dhanbad</b> &#127891; and a BCA from Kaziranga University &mdash; plus certifications in Google Data Analytics, Microsoft Power BI and Advanced Excel."],
+  next:['What tools does he use?','See his results','How do I hire him?']},
+ {kw:['certification','certifications','certificate','certified','credential','credentials'],ph:['his certs','what certifications'],
+  a:["Certified in <b>Google Data Analytics</b>, <b>Microsoft Power BI</b>, <b>Advanced Excel</b> and Data Analytics (Henry Harvin) &mdash; plus the IIT Dhanbad MBA. &#127941;"],
+  next:['What tools does he use?','See his results','How do I hire him?']},
+ {kw:['experience','years','clients','client','worked','companies','career'],ph:['how many years','his experience','who has he worked','years of experience','work history'],
+  a:["<b>4+ years</b> building dashboards &amp; automation for <b>US &amp; UK clients</b> across marketing, finance &amp; operations &mdash; currently also a Senior Marketing Executive at QX Global. He's seen the data from both the campaign side and the analyst side."],
+  next:['See his results','Show me his best project','How do I hire him?']},
+ {kw:['industry','industries','niche','sector','sectors'],ph:['what industries','who do you work with','types of clients','what kind of clients','what clients'],
+  a:["He's worked across <b>marketing, finance, real estate, e-commerce &amp; operations</b> &mdash; anywhere there's scattered data and too many manual reports. If your numbers live in five places, that's his zone."],
+  next:['See his results','How do I hire him?','What does he do?']},
+ {kw:['resume','cv'],ph:['his resume','his cv','download cv','download resume'],
+  a:["You're on his portfolio right now! &#128516; For a formal CV, ask him via <b>Book a call</b> or email and he'll send it over. Meanwhile, the <b>Work</b> section shows real builds."],
+  next:['Show me his work','How do I contact him?','What does he do?']},
+ {kw:['help','options','commands','menu'],ph:['what can you do','what can you tell','what do you know','help me','what can i ask'],
+  a:["I can tell you about Debashish's <b>work</b>, <b>results</b>, <b>tools &amp; AI skills</b>, his <b>AdCommand</b> project, <b>pricing</b>, <b>availability</b> and <b>how to hire</b> him. What's on your mind? &#128578;"],
+  next:['What does he do?','See his results','Show me his best project','How do I hire him?']},
+ {kw:['hi','hey','hello','yo','sup','hiya','heya','howdy','greetings','hii','hellow'],ph:['good morning','good evening','good afternoon','whats up'],
+  a:["Hey! &#128075; Curious about Debashish's <b>work</b>, his <b>AI dashboards</b>, or how to hire him? Fire away.","Hi there! &#128075; Ask me about his dashboards, results, tools or his AI command center."],
+  next:['What does he do?','See his results','Show me his best project','How do I hire him?']},
+ {kw:['thank','thanks','thx','ty','great','nice','cool','awesome','perfect','amazing','helpful','wow','impressive'],ph:['thank you','thanks a lot','well done','this is cool','this is great','love this','nice site','great site'],
+  a:["Anytime! &#128588; Fun fact &mdash; this whole site (me included) reflects what Debashish builds. When you're ready, <b>Book a call</b> up top reaches the real him.","Happy to help! &#128516; Hit <b>Book a call</b> whenever you want to talk to the real Debashish."],
+  next:['How do I hire him?','What can he do with AI?','Is he available?']},
+ {kw:['bye','goodbye','later','cya'],ph:['see you','got to go','gotta go','thats all','that is all'],
+  a:["Catch you later! &#128075; If you want to start something, <b>Book a call</b> reaches Debashish directly. Have a good one!"]}
 ];
-function respond(q){
-  const t=q.toLowerCase();
-  let best=null,score=0;
-  KB.forEach(e=>{let s=e.k.reduce((a,w)=>a+(t.includes(w)?1:0),0);if(s>score){score=s;best=e;}});
-  if(best&&score>0)botSay(best.a);
-  else botSay("Good question! I can tell you about his <b>dashboards</b>, <b>results</b>, <b>tools</b>, <b>availability</b>, or <b>how to hire</b> him. For anything specific, hit <b>Book a call</b> 📧 — he'll reply personally.");
-}
+const FALLBACK=["Good question &mdash; that one's best answered by Debashish himself &#128231;. Hit <b>Book a call</b> and he'll reply personally. Meanwhile I can cover his <b>work</b>, <b>results</b>, <b>tools</b> or <b>AI projects</b> &mdash; want one of those?","Hmm, I don't have that exact answer, but Debashish will &#128578;. Try <b>Book a call</b> &mdash; or ask me about his dashboards, results, AI command center, or how to hire him."];
+function pick(a){return Array.isArray(a)?a[Math.floor(Math.random()*a.length)]:a;}
+function norm(s){return ' '+s.toLowerCase().replace(/[^a-z0-9& ]+/g,' ').replace(/ +/g,' ').trim()+' ';}
+function respond(q){var t=norm(q),toks=t.trim().split(' '),best=null,score=0;
+  INTENTS.forEach(function(it){var sc=0;
+    (it.kw||[]).forEach(function(w){if(toks.indexOf(w)>=0)sc++;});
+    (it.ph||[]).forEach(function(p){if(t.indexOf(p)>=0)sc+=2;});
+    if(sc>score){score=sc;best=it;}});
+  if(best&&score>0)botSay(pick(best.a),best.next||DEFAULTQ);
+  else botSay(pick(FALLBACK),DEFAULTQ);}
 function sendMsg(){const v=input.value.trim();if(!v)return;addUser(v);input.value='';respond(v);}
 send.addEventListener('click',sendMsg);
 input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
