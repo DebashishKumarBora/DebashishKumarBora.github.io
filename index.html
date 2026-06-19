@@ -40,7 +40,7 @@
   --glow:rgba(109,94,248,.22); --card-shadow:0 22px 50px -30px rgba(40,50,90,.35);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth; overflow-x:hidden}
 body{
   background:var(--bg); color:var(--text); font-family:var(--body);
   line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden;
@@ -66,7 +66,7 @@ a{color:inherit; text-decoration:none}
 /* ---------- nav ---------- */
 header{position:sticky; top:0; z-index:100; transition:.4s var(--ease)}
 header.scrolled .nav{background:color-mix(in srgb,var(--bg) 78%,transparent); backdrop-filter:blur(18px); border-color:var(--border)}
-.nav{display:flex; align-items:center; justify-content:space-between; gap:16px;
+.nav{display:flex; align-items:center; justify-content:space-between; gap:16px; position:relative;
   margin:14px auto; max-width:var(--maxw); padding:10px 14px 10px 18px;
   border:1px solid transparent; border-radius:50px; transition:.4s var(--ease)}
 .logo{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:1.05rem}
@@ -75,6 +75,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 78%,transparent); ba
 .logo .mark::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-120%);animation:sheen 4.5s infinite}
 @keyframes sheen{0%,60%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 .nav-links{display:flex; gap:6px; align-items:center}
+.nav-links .nav-menu-cta{display:none}
 .nav-links a{font-size:.9rem; color:var(--muted); padding:8px 14px; border-radius:30px; transition:.25s; font-weight:500}
 .nav-links a:hover{color:var(--text); background:var(--surface)}
 .nav-right{display:flex; align-items:center; gap:8px}
@@ -90,7 +91,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 78%,transparent); ba
 .burger{display:none}
 
 /* ---------- hero ---------- */
-.hero{padding:70px 0 40px; position:relative}
+.hero{padding-top:70px; padding-bottom:40px; position:relative}
 .status{display:inline-flex; align-items:center; gap:9px; font-size:.8rem; font-family:var(--mono);
   color:var(--emerald); background:color-mix(in srgb,var(--emerald) 12%,transparent);
   border:1px solid color-mix(in srgb,var(--emerald) 30%,transparent); padding:7px 14px; border-radius:30px; letter-spacing:.02em}
@@ -170,7 +171,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 78%,transparent); ba
   .aip-chip.c2,.aip-chip.c5{display:none}
   .aip-card{width:200px; left:-2%}
 }
-@media(max-width:560px){.aip-chip.c1,.aip-chip.c3{left:-2%}.aip-chip.c4,.aip-chip.c6{right:-2%}.aip-card{left:50%;transform:translateX(-50%);bottom:-10%}}
+@media(max-width:560px){.aip-card{left:calc(50% - 100px);transform:none;bottom:-6%}.orbit.o2{inset:0}}
 
 
 /* live console card */
@@ -423,12 +424,24 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
   .cert-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:640px){
+  .wrap{padding:0 18px}
   .nav-links{display:none}
+  .logo{font-size:.98rem; white-space:nowrap}
+  .nav-right .btn-primary{display:none}
+  .aip-chip{display:none}
+  .hero-cta{width:100%}
+  .hero-cta .btn{flex:1 1 150px; justify-content:center}
+  .ai-portrait{width:min(330px,86%)}
   .burger{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:1.2rem}
-  .nav-links.mobile-open{display:flex;position:absolute;top:70px;left:16px;right:16px;flex-direction:column;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:12px}
-  .nav-links.mobile-open a{width:100%}
+  .nav-links.mobile-open{display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(18px);border:1px solid var(--border2);border-radius:var(--r);padding:12px;box-shadow:0 24px 50px -16px rgba(0,0,0,.7)}
+  .nav-links.mobile-open a{width:100%;padding:13px 14px}
+  .nav-links.mobile-open .btn-primary{display:inline-flex;justify-content:center;margin-top:6px}
   .svc-grid,.work-grid,.proof,.cert-grid{grid-template-columns:1fr}
   .kpi-row{grid-template-columns:1fr}
+  .fc-slide img{aspect-ratio:16/10}
+  .fc-cap{position:static;background:var(--bg2);padding:14px 16px 16px;border-top:1px solid var(--border)}
+  .fc-cap p{max-width:100%}
+  .fc-nav{top:30%}
   .contact-inner{padding:44px 24px}
   .chat-panel{height:70vh}
 }
@@ -450,6 +463,7 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
       <a href="#skills">Skills</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
+      <a href="#contact" class="btn btn-primary nav-menu-cta">Book a call →</a>
     </div>
     <div class="nav-right">
       <button class="toggle" id="themeBtn" aria-label="Toggle theme">🌙</button>
