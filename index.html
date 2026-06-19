@@ -444,8 +444,40 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
   .nav-links.mobile-open{display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(18px);border:1px solid var(--border2);border-radius:var(--r);padding:12px;box-shadow:0 24px 50px -16px rgba(0,0,0,.7)}
   .nav-links.mobile-open a{width:100%;padding:13px 14px}
   .nav-links.mobile-open .btn-primary{display:inline-flex;justify-content:center;margin-top:6px}
-  .svc-grid,.work-grid,.proof,.cert-grid{grid-template-columns:1fr}
-  .kpi-row{grid-template-columns:1fr}
+  /* ----- dense, compact mobile grids (desktop untouched) ----- */
+  .proof{grid-template-columns:1fr 1fr;gap:10px}
+  .proof .stat{padding:15px 13px}
+  .proof .stat .big{font-size:1.65rem}
+  .proof .stat .cap{font-size:.72rem;margin-top:5px;line-height:1.3}
+  .proof .stat::after{width:56px;height:56px;right:-20px;bottom:-20px}
+
+  .svc-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .svc{padding:16px 13px;border-radius:14px}
+  .svc .ic{width:38px;height:38px;border-radius:10px;margin-bottom:11px}
+  .svc h3{font-size:.98rem;margin-bottom:6px;line-height:1.2}
+  .svc p{font-size:.79rem;line-height:1.45}
+  .svc ul{display:none}
+  .svc .more{margin-top:12px;font-size:.71rem}
+  .svc-grid .svc:last-child{grid-column:1 / -1}
+
+  .work-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .proj .thumb{aspect-ratio:16/10}
+  .proj .body{padding:12px 11px}
+  .proj h3{font-size:.9rem;margin-bottom:8px;line-height:1.2}
+  .proj .pbr{gap:0}
+  .proj .pbr .row:nth-child(1),.proj .pbr .row:nth-child(2){display:none}
+  .proj .pbr .row .k{display:none}
+  .proj .pbr .v.result{font-size:.74rem;line-height:1.4}
+  .proj .links{display:none}
+  .proj .tool-tag{font-size:.58rem;padding:4px 8px;top:8px;left:8px}
+
+  .cert-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .cert{padding:15px 11px}
+  .cert .ic{font-size:1.4rem;margin-bottom:8px}
+  .cert .n{font-size:.8rem}
+  .cert .by{font-size:.66rem}
+
+  .kpi-row{grid-template-columns:1fr 1fr;gap:8px}
   .fc-slide img{aspect-ratio:16/10}
   .fc-cap{position:static;background:var(--bg2);padding:14px 16px 16px;border-top:1px solid var(--border)}
   .fc-cap p{max-width:100%}
