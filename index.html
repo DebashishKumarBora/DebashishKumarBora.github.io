@@ -102,6 +102,77 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 78%,transparent); ba
 .hero-cta{display:flex; gap:12px; margin-top:32px; flex-wrap:wrap}
 .eyebrow{font-family:var(--mono); font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; color:var(--faint)}
 
+/* hero two-column */
+.hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:50px; align-items:center}
+.hero h1{font-size:clamp(2.4rem,5.2vw,4.4rem); margin:20px 0 0; max-width:15ch}
+.cap-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:24px}
+.cap{display:inline-flex; align-items:center; gap:8px; font-size:.84rem; font-weight:600; padding:8px 14px; border-radius:30px;
+  background:color-mix(in srgb,var(--surface) 70%,transparent); border:1px solid var(--border2); color:var(--text)}
+.cap i{width:7px;height:7px;border-radius:50%;background:var(--grad);display:block;box-shadow:0 0 8px var(--indigo)}
+.cap.hot{border-color:color-mix(in srgb,var(--indigo) 50%,transparent); background:color-mix(in srgb,var(--indigo) 14%,transparent)}
+.tool-strip{margin-top:22px; font-family:var(--mono); font-size:.76rem; color:var(--muted); letter-spacing:.02em; line-height:1.9}
+.tool-strip b{color:var(--text2,var(--text)); font-weight:600}
+.tool-strip .sep{color:var(--faint); margin:0 4px}
+
+/* AI portrait composition */
+.ai-portrait{position:relative; width:min(500px,100%); aspect-ratio:1; margin:0 auto}
+.aip-glow{position:absolute; inset:-12%; background:
+  radial-gradient(circle at 38% 32%, color-mix(in srgb,var(--indigo) 55%,transparent), transparent 55%),
+  radial-gradient(circle at 70% 75%, color-mix(in srgb,var(--cyan) 42%,transparent), transparent 55%),
+  radial-gradient(circle at 80% 20%, color-mix(in srgb,var(--magenta) 30%,transparent), transparent 50%);
+  filter:blur(38px); opacity:.6; animation:aipGlow 7s ease-in-out infinite}
+@keyframes aipGlow{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.75;transform:scale(1.05)}}
+.aip-orbits{position:absolute; inset:0; width:100%; height:100%; overflow:visible; z-index:1}
+.orbit{position:absolute; border:1px dashed color-mix(in srgb,var(--text) 14%,transparent); border-radius:50%}
+.orbit.o1{inset:4%; animation:spin 26s linear infinite}
+.orbit.o2{inset:-6%; border-style:solid; border-color:color-mix(in srgb,var(--cyan) 16%,transparent); animation:spin 38s linear infinite reverse}
+.orbit .node{position:absolute; top:-5px; left:calc(50% - 5px); width:10px;height:10px;border-radius:50%;background:var(--cyan); box-shadow:0 0 12px var(--cyan)}
+.orbit.o2 .node{background:var(--magenta); box-shadow:0 0 12px var(--magenta)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.aip-ringspin{position:absolute; inset:9%; border-radius:50%;
+  background:conic-gradient(from 0deg,var(--indigo),var(--cyan),var(--emerald),var(--magenta),var(--indigo));
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 8px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 8px));
+  animation:spin 16s linear infinite; z-index:2; filter:saturate(1.2)}
+.aip-disc{position:absolute; inset:11.5%; border-radius:50%; overflow:hidden; z-index:3;
+  background:#0b0d14; box-shadow:0 30px 70px -20px rgba(0,0,0,.7), inset 0 0 0 1px var(--border2)}
+.aip-disc img{width:100%;height:100%;object-fit:cover;object-position:50% 22%; filter:contrast(1.04)}
+.aip-tint{position:absolute; inset:0; mix-blend-mode:soft-light;
+  background:linear-gradient(155deg, color-mix(in srgb,var(--indigo) 60%,transparent), transparent 42%, color-mix(in srgb,var(--cyan) 45%,transparent))}
+.aip-scan{position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.025) 3px 4px); pointer-events:none}
+.aip-badge{position:absolute; top:6%; right:2%; z-index:6; display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; color:var(--emerald);
+  background:color-mix(in srgb,var(--bg) 78%,transparent); backdrop-filter:blur(8px);
+  border:1px solid color-mix(in srgb,var(--emerald) 35%,transparent); padding:7px 12px; border-radius:30px}
+.aip-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}
+.aip-chip{position:absolute; z-index:5; display:inline-flex; align-items:center; gap:7px; font-size:.78rem; font-weight:600;
+  padding:8px 13px; border-radius:12px; color:var(--text); white-space:nowrap;
+  background:color-mix(in srgb,var(--surface) 86%,transparent); backdrop-filter:blur(10px);
+  border:1px solid var(--border2); box-shadow:0 12px 30px -12px rgba(0,0,0,.7); animation:floaty 5s ease-in-out infinite}
+.aip-chip i{width:7px;height:7px;border-radius:50%;background:var(--grad);box-shadow:0 0 8px var(--indigo)}
+.aip-chip.c1{top:2%; left:-6%; animation-delay:0s}
+.aip-chip.c2{top:30%; left:-14%; animation-delay:.6s}
+.aip-chip.c3{bottom:20%; left:-9%; animation-delay:1.1s}
+.aip-chip.c4{top:14%; right:-7%; animation-delay:.3s}
+.aip-chip.c5{bottom:30%; right:-12%; animation-delay:.9s}
+.aip-chip.c6{bottom:4%; right:2%; animation-delay:1.4s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.aip-card{position:absolute; bottom:-4%; left:-8%; z-index:7; width:236px; padding:14px 16px; border-radius:16px;
+  background:linear-gradient(180deg,var(--surface),var(--bg2)); border:1px solid var(--border2);
+  box-shadow:0 22px 50px -16px rgba(0,0,0,.75); animation:floaty 6s ease-in-out infinite .4s}
+.aip-card-h{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--cyan); margin-bottom:7px}
+.aip-card-h .spark{width:16px;height:16px;border-radius:5px;background:var(--grad);display:inline-flex;align-items:center;justify-content:center;font-size:.7rem}
+.aip-card-b{font-size:.86rem; color:var(--muted2); line-height:1.5}
+.aip-card-b b{color:var(--text)}
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr; gap:34px}
+  .ai-portrait{width:min(380px,82%); order:-0}
+  .aip-chip.c2,.aip-chip.c5{display:none}
+  .aip-card{width:200px; left:-2%}
+}
+@media(max-width:560px){.aip-chip.c1,.aip-chip.c3{left:-2%}.aip-chip.c4,.aip-chip.c6{right:-2%}.aip-card{left:50%;transform:translateX(-50%);bottom:-10%}}
+
+
 /* live console card */
 .console{margin-top:50px; border:1px solid var(--border); border-radius:var(--r-lg); background:
   linear-gradient(180deg,var(--surface),var(--bg2)); box-shadow:var(--card-shadow); overflow:hidden}
@@ -391,12 +462,48 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
 <main id="top">
 <!-- HERO -->
 <section class="hero wrap" style="padding-top:46px">
-  <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
-  <h1>I turn scattered data into <span class="grad-text">one live source of truth.</span></h1>
-  <p class="lede">I'm a <b>data & automation analyst</b> who builds AI-powered, auto-updating dashboards in Looker Studio and Power BI — so teams stop wasting hours on manual reports and start making faster decisions. <b>4+ years</b> serving US &amp; UK clients.</p>
-  <div class="hero-cta">
-    <a href="#contact" class="btn btn-primary">Book a call →</a>
-    <a href="#work" class="btn btn-ghost">See the dashboards</a>
+  <div class="hero-grid">
+    <div class="hero-left">
+      <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
+      <h1>I turn scattered data into <span class="grad-text">one live, AI-powered source of truth.</span></h1>
+      <p class="lede">I'm a <b>data &amp; automation analyst</b> who builds <b>AI-powered, auto-updating dashboards</b> — with built-in <b>AI chat</b> and <b>smart recommendations</b> that tell you what to do next, not just what happened. <b>4+ years</b> serving US &amp; UK clients.</p>
+      <div class="cap-row">
+        <span class="cap hot"><i></i>AI Chatbots</span>
+        <span class="cap hot"><i></i>AI Recommendations</span>
+        <span class="cap"><i></i>Apps Script Automation</span>
+        <span class="cap"><i></i>Azure &amp; Cloud</span>
+        <span class="cap"><i></i>Live API Pipelines</span>
+      </div>
+      <div class="tool-strip"><b>BUILT WITH</b><span class="sep">—</span>Looker Studio<span class="sep">·</span>Power BI<span class="sep">·</span>Google Apps Script<span class="sep">·</span>Azure<span class="sep">·</span>Claude AI<span class="sep">·</span>GA4<span class="sep">·</span>BigQuery</div>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Book a call →</a>
+        <a href="#work" class="btn btn-ghost">See the dashboards</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="ai-portrait">
+        <div class="aip-glow"></div>
+        <div class="orbit o2"><span class="node"></span></div>
+        <div class="orbit o1"><span class="node"></span></div>
+        <div class="aip-ringspin"></div>
+        <div class="aip-disc">
+          <img src="images/portrait.png" alt="Debashish Kumar Bora" onerror="this.closest('.ai-portrait').style.display='none'">
+          <div class="aip-tint"></div>
+          <div class="aip-scan"></div>
+        </div>
+        <span class="aip-badge"><span class="dot"></span>LIVE · AI</span>
+        <span class="aip-chip c1"><i></i>AI Chatbots</span>
+        <span class="aip-chip c2"><i></i>Apps Script</span>
+        <span class="aip-chip c3"><i></i>Smart Recos</span>
+        <span class="aip-chip c4"><i></i>Power BI</span>
+        <span class="aip-chip c5"><i></i>Azure</span>
+        <span class="aip-chip c6"><i></i>Looker Studio</span>
+        <div class="aip-card">
+          <div class="aip-card-h"><span class="spark">✦</span>AI Recommendation</div>
+          <div class="aip-card-b">Shift <b>12%</b> budget to your top performer → <b>+$4.2k</b> projected this month.</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- LIVE CONSOLE SIGNATURE -->
@@ -828,7 +935,7 @@ function botSay(html){const ty=document.createElement('div');ty.className='typin
 const KB=[
   {k:['what','do','role','about','who'],a:"Debashish is a <b>Data &amp; Automation Analyst</b> with 4+ years of experience. He builds AI-powered, auto-updating dashboards in <b>Looker Studio</b> and <b>Power BI</b> that turn scattered marketing data into one live source of truth — so teams stop doing manual reports. He's worked with US &amp; UK clients."},
   {k:['result','achiev','metric','number','roi','revenue','proof'],a:"Real outcomes he's delivered:<br>• <b>+15%</b> marketing-driven revenue in 6 months<br>• <b>+8%</b> average client ROI<br>• <b>+12%</b> qualified organic leads<br>• Eliminated <b>hours</b> of manual reporting through automation."},
-  {k:['tool','tech','stack','software','skill'],a:"His toolkit: <b>Power BI</b> (DAX, Power Query), <b>Looker Studio</b>, Tableau, <b>SQL/BigQuery</b>, <b>GA4</b>, <b>Google Ads</b>, Meta Ads, StackAdapt — plus AI-driven analytics &amp; automated dashboards."},
+  {k:['tool','tech','stack','software','skill'],a:"His toolkit: <b>Power BI</b> (DAX, Power Query), <b>Looker Studio</b>, <b>Google Apps Script</b>, <b>Azure &amp; cloud</b>, <b>SQL/BigQuery</b>, GA4, Google Ads, Meta — plus <b>Claude AI</b> for built-in <b>AI chatbots</b> and <b>smart recommendations</b> inside the dashboards he builds. 🤖"},
   {k:['hire','work with','start','project','cost','price','rate','book','contact','reach'],a:"Easiest way: hit <b>Book a call</b> 📧 or message him on <b>WhatsApp</b> 💬. Tell him your reporting headache and he'll show you what a live automated dashboard could look like. Email: <b>debashishbora30@gmail.com</b>"},
   {k:['available','free','capacity','busy'],a:"Yes — he's <b>currently available</b> for freelance dashboard &amp; automation projects. ✅ Reach out via Book a call or WhatsApp to grab a slot."},
   {k:['google ads','ppc','campaign','ads'],a:"Google Ads is core for him: campaign optimization, keyword strategy, A/B testing, GA4 conversion tracking, and 'opportunity lost' analysis to recover wasted spend."},
