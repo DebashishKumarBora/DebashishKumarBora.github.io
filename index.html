@@ -98,14 +98,14 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 78%,transparent); ba
 .status .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 0 var(--emerald);animation:pulse 2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--emerald) 70%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 .hero h1{font-size:clamp(2.6rem,6.4vw,5rem); margin:22px 0 0; max-width:14ch}
-.hero .lede{font-size:clamp(1.05rem,2vw,1.3rem); color:var(--muted); margin:22px 0 0; max-width:54ch}
+.hero .lede{font-size:clamp(1rem,2.4vw,1.3rem); color:var(--muted); margin:22px 0 0; max-width:54ch}
 .hero .lede b{color:var(--text); font-weight:600}
 .hero-cta{display:flex; gap:12px; margin-top:32px; flex-wrap:wrap}
 .eyebrow{font-family:var(--mono); font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; color:var(--faint)}
 
 /* hero two-column */
 .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:50px; align-items:center}
-.hero h1{font-size:clamp(2.4rem,5.2vw,4.4rem); margin:20px 0 0; max-width:15ch}
+.hero h1{font-size:clamp(1.8rem,5.4vw,4.4rem); margin:20px 0 0; max-width:15ch; line-height:1.08}
 .cap-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:24px}
 .cap{display:inline-flex; align-items:center; gap:8px; font-size:.84rem; font-weight:600; padding:8px 14px; border-radius:30px;
   background:color-mix(in srgb,var(--surface) 70%,transparent); border:1px solid var(--border2); color:var(--text)}
@@ -202,11 +202,11 @@ svg.line{width:100%;height:170px;overflow:visible}
 .spark-legend i{width:9px;height:9px;border-radius:3px;display:block}
 
 /* ---------- generic section ---------- */
-section{padding:90px 0; position:relative}
-.sec-head{max-width:60ch; margin-bottom:46px}
+section{padding:clamp(54px,9vw,90px) 0; position:relative}
+.sec-head{max-width:60ch; margin-bottom:clamp(28px,5vw,46px)}
 .sec-head .eyebrow{display:block; margin-bottom:14px}
-.sec-head h2{font-size:clamp(2rem,4.4vw,3.2rem)}
-.sec-head p{color:var(--muted); margin-top:14px; font-size:1.05rem}
+.sec-head h2{font-size:clamp(1.55rem,4.6vw,3.2rem)}
+.sec-head p{color:var(--muted); margin-top:14px; font-size:clamp(.95rem,2.4vw,1.05rem)}
 
 /* proof strip */
 .proof{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
@@ -242,7 +242,7 @@ section{padding:90px 0; position:relative}
   color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);
   border:1px solid color-mix(in srgb,var(--amber) 34%,transparent);padding:7px 14px;border-radius:30px}
 .flag-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
-.flag-left h3{font-size:clamp(2.4rem,4.6vw,3.4rem);margin:18px 0 0;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.flag-left h3{font-size:clamp(1.95rem,6vw,3.4rem);margin:18px 0 0;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .flag-tag{font-size:1.12rem;color:var(--text);margin-top:12px;line-height:1.5}
 .flag-tag b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
 .flag-desc{color:var(--muted);margin-top:14px;font-size:.96rem}
@@ -333,7 +333,7 @@ section{padding:90px 0; position:relative}
 .about-photo.img-failed img{display:none}
 .about-photo .ph{text-align:center;color:var(--faint);font-family:var(--mono);font-size:.8rem;padding:20px;position:relative;z-index:1}
 .about-photo .ph .ring{width:90px;height:90px;border-radius:50%;border:2px dashed var(--border2);margin:0 auto 14px;display:grid;place-items:center;font-size:2rem}
-.about-text h2{font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:18px}
+.about-text h2{font-size:clamp(1.5rem,4.4vw,2.6rem);margin-bottom:18px}
 .about-text p{color:var(--muted);margin-bottom:16px}
 .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:26px}
 .fact{border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;background:var(--surface)}
@@ -360,7 +360,7 @@ section{padding:90px 0; position:relative}
 .contact-card{border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(135deg,var(--surface),var(--bg2));position:relative}
 .contact-card::before{content:"";position:absolute;inset:0;background:var(--grad-soft);opacity:.6}
 .contact-inner{position:relative;padding:60px 50px;text-align:center}
-.contact-inner h2{font-size:clamp(2rem,5vw,3.6rem);max-width:18ch;margin:0 auto 18px}
+.contact-inner h2{font-size:clamp(1.65rem,5.4vw,3.6rem);max-width:18ch;margin:0 auto 18px}
 .contact-inner p{color:var(--muted);max-width:50ch;margin:0 auto 32px;font-size:1.05rem}
 .contact-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .contact-meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:34px;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
@@ -429,10 +429,18 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
   .logo{font-size:.98rem; white-space:nowrap}
   .nav-right .btn-primary{display:none}
   .aip-chip{display:none}
-  .hero-cta{width:100%}
+  .aurora{display:none}
+  .hero{padding-top:30px}
+  .cap-row{gap:8px;margin-top:18px}
+  .cap{font-size:.78rem;padding:7px 11px}
+  .tool-strip{margin-top:16px;font-size:.72rem}
+  .status{font-size:.72rem;padding:6px 12px}
+  .hero-cta{width:100%;margin-top:24px}
   .hero-cta .btn{flex:1 1 150px; justify-content:center}
-  .ai-portrait{width:min(330px,86%)}
-  .burger{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:1.2rem}
+  .ai-portrait{width:min(300px,80%);margin-top:8px}
+  .console{margin-top:34px}
+  .console-body>div{padding:16px}
+  .burger{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:1.2rem}
   .nav-links.mobile-open{display:flex;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:4px;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(18px);border:1px solid var(--border2);border-radius:var(--r);padding:12px;box-shadow:0 24px 50px -16px rgba(0,0,0,.7)}
   .nav-links.mobile-open a{width:100%;padding:13px 14px}
   .nav-links.mobile-open .btn-primary{display:inline-flex;justify-content:center;margin-top:6px}
@@ -442,8 +450,8 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
   .fc-cap{position:static;background:var(--bg2);padding:14px 16px 16px;border-top:1px solid var(--border)}
   .fc-cap p{max-width:100%}
   .fc-nav{top:30%}
-  .contact-inner{padding:44px 24px}
-  .chat-panel{height:70vh}
+  .contact-inner{padding:40px 20px}
+  .chat-panel{height:72vh}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -656,7 +664,7 @@ footer{border-top:1px solid var(--border);padding:40px 0;margin-top:30px}
 
   <div class="sec-head reveal" style="margin-top:60px;margin-bottom:30px">
     <span class="eyebrow">More work</span>
-    <h2 style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Dashboards by tool.</h2>
+    <h2 style="font-size:clamp(1.4rem,4.2vw,2.4rem)">Dashboards by tool.</h2>
   </div>
   <div class="filters reveal" id="filters">
     <button class="chip active" data-f="all">All</button>
