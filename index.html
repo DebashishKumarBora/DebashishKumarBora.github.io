@@ -245,7 +245,7 @@ section{padding:46px 0; position:relative}
   color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);
   border:1px solid color-mix(in srgb,var(--amber) 34%,transparent);padding:6px 12px;border-radius:30px}
 .flag-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
-.flag-left h3{font-size:clamp(1.9rem,9vw,2.6rem);margin:14px 0 0;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.flag-text h3{font-size:clamp(1.9rem,9vw,2.6rem);margin:14px 0 0;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .flag-tag{font-size:.96rem;color:var(--text);margin-top:10px;line-height:1.5}
 .flag-tag b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
 .flag-desc{color:var(--muted);margin-top:12px;font-size:.86rem;line-height:1.5}
@@ -435,6 +435,32 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .reveal{opacity:0;transform:translateY(24px);transition:.7s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 
+/* ---------- point 3: flagship text/carousel/aside (mobile: screenshot leads) ---------- */
+.flag-text{order:1}
+.flag-carousel{order:2;margin-top:16px}
+.flag-aside{order:3;margin-top:18px}
+.flag-note{color:var(--muted);font-size:.86rem;line-height:1.5;margin-bottom:14px}
+
+/* ---------- point 8: skills (mobile: stacked) ---------- */
+.skill-bars{margin-bottom:12px}
+.skill-clouds{display:grid;grid-template-columns:1fr;gap:0}
+
+/* ---------- point 4: zoomable work thumbnails ---------- */
+.proj .thumb{cursor:zoom-in}
+
+/* ---------- point 6: back-to-top ---------- */
+.to-top{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:200;
+  width:46px;height:46px;border-radius:50%;border:1px solid var(--border2);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(10px);
+  color:var(--text);font-size:1.1rem;cursor:pointer;display:grid;place-items:center;
+  box-shadow:0 12px 30px -12px rgba(0,0,0,.6);opacity:0;transform:translateY(12px);pointer-events:none;
+  transition:.35s var(--ease)}
+.to-top.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.to-top:hover{border-color:var(--indigo);color:var(--indigo)}
+
+/* ---------- point 5: active nav link (scroll-spy) ---------- */
+.nav-links a.active{color:var(--text);background:var(--surface)}
+
 /* ============================================================
    TABLET  (>= 680px)
    ============================================================ */
@@ -495,7 +521,10 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .cl-id .nm{font-size:1rem}
   .client .desc{font-size:.84rem}
 
-  .skills-grid{grid-template-columns:1fr 1fr;gap:22px}
+  .skill-bars{margin-bottom:18px}
+  .skill-bars .bars{display:grid;grid-template-columns:1fr 1fr;column-gap:26px}
+  .skill-clouds{grid-template-columns:repeat(3,1fr);gap:14px}
+  .skill-cat{margin-bottom:0}
   .about-grid{grid-template-columns:.9fr 1.1fr;gap:40px}
   .about-photo{max-width:none}
   .about-text h2{font-size:clamp(1.7rem,4vw,2.3rem)}
@@ -572,14 +601,16 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .svc li{font-size:.88rem}
   .svc .more{margin-top:22px;font-size:.8rem}
 
-  .flag-inner{grid-template-columns:1fr 1.05fr;gap:36px;padding:40px 40px 28px}
-  .flag-left h3{font-size:clamp(1.95rem,6vw,3.4rem);margin:18px 0 0}
+  .flag-inner{grid-template-columns:0.82fr 1.18fr;grid-template-areas:"text carousel" "aside carousel";gap:14px 40px;padding:40px 40px;align-items:start}
+  .flag-text{order:0;grid-area:text}
+  .flag-carousel{order:0;grid-area:carousel;margin-top:0;align-self:center}
+  .flag-aside{order:0;grid-area:aside;margin-top:18px;align-self:end}
+  .flag-text h3{font-size:clamp(1.95rem,6vw,3.4rem);margin:18px 0 0}
   .flag-tag{font-size:1.12rem;margin-top:12px}
-  .flag-desc{margin-top:14px;font-size:.96rem}
-  .flag-chips{gap:8px;margin-top:22px}
+  .flag-note{font-size:.9rem;margin-bottom:16px}
+  .flag-chips{gap:8px;margin-top:0}
   .flag-chips span{font-size:.74rem;padding:7px 12px}
-  .flag-arch{margin-top:20px;font-size:.82rem}
-  .flag-actions{margin-top:26px}
+  .flag-actions{margin-top:22px}
   .fc-cap{position:absolute;left:0;right:0;bottom:0;padding:46px 22px 16px;background:linear-gradient(to top,rgba(7,8,14,.96),rgba(7,8,14,.72) 55%,transparent);border-top:none}
   .fc-cap h4{font-size:1.12rem;color:#fff}
   .fc-cap p{font-size:.86rem;max-width:92%}
@@ -589,14 +620,12 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .filters{gap:10px;margin-bottom:30px}
   .chip{font-size:.78rem;padding:9px 16px}
   .work-grid{grid-template-columns:repeat(3,1fr);gap:20px}
-  .proj .thumb{aspect-ratio:16/10}
-  .proj .body{padding:22px}
-  .proj h3{font-size:1.15rem;margin-bottom:12px}
+  .proj .thumb{aspect-ratio:16/10;cursor:zoom-in}
+  .proj .body{padding:18px 18px 20px}
+  .proj h3{font-size:1.12rem;margin-bottom:10px}
   .proj .pbr{gap:9px;font-size:.86rem}
-  .proj .pbr .row,.proj .pbr .row:nth-child(1),.proj .pbr .row:nth-child(2){display:flex}
-  .proj .pbr .k{display:block}
-  .proj .pbr .v.result{font-size:.86rem}
-  .proj .links{display:flex}
+  .proj .pbr .v.result{font-size:.84rem}
+  .proj .links{display:flex;margin-top:14px}
   .proj .tool-tag{font-size:.68rem;padding:5px 10px;top:12px;left:12px}
   .work-note{margin-top:28px;font-size:.9rem}
 
@@ -605,10 +634,13 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .cl-id .nm{font-size:1.04rem}
   .client .desc{font-size:.85rem}
 
-  .skills-grid{grid-template-columns:1.2fr 1fr;gap:26px}
-  .skill-cat{padding:24px;margin-bottom:18px}
+  .skills-grid{display:block}
+  .skill-bars{margin-bottom:18px}
+  .skill-bars .bars{display:grid;grid-template-columns:1fr 1fr;column-gap:30px}
+  .skill-clouds{grid-template-columns:repeat(3,1fr);gap:18px}
+  .skill-cat{padding:24px;margin-bottom:0}
   .skill-cat h4{font-size:.82rem;margin-bottom:16px}
-  .bars .bar{margin-bottom:15px}
+  .bars .bar{margin-bottom:18px}
   .bars .bar .top{font-size:.88rem;margin-bottom:7px}
   .stack-cloud{gap:10px}
   .stack-cloud span{font-size:.82rem;padding:9px 15px;border-radius:12px}
@@ -675,10 +707,10 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="hero-left">
       <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
       <h1>I turn scattered data into <span class="grad-text">one live, AI-powered source of truth.</span></h1>
-      <p class="lede">I'm a <b>data &amp; automation analyst</b> who builds <b>AI-powered, auto-updating dashboards</b> — with built-in <b>AI chat</b> and <b>smart recommendations</b> that tell you what to do next, not just what happened. <b>4+ years</b> serving US &amp; UK clients.</p>
+      <p class="lede">I'm a <b>data &amp; automation analyst</b> who builds AI-powered, auto-updating dashboards — with built-in AI chat and smart recommendations that tell you what to do next, not just what happened. <b>4+ years</b> serving <b>US &amp; UK clients</b>.</p>
       <div class="cap-row">
-        <span class="cap hot"><i></i>AI Chatbots</span>
-        <span class="cap hot"><i></i>AI Recommendations</span>
+        <span class="cap"><i></i>AI Chatbots</span>
+        <span class="cap"><i></i>AI Recommendations</span>
         <span class="cap"><i></i>Apps Script Automation</span>
         <span class="cap"><i></i>Azure &amp; Cloud</span>
         <span class="cap"><i></i>Live API Pipelines</span>
@@ -737,9 +769,9 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       </div>
       <div>
         <div class="kpi-row">
-          <div class="kpi"><div class="label">Ad budget · per year</div><div class="val" data-count="3" data-prefix="£" data-suffix="M+">£0M+</div><div class="delta">▲ ~&#8377;32 Cr · travel brands</div></div>
-          <div class="kpi"><div class="label">Accounts managed</div><div class="val" data-count="100" data-suffix="+">0+</div><div class="delta">▲ across all clients</div></div>
-          <div class="kpi"><div class="label">Data sources</div><div class="val" data-count="4" data-suffix="+">0+</div><div class="delta">Ads · GA4 · Meta · CRM</div></div>
+          <div class="kpi"><div class="label">Impressions</div><div class="val" data-count="121" data-suffix="M">0</div><div class="delta">▲ paid + organic</div></div>
+          <div class="kpi"><div class="label">Conversions</div><div class="val" data-count="86" data-suffix="K">0</div><div class="delta">▲ tracked in GA4</div></div>
+          <div class="kpi"><div class="label">Cost / conv.</div><div class="val" data-count="11" data-prefix="£" data-suffix="">£0</div><div class="delta">▼ optimized down</div></div>
           <div class="kpi"><div class="label">Manual reporting</div><div class="val" data-count="0" data-text="0 hrs">0</div><div class="delta">▼ fully automated</div></div>
         </div>
         <div style="font-family:var(--mono);font-size:.74rem;color:var(--muted);border:1px dashed var(--border2);border-radius:12px;padding:14px;line-height:1.7">
@@ -818,20 +850,10 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="flagship reveal">
     <div class="flag-bg"></div>
     <div class="flag-inner">
-      <div class="flag-left">
+      <div class="flag-text">
         <span class="flag-badge"><span class="dot"></span>FLAGSHIP PROJECT</span>
         <h3>AdCommand</h3>
-        <p class="flag-tag">An AI-powered command center that manages Google Ads across <b>16 accounts</b> — with a live Claude AI analyst built in.</p>
-        <p class="flag-desc">A full web application, not a report. It pulls live data straight from the Google Ads API, blends it with budgets and occupancy, and lets a marketing team see everything — and ask an AI analyst anything — in one place.</p>
-        <div class="flag-chips">
-          <span>Live Google Ads API</span><span>Claude AI Insights</span><span>AI Chat &amp; Voice</span>
-          <span>Geo-Visualization</span><span>Budget Intelligence</span><span>Automated Reporting</span><span>9 integrated modules</span>
-        </div>
-        <p class="flag-arch"><span>ARCHITECTURE</span> API → clean → model → visualize → AI layer</p>
-        <div class="flag-actions">
-          <a class="btn btn-primary" href="mailto:debashishbora30@gmail.com?subject=AdCommand%20walkthrough%20request">Request a walkthrough →</a>
-          <span class="flag-private">🔒 Private enterprise project · demo on request</span>
-        </div>
+        <p class="flag-tag">An AI-powered command center managing Google Ads across <b>16 accounts</b> — with a live Claude AI analyst built in.</p>
       </div>
       <div class="flag-carousel" id="flagCarousel">
         <div class="fc-window">
@@ -843,6 +865,16 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
           <div class="fc-dots" id="fcDots"></div>
           <span class="fc-count" id="fcCount"></span>
           <button class="fc-play" id="fcPlay" title="Pause / play">❚❚</button>
+        </div>
+      </div>
+      <div class="flag-aside">
+        <p class="flag-note">A full web application, not a report — built on the live Google Ads API.</p>
+        <div class="flag-chips">
+          <span>Live Google Ads API</span><span>Claude AI Insights</span><span>AI Chat &amp; Voice</span><span>Geo-Visualization</span><span>Budget Intelligence</span>
+        </div>
+        <div class="flag-actions">
+          <a class="btn btn-primary" href="mailto:debashishbora30@gmail.com?subject=AdCommand%20walkthrough%20request">Request a walkthrough →</a>
+          <span class="flag-private">🔒 Private enterprise project · demo on request</span>
         </div>
       </div>
     </div>
@@ -928,22 +960,20 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <h2>The stack behind the work.</h2>
   </div>
   <div class="skills-grid">
-    <div class="reveal">
-      <div class="skill-cat">
-        <h4>Core proficiency</h4>
-        <div class="bars" id="bars"></div>
-      </div>
+    <div class="skill-cat skill-bars reveal">
+      <h4>Core proficiency</h4>
+      <div class="bars" id="bars"></div>
     </div>
-    <div class="reveal">
-      <div class="skill-cat">
+    <div class="skill-clouds">
+      <div class="skill-cat reveal">
         <h4>BI &amp; visualization</h4>
         <div class="stack-cloud"><span>Power BI</span><span>DAX</span><span>Power Query</span><span>Looker Studio</span><span>Looker</span><span>Tableau</span></div>
       </div>
-      <div class="skill-cat">
+      <div class="skill-cat reveal">
         <h4>Data &amp; querying</h4>
         <div class="stack-cloud"><span>SQL</span><span>MySQL</span><span>BigQuery</span><span>Data Modeling</span><span>Data Cleaning</span><span>Validation</span></div>
       </div>
-      <div class="skill-cat">
+      <div class="skill-cat reveal">
         <h4>Marketing &amp; automation</h4>
         <div class="stack-cloud"><span>GA4</span><span>Google Ads</span><span>Meta Ads</span><span>StackAdapt</span><span>SEM</span><span>AI-driven Analytics</span><span>Automated Dashboards</span></div>
       </div>
@@ -1025,6 +1055,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 </footer>
 
 <!-- AI ASSISTANT -->
+<button class="to-top" id="toTop" aria-label="Back to top" title="Back to top">↑</button>
 <button class="chat-fab" id="chatFab" aria-label="Chat with assistant">💬<span class="badge"></span></button>
 <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Assistant">
   <div class="chat-top">
@@ -1356,6 +1387,43 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
   lb.addEventListener('click',function(e){if(e.target!==lbImg)closeLB();});
   document.getElementById('lbX').addEventListener('click',closeLB);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLB();if(lb.classList.contains('open'))return;if(e.key==='ArrowRight'){next();start();}if(e.key==='ArrowLeft'){prev();start();}});
+})();
+</script>
+<script>
+/* ===== Back-to-top (point 6) ===== */
+(function(){
+  var btn=document.getElementById('toTop'); if(!btn) return;
+  function upd(){ btn.classList.toggle('show', window.scrollY>600); }
+  addEventListener('scroll',upd,{passive:true}); upd();
+  btn.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+})();
+/* ===== Scroll-spy active nav link (point 5) ===== */
+(function(){
+  var links=Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]:not(.btn)'));
+  if(!links.length) return;
+  var map={}; links.forEach(function(a){ var id=a.getAttribute('href').slice(1); if(id) map[id]=a; });
+  var spy=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('active');}); if(map[e.target.id]) map[e.target.id].classList.add('active'); }
+    });
+  },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+  Object.keys(map).forEach(function(id){ var s=document.getElementById(id); if(s) spy.observe(s); });
+})();
+/* ===== Click-to-zoom on work dashboards (point 4) ===== */
+(function(){
+  var grid=document.getElementById('workGrid'); if(!grid) return;
+  var lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCap');
+  if(!lb) return;
+  grid.addEventListener('click',function(e){
+    var thumb=e.target.closest('.thumb'); if(!thumb || thumb.classList.contains('img-failed')) return;
+    var img=thumb.querySelector('img'); if(!img || !img.getAttribute('src')) return;
+    var card=thumb.closest('.proj');
+    var t=card&&card.querySelector('h3')?card.querySelector('h3').textContent:'';
+    var r=card&&card.querySelector('.v.result')?card.querySelector('.v.result').textContent:'';
+    lbImg.src=img.src; lbImg.alt=t;
+    lbCap.innerHTML='<b>'+t.replace(/</g,'&lt;')+'</b>'+(r?' — '+r.replace(/</g,'&lt;'):'');
+    lb.classList.add('open');
+  });
 })();
 </script>
 </body>
