@@ -4,7 +4,58 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Debashish Kumar Bora · Data & Automation Analyst</title>
-<meta name="description" content="Debashish Kumar Bora builds AI-powered, auto-updating dashboards that turn scattered marketing data into one live source of truth. 4+ years, US & UK clients." />
+<meta name="description" content="Debashish Kumar Bora — Data & Automation Analyst. I build live, AI-powered dashboards in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
+<meta name="author" content="Debashish Kumar Bora" />
+<meta name="keywords" content="Debashish Kumar Bora, Data Analyst, Automation Analyst, Looker Studio, Power BI, Google Apps Script, BigQuery, dashboards, marketing analytics, BI developer, data analyst India" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://debashishkumarbora.github.io/" />
+<meta name="theme-color" content="#0A0B14" />
+
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+
+<!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack…) -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Debashish Kumar Bora" />
+<meta property="og:title" content="Debashish Kumar Bora — Data & Automation Analyst" />
+<meta property="og:description" content="I build live, AI-powered dashboards in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
+<meta property="og:url" content="https://debashishkumarbora.github.io/" />
+<meta property="og:image" content="https://debashishkumarbora.github.io/images/og-cover.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Debashish Kumar Bora — Data & Automation Analyst" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Debashish Kumar Bora — Data & Automation Analyst" />
+<meta name="twitter:description" content="Live, AI-powered dashboards in Looker Studio, Power BI & Apps Script. I turn messy data into decisions. 4+ yrs, US & UK clients." />
+<meta name="twitter:image" content="https://debashishkumarbora.github.io/images/og-cover.png" />
+
+<!-- Structured data: who Google & AI search think you are -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Debashish Kumar Bora",
+  "url": "https://debashishkumarbora.github.io/",
+  "image": "https://debashishkumarbora.github.io/images/og-cover.png",
+  "jobTitle": "Data & Automation Analyst",
+  "description": "Data & Automation Analyst who builds live, AI-powered dashboards in Looker Studio, Power BI and Google Apps Script, turning messy data into decisions for US & UK clients.",
+  "knowsAbout": ["Data Analytics","Power BI","Looker Studio","Google Apps Script","SQL","BigQuery","Google Ads","GA4","Marketing Analytics","Dashboard Automation","Microsoft Azure","Claude AI"],
+  "address": { "@type": "PostalAddress", "addressLocality": "Guwahati", "addressRegion": "Assam", "addressCountry": "IN" },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "IIT (ISM) Dhanbad" },
+    { "@type": "CollegeOrUniversity", "name": "Kaziranga University" }
+  ],
+  "sameAs": [
+    "https://www.linkedin.com/in/debashish-kumar-bora-367845159/",
+    "https://github.com/DebashishKumarBora"
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -712,6 +763,32 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 }
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ===== How I work — process strip (#12) ===== */
+.proc-grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:6px}
+.proc-step{position:relative; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:22px 20px}
+.proc-num{font-family:var(--mono); font-weight:700; font-size:1.5rem; background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; display:block; margin-bottom:10px}
+.proc-step h3{font-size:1.05rem; margin-bottom:6px}
+.proc-step p{font-size:.9rem; color:var(--muted); line-height:1.55}
+@media(min-width:680px){ .proc-grid{grid-template-columns:1fr 1fr; gap:16px} }
+@media(min-width:1024px){
+  .proc-grid{grid-template-columns:repeat(4,1fr); gap:18px}
+  .proc-step:not(:last-child)::after{content:"\2192"; position:absolute; top:28px; right:-13px; color:var(--faint); font-size:1.05rem; z-index:2}
+}
+
+/* ===== Before / after slider (#15) ===== */
+#transform .ba{max-width:760px; margin:0 auto; --pos:50%}
+.ba-frame{position:relative; aspect-ratio:1058/841; border-radius:var(--r); overflow:hidden; border:1px solid var(--border2); box-shadow:var(--card-shadow); background:var(--bg2)}
+.ba-after,.ba-before{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; user-select:none; -webkit-user-drag:none}
+.ba-before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
+.ba-divider{position:absolute; top:0; bottom:0; left:var(--pos); width:2px; background:linear-gradient(var(--indigo),var(--cyan)); transform:translateX(-1px); pointer-events:none; z-index:3}
+.ba-handle{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px; border-radius:50%; background:rgba(10,11,20,.72); backdrop-filter:blur(6px); border:2px solid #fff; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.05rem; box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.ba-tag{position:absolute; top:12px; z-index:4; font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; padding:6px 11px; border-radius:30px; background:rgba(10,11,20,.7); backdrop-filter:blur(6px); border:1px solid var(--border2); color:var(--text); pointer-events:none; white-space:nowrap}
+.ba-tag-l{left:12px}
+.ba-tag-r{right:12px; color:var(--emerald); border-color:color-mix(in srgb,var(--emerald) 40%,transparent)}
+.ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:5}
+.ba-range::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:64px; height:100%; cursor:ew-resize}
+.ba-range::-moz-range-thumb{width:64px; height:100%; border:0; background:transparent; cursor:ew-resize}
+@media(prefers-reduced-motion:reduce){ .ba-handle{animation:none} }
 </style>
 </head>
 <body>
@@ -731,11 +808,11 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       <a href="#skills">Skills</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
-      <a href="#contact" class="btn btn-primary nav-menu-cta">Book a call →</a>
+      <a href="#contact" data-book class="btn btn-primary nav-menu-cta">Book a call →</a>
     </div>
     <div class="nav-right">
       <button class="toggle" id="themeBtn" aria-label="Toggle theme">🌙</button>
-      <a href="#contact" class="btn btn-primary">Book a call</a>
+      <a href="#contact" data-book class="btn btn-primary">Book a call</a>
       <button class="burger" id="burger" aria-label="Menu">☰</button>
     </div>
   </nav>
@@ -747,7 +824,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="hero-grid">
     <div class="hero-head">
-      <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
+      <span class="status"><span class="dot"></span>OPEN TO PROJECTS &amp; OPPORTUNITIES</span>
       <h1><span class="hero-greet">Hi, I'm <b>Debashish</b>, a marketing guy who fell hard for data.</span>I turn messy data into <span class="grad-text">decisions, not just dashboards.</span></h1>
     </div>
     <div class="hero-media">
@@ -786,7 +863,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       </div>
       <div class="tool-strip"><b>BUILT WITH</b><span class="sep">·</span>Looker Studio<span class="sep">·</span>Power BI<span class="sep">·</span>Google Apps Script<span class="sep">·</span>Azure<span class="sep">·</span>Claude AI<span class="sep">·</span>GA4<span class="sep">·</span>BigQuery</div>
       <div class="hero-cta">
-        <a href="#contact" class="btn btn-primary">Book a call →</a>
+        <a href="#contact" data-book class="btn btn-primary">Book a call →</a>
         <a href="#work" class="btn btn-ghost">See the dashboards</a>
       </div>
     </div>
@@ -887,6 +964,37 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   </div>
 </section>
 
+<!-- HOW I WORK (process) -->
+<section class="wrap" id="process">
+  <div class="sec-head reveal">
+    <span class="eyebrow">How I work</span>
+    <h2>From scattered data to something that runs itself.</h2>
+    <p>A simple, predictable way of working, whether it's a one-off build or a longer-term role.</p>
+  </div>
+  <div class="proc-grid">
+    <div class="proc-step reveal">
+      <span class="proc-num">01</span>
+      <h3>Understand the goal</h3>
+      <p>A quick conversation to pin down the real business question, the data that exists, and what a good decision actually looks like.</p>
+    </div>
+    <div class="proc-step reveal">
+      <span class="proc-num">02</span>
+      <h3>Connect &amp; clean</h3>
+      <p>Wire up the sources (Google Ads, GA4, CRM, sheets), then clean and model them so the numbers on top are actually trustworthy.</p>
+    </div>
+    <div class="proc-step reveal">
+      <span class="proc-num">03</span>
+      <h3>Build the dashboard</h3>
+      <p>A branded, interactive view with an AI layer: plain-English answers and clear next-step recommendations, not just charts.</p>
+    </div>
+    <div class="proc-step reveal">
+      <span class="proc-num">04</span>
+      <h3>Automate &amp; iterate</h3>
+      <p>Refine it with real feedback, then automate the refresh so it updates itself. The manual weekly report quietly disappears.</p>
+    </div>
+  </div>
+</section>
+
 <!-- WORK -->
 <section class="wrap" id="work">
   <div class="sec-head reveal">
@@ -941,6 +1049,25 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   </div>
   <div class="work-grid" id="workGrid"></div>
   <p class="work-note">More on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a>. Yes, the numbers are real. Live demos coming soon.</p>
+</section>
+
+<!-- BEFORE / AFTER (transformation) -->
+<section class="wrap" id="transform">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Before &amp; after</span>
+    <h2>Messy spreadsheet in. Clear decisions out.</h2>
+    <p>Drag the slider. Same campaign data, two very different Monday mornings.</p>
+  </div>
+  <div class="ba reveal" id="ba" style="--pos:50%">
+    <div class="ba-frame">
+      <img class="ba-after" src="images/client-campaign-performance.png" alt="Clean, interactive campaign-performance dashboard built in Looker Studio" loading="lazy" />
+      <img class="ba-before" src="images/messy-before.png" alt="A messy, error-filled marketing spreadsheet before automation" loading="lazy" />
+      <span class="ba-tag ba-tag-l">Before · the spreadsheet</span>
+      <span class="ba-tag ba-tag-r">After · the dashboard</span>
+      <div class="ba-divider"><span class="ba-handle">‹&nbsp;›</span></div>
+      <input type="range" min="0" max="100" value="50" class="ba-range" id="baRange" aria-label="Drag to compare the messy spreadsheet with the finished dashboard" />
+    </div>
+  </div>
 </section>
 
 <!-- CLIENTS -->
@@ -1079,7 +1206,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       <h2>Still building that report by hand?</h2>
       <p>Tell me about your reporting nightmare. I'll show you what a live, self-updating dashboard could do for it. No obligation, no sales-y nonsense.</p>
       <div class="contact-actions">
-        <a href="mailto:debashishbora30@gmail.com?subject=Dashboard%20project%20enquiry" class="btn btn-primary">📧 Book a call</a>
+        <a href="mailto:debashishbora30@gmail.com?subject=Dashboard%20project%20enquiry" data-book class="btn btn-primary">📅 Book A Call</a>
         <a href="https://wa.me/917002820482?text=Hi%20Debashish,%20I'd%20like%20to%20discuss%20a%20dashboard%20project" target="_blank" rel="noopener" class="btn btn-ghost">💬 WhatsApp</a>
       </div>
       <div class="contact-meta">
@@ -1385,7 +1512,7 @@ const INTENTS=[
   a:["Pricing depends on scope, a focused dashboard vs. a full automated system are different beasts &#128176;. Quickest path: tell him what you need, he'll scope it and give you a number. Most work is project-based. Reach out via <b>Book a call</b>."],
   next:['How do I contact him?','How long does it take?','Is he available?']},
  {kw:['available','availability','capacity','busy','hiring','freelance','freelancing','slots','slot'],ph:['is he available','taking clients','taking on','available for','free to take','open for work'],
-  a:["Yes, he's <b>currently available</b> for freelance dashboard &amp; automation work &#9989;. Grab a slot via <b>Book a call</b> or WhatsApp before it fills up."],
+  a:["Yes, Debashish is <b>open to new opportunities</b> &#9989;, both select freelance dashboard/automation projects and full-time roles. Grab a slot via <b>Book a call</b>, or reach out on WhatsApp or LinkedIn."],
   next:['How do I hire him?','How much does it cost?','What does he do?']},
  {kw:['long','timeline','turnaround','fast','quick','quickly','duration','deadline'],ph:['how long','how fast','turnaround time','time frame','timeframe','how quickly','delivery time','when can'],
   a:["Depends on complexity &#9201;&#65039;, a focused dashboard can take days; a full automated, multi-source system takes longer. He'll give you a clear timeline after a quick scoping chat."],
@@ -1656,6 +1783,50 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
     });
     btn.addEventListener('pointerleave',function(){ btn.style.transform=''; r=null; });
   });
+})();
+</script>
+<script>
+/* ============================================================
+   BOOKING — Calendly  (#17)
+   👉 PASTE YOUR CALENDLY LINK BELOW (replace the whole string).
+   Until you do, the "Book a call" buttons keep their current
+   behaviour (scroll to contact / email). Once a real link is set,
+   they open your Calendly popup.
+   ============================================================ */
+(function(){
+  var CALENDLY_URL = "https://calendly.com/REPLACE-WITH-YOUR-LINK";   // <-- paste here
+  if(!CALENDLY_URL || CALENDLY_URL.indexOf("REPLACE") !== -1) return; // not set yet → leave fallbacks
+
+  var btns = document.querySelectorAll("[data-book]");
+  btns.forEach(function(a){ a.setAttribute("href", CALENDLY_URL); a.setAttribute("target","_blank"); a.setAttribute("rel","noopener"); });
+
+  // Lazy-load Calendly popup assets (free, no API key)
+  var css = document.createElement("link");
+  css.rel = "stylesheet"; css.href = "https://assets.calendly.com/assets/external/widget.css";
+  document.head.appendChild(css);
+  var js = document.createElement("script");
+  js.src = "https://assets.calendly.com/assets/external/widget.js"; js.async = true;
+  document.body.appendChild(js);
+
+  // Upgrade clicks to an in-page popup when Calendly is ready; otherwise the link opens normally.
+  btns.forEach(function(a){
+    a.addEventListener("click", function(e){
+      if(window.Calendly && typeof window.Calendly.initPopupWidget === "function"){
+        e.preventDefault();
+        window.Calendly.initPopupWidget({ url: CALENDLY_URL });
+      }
+    });
+  });
+})();
+</script>
+<script>
+/* BEFORE/AFTER slider (#15) */
+(function(){
+  var ba = document.getElementById('ba'), range = document.getElementById('baRange');
+  if(!ba || !range) return;
+  function set(v){ ba.style.setProperty('--pos', v + '%'); }
+  range.addEventListener('input', function(){ set(this.value); });
+  set(range.value);
 })();
 </script>
 </body>
