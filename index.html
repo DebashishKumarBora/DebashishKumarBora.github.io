@@ -111,6 +111,9 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .status .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 0 var(--emerald);animation:pulse 2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--emerald) 70%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 .hero h1{font-size:clamp(2.05rem,8.6vw,2.9rem); margin:16px 0 0; max-width:15ch; line-height:1.08}
+.hero-greet{display:block; font-family:var(--body); font-weight:600; color:var(--muted); margin-bottom:12px; letter-spacing:0;
+  font-size:clamp(1rem,3.8vw,1.3rem); line-height:1.3}
+.hero-greet b{color:var(--text)}
 .hero .lede{font-size:clamp(1rem,4.1vw,1.12rem); color:var(--muted); margin:16px 0 0; max-width:54ch}
 .hero .lede b{color:var(--text); font-weight:600}
 .hero-cta{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; width:100%}
@@ -731,7 +734,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="hero-grid">
     <div class="hero-head">
       <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
-      <h1>I turn scattered data into <span class="grad-text">one live, AI-powered source of truth.</span></h1>
+      <h1><span class="hero-greet">Hey, I'm <b>Debashish</b> — a data &amp; automation analyst.</span>I turn scattered data into <span class="grad-text">decisions, not just dashboards.</span></h1>
     </div>
     <div class="hero-media">
       <div class="ai-portrait">
@@ -758,7 +761,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       </div>
     </div>
     <div class="hero-body">
-      <p class="lede">I'm a <b>data &amp; automation analyst</b> who builds AI-powered, auto-updating dashboards — with built-in AI chat and smart recommendations that tell you what to do next, not just what happened. <b>4+ years</b> serving <b>US &amp; UK clients</b>.</p>
+      <p class="lede">I build live, AI-powered dashboards — in Looker Studio, Power BI &amp; Google Apps Script — that refresh themselves and tell your team what to do next, not just what already happened. <b>4+ years</b> turning scattered marketing data into one source of truth for <b>US &amp; UK clients</b>.</p>
       <div class="cap-row">
         <span class="cap"><i></i>AI Chatbots</span>
         <span class="cap"><i></i>AI Recommendations</span>
