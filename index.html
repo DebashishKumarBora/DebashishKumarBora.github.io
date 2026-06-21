@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Debashish Kumar Bora — Data & Automation Analyst</title>
+<title>Debashish Kumar Bora · Data & Automation Analyst</title>
 <meta name="description" content="Debashish Kumar Bora builds AI-powered, auto-updating dashboards that turn scattered marketing data into one live source of truth. 4+ years, US & UK clients." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@ body{
 h1,h2,h3,h4{font-family:var(--display); font-weight:600; line-height:1.05; letter-spacing:-.02em}
 a{color:inherit; text-decoration:none}
 img{max-width:100%}
-.wrap{max-width:var(--maxw); margin:0 auto; padding:0 18px}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-left:18px; padding-right:18px}
 .mono{font-family:var(--mono)}
 .grad-text{background:var(--grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
 
@@ -87,7 +87,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .toggle{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);
   cursor:pointer;display:grid;place-items:center;color:var(--text);transition:.3s; font-size:1.05rem}
 .toggle:hover{border-color:var(--border2); transform:rotate(15deg)}
-.btn{font-family:var(--body); font-weight:600; font-size:.9rem; cursor:pointer; border:none; white-space:nowrap;
+.btn{font-family:var(--body); font-weight:600; font-size:.9rem; cursor:pointer; border:none; white-space:nowrap; text-transform:capitalize;
   padding:11px 20px; border-radius:30px; transition:.3s var(--ease); display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px}
 .btn-primary{background:var(--grad); color:#fff; box-shadow:0 8px 26px -8px var(--glow)}
 .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 34px -8px var(--glow)}
@@ -119,7 +119,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .hero-cta{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; width:100%}
 .hero-cta .btn{flex:1 1 150px}
 .eyebrow{font-family:var(--mono); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--faint)}
-.cap-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px}
+.cap-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; justify-content:center}
 .cap{display:inline-flex; align-items:center; gap:7px; font-size:.78rem; font-weight:600; padding:7px 11px; border-radius:30px;
   background:color-mix(in srgb,var(--surface) 70%,transparent); border:1px solid var(--border2); color:var(--text)}
 .cap i{width:7px;height:7px;border-radius:50%;background:var(--grad);display:block;box-shadow:0 0 8px var(--indigo)}
@@ -168,9 +168,10 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .aip-chip i{width:6px;height:6px;border-radius:50%;background:var(--grad);box-shadow:0 0 8px var(--indigo)}
 /* phone: 4 chips around the upper ring — clear of the face and the recommendation card */
 .aip-chip.c6{display:inline-flex; top:2%;  left:-9%;  right:auto; bottom:auto; animation-delay:0s}    /* Looker Studio */
-.aip-chip.c4{display:inline-flex; top:23%; right:-7%; left:auto;  bottom:auto; animation-delay:.3s}   /* Power BI */
-.aip-chip.c2{display:inline-flex; top:40%; left:-9%;  right:auto; bottom:auto; animation-delay:.6s}   /* Apps Script */
-.aip-chip.c5{display:inline-flex; top:47%; right:-6%; left:auto;  bottom:auto; animation-delay:.9s}   /* Azure */
+.aip-chip.c7{display:inline-flex; top:20%; left:-8%;  right:auto; bottom:auto; animation-delay:.2s}   /* Claude AI */
+.aip-chip.c4{display:inline-flex; top:24%; right:-7%; left:auto;  bottom:auto; animation-delay:.4s}   /* Power BI */
+.aip-chip.c2{display:inline-flex; top:39%; left:-9%;  right:auto; bottom:auto; animation-delay:.6s}   /* Apps Script */
+.aip-chip.c5{display:inline-flex; top:45%; right:-6%; left:auto;  bottom:auto; animation-delay:.9s}   /* Azure */
 .aip-chip.c1,.aip-chip.c3{top:0; left:0; animation-delay:1.1s}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .aip-card{position:absolute; bottom:-4%; left:0; right:0; margin:0 auto; transform:none; z-index:7; width:min(236px,100%); padding:13px 15px; border-radius:16px;
@@ -204,6 +205,9 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .chart-head .t{font-family:var(--mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .chart-head .n{font-family:var(--display);font-weight:700;font-size:1.05rem}
 svg.line{width:100%;height:150px;overflow:visible}
+.chart-plot{position:relative;display:flex;gap:8px}
+.chart-plot .y-axis{display:flex;flex-direction:column;justify-content:space-between;font-family:var(--mono);font-size:.58rem;color:var(--faint);height:150px;text-align:right;flex-shrink:0;padding:2px 0}
+.x-axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.58rem;color:var(--faint);margin:7px 0 0 40px}
 .spark-legend{display:flex;gap:12px;margin-top:10px;font-family:var(--mono);font-size:.68rem;color:var(--muted);flex-wrap:wrap}
 .spark-legend span{display:flex;align-items:center;gap:6px}
 .spark-legend i{width:9px;height:9px;border-radius:3px;display:block}
@@ -260,17 +264,17 @@ section{padding:46px 0; position:relative}
 .flag-arch span{color:var(--faint);letter-spacing:.12em;margin-right:8px}
 .flag-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:20px}
 .flag-private{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
-/* carousel */
-.flag-carousel{position:relative;border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;background:var(--bg2);box-shadow:0 24px 60px -24px rgba(0,0,0,.7)}
-.fc-window{position:relative;overflow:hidden}
-.fc-track{display:flex;transition:transform .6s cubic-bezier(.5,0,.2,1)}
+/* carousel — free-floating screenshots (no outer box, whole image visible) */
+.flag-carousel{position:relative;min-width:0}
+.fc-window{position:relative;overflow:hidden;border-radius:14px}
+.fc-track{display:flex;align-items:flex-start;transition:transform .6s cubic-bezier(.5,0,.2,1)}
 .fc-slide{min-width:100%;position:relative;cursor:zoom-in}
-.fc-slide img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;object-position:top left}
-.fc-cap{position:static;background:var(--bg2);padding:13px 15px;border-top:1px solid var(--border)}
+.fc-slide img{width:100%;aspect-ratio:1907/895;display:block;object-fit:contain;border-radius:14px;border:1px solid var(--border2);box-shadow:0 24px 60px -24px rgba(0,0,0,.6)}
+.fc-cap{position:static;background:transparent;padding:12px 2px 0;border-top:none}
 .fc-cap .step{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
 .fc-cap h4{font-size:1rem;margin:5px 0 4px;color:var(--text)}
 .fc-cap p{font-size:.82rem;color:var(--muted2,var(--muted));line-height:1.45;max-width:100%}
-.fc-nav{position:absolute;top:30%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+.fc-nav{position:absolute;top:36%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
   border:1px solid var(--border2);background:color-mix(in srgb,var(--bg) 60%,transparent);backdrop-filter:blur(8px);
   color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;transition:.2s var(--ease)}
 .fc-nav:hover{background:var(--indigo);border-color:transparent}
@@ -353,7 +357,7 @@ section{padding:46px 0; position:relative}
 
 /* about */
 .about-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
-.about-photo{max-width:190px;margin:0 auto;aspect-ratio:1;border-radius:18px;background:linear-gradient(135deg,var(--bg2),var(--surface2));border:1px solid var(--border);position:relative;overflow:hidden;display:grid;place-items:center}
+.about-photo{max-width:230px;margin:0 auto;aspect-ratio:0.82;border-radius:18px;background:linear-gradient(135deg,var(--bg2),var(--surface2));border:1px solid var(--border);position:relative;overflow:hidden;display:grid;place-items:center}
 .about-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
 .about-photo.img-failed img{display:none}
 .about-photo .ph{text-align:center;color:var(--faint);font-family:var(--mono);font-size:.8rem;padding:20px;position:relative;z-index:1}
@@ -489,7 +493,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
    TABLET  (>= 680px)
    ============================================================ */
 @media(min-width:680px){
-  .wrap{padding:0 22px}
+  .wrap{padding-left:22px;padding-right:22px}
   .aurora{display:block}
   .grid-bg{background-size:60px 60px}
 
@@ -511,6 +515,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .aip-chip.c4{top:14%; right:-7%;  left:auto;  bottom:auto}
   .aip-chip.c5{top:auto; bottom:30%; right:-12%; left:auto}
   .aip-chip.c6{top:auto; bottom:4%; right:2%;   left:auto}
+  .aip-chip.c7{top:-2%; left:40%; right:auto; bottom:auto}
 
   .console{margin-top:40px}
   .console-body>div{padding:20px}
@@ -538,8 +543,8 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .flag-inner{grid-template-columns:1fr;gap:24px;padding:30px 22px 10px}
   .flag-tag{font-size:1.05rem}
   .flag-desc{font-size:.92rem}
-  .fc-slide img{aspect-ratio:16/9.1}
-  .fc-nav{top:50%;width:40px;height:40px}
+  .fc-slide img{aspect-ratio:1907/895}
+  .fc-nav{top:40%;width:40px;height:40px}
 
   .work-grid{grid-template-columns:repeat(2,1fr);gap:16px}
   .proj .body{padding:18px 16px}
@@ -557,7 +562,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .skill-clouds{grid-template-columns:repeat(3,1fr);gap:14px}
   .skill-cat{margin-bottom:0}
   .about-grid{grid-template-columns:.9fr 1.1fr;gap:40px}
-  .about-photo{max-width:none}
+  .about-photo{max-width:300px;align-self:start}
   .about-text h2{font-size:clamp(1.7rem,4vw,2.3rem)}
   .facts{gap:14px}
 
@@ -588,7 +593,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
    DESKTOP  (>= 1024px)  — reproduces original desktop 1:1
    ============================================================ */
 @media(min-width:1024px){
-  .wrap{padding:0 24px}
+  .wrap{padding-left:24px;padding-right:24px}
   .grid-bg{background-size:60px 60px}
 
   .hero{padding-top:46px;padding-bottom:40px}
@@ -634,6 +639,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .svc ul{display:flex;margin-top:16px}
   .svc li{font-size:.88rem}
   .svc .more{margin-top:22px;font-size:.8rem}
+  .cap-row{justify-content:flex-start}
 
   .flag-inner{grid-template-columns:0.82fr 1.18fr;grid-template-areas:"text carousel" "aside carousel";gap:14px 40px;padding:40px 40px;align-items:start}
   .flag-text{order:0;grid-area:text}
@@ -645,9 +651,9 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .flag-chips{gap:8px;margin-top:0}
   .flag-chips span{font-size:.74rem;padding:7px 12px}
   .flag-actions{margin-top:22px}
-  .fc-cap{position:absolute;left:0;right:0;bottom:0;padding:46px 22px 16px;background:linear-gradient(to top,rgba(7,8,14,.96),rgba(7,8,14,.72) 55%,transparent);border-top:none}
-  .fc-cap h4{font-size:1.12rem;color:#fff}
-  .fc-cap p{font-size:.86rem;max-width:92%}
+  .fc-cap{position:static;left:auto;right:auto;bottom:auto;padding:14px 2px 0;background:transparent}
+  .fc-cap h4{font-size:1.12rem;color:var(--text)}
+  .fc-cap p{font-size:.86rem;max-width:100%}
   .fc-nav.prev{left:14px}.fc-nav.next{right:14px}
   .fc-bar{padding:12px 18px}
 
@@ -742,7 +748,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="hero-grid">
     <div class="hero-head">
       <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
-      <h1><span class="hero-greet">Hey, I'm <b>Debashish</b> — a data &amp; automation analyst.</span>I turn scattered data into <span class="grad-text">decisions, not just dashboards.</span></h1>
+      <h1><span class="hero-greet">Hi, I'm <b>Debashish</b>, a marketing guy who fell hard for data.</span>I turn messy data into <span class="grad-text">decisions, not just dashboards.</span></h1>
     </div>
     <div class="hero-media">
       <div class="ai-portrait">
@@ -762,6 +768,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
         <span class="aip-chip c4"><i></i>Power BI</span>
         <span class="aip-chip c5"><i></i>Azure</span>
         <span class="aip-chip c6"><i></i>Looker Studio</span>
+        <span class="aip-chip c7"><i></i>Claude AI</span>
         <div class="aip-card">
           <div class="aip-card-h"><span class="spark">✦</span>AI Recommendation</div>
           <div class="aip-card-b">Shift <b>12%</b> budget to your top performer → <b>+$4.2k</b> projected this month.</div>
@@ -769,7 +776,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       </div>
     </div>
     <div class="hero-body">
-      <p class="lede">I build live, AI-powered dashboards — in Looker Studio, Power BI &amp; Google Apps Script — that refresh themselves and tell your team what to do next, not just what already happened. <b>4+ years</b> turning scattered marketing data into one source of truth for <b>US &amp; UK clients</b>.</p>
+      <p class="lede">I build live, AI-powered dashboards in Looker Studio, Power BI and Google Apps Script. They update on their own and tell your team what to do next, not just what already happened. For <b>4+ years</b> I've been turning other people's messy marketing data into something <b>US &amp; UK clients</b> can actually use.</p>
       <div class="cap-row">
         <span class="cap"><i></i>AI Chatbots</span>
         <span class="cap"><i></i>AI Recommendations</span>
@@ -777,7 +784,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
         <span class="cap"><i></i>Azure &amp; Cloud</span>
         <span class="cap"><i></i>Live API Pipelines</span>
       </div>
-      <div class="tool-strip"><b>BUILT WITH</b><span class="sep">—</span>Looker Studio<span class="sep">·</span>Power BI<span class="sep">·</span>Google Apps Script<span class="sep">·</span>Azure<span class="sep">·</span>Claude AI<span class="sep">·</span>GA4<span class="sep">·</span>BigQuery</div>
+      <div class="tool-strip"><b>BUILT WITH</b><span class="sep">·</span>Looker Studio<span class="sep">·</span>Power BI<span class="sep">·</span>Google Apps Script<span class="sep">·</span>Azure<span class="sep">·</span>Claude AI<span class="sep">·</span>GA4<span class="sep">·</span>BigQuery</div>
       <div class="hero-cta">
         <a href="#contact" class="btn btn-primary">Book a call →</a>
         <a href="#work" class="btn btn-ghost">See the dashboards</a>
@@ -795,14 +802,18 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="console-body">
       <div class="chart-wrap">
         <div class="chart-head">
-          <span class="t">Campaign performance · illustrative</span>
-          <span class="n grad-text" id="revHead">sample</span>
+          <span class="t">Revenue overview · sample data</span>
+          <span class="n grad-text" id="revHead">+38% YoY</span>
         </div>
-        <svg class="line" id="lineChart" viewBox="0 0 520 170" preserveAspectRatio="none"></svg>
+        <div class="chart-plot">
+          <div class="y-axis"><span>£160k</span><span>£120k</span><span>£80k</span><span>£40k</span><span>£0</span></div>
+          <svg class="line" id="lineChart" viewBox="0 0 520 170" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="x-axis"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span></div>
         <div class="spark-legend">
+          <span><i style="background:var(--emerald)"></i>Total revenue</span>
           <span><i style="background:var(--indigo)"></i>Paid</span>
           <span><i style="background:var(--cyan)"></i>Organic</span>
-          <span><i style="background:var(--emerald)"></i>Total ROI</span>
         </div>
       </div>
       <div>
@@ -837,13 +848,13 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="sec-head reveal">
     <span class="eyebrow">What I actually do</span>
     <h2>Three problems I solve really well.</h2>
-    <p>Every project starts with a real business headache — not a shiny tool nobody asked for. Here's where I earn my keep.</p>
+    <p>Every project starts with a real business headache, not a shiny tool nobody asked for. This is where I earn my keep.</p>
   </div>
   <div class="svc-grid">
     <div class="svc reveal">
       <div class="ic">📊</div>
       <h3>Live marketing dashboards</h3>
-      <p>Auto-updating, branded dashboards your team will actually open — one place for every number that matters.</p>
+      <p>Auto-updating, branded dashboards your team will actually open. One place for every number that matters.</p>
       <ul>
         <li>Looker Studio &amp; Power BI builds from scratch</li>
         <li>Google Ads · GA4 · Meta · CRM · Sheets blended</li>
@@ -854,10 +865,10 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="svc reveal">
       <div class="ic">⚙️</div>
       <h3>Reporting automation</h3>
-      <p>Kill the soul-crushing weekly report. I wire your data through APIs so the numbers update themselves — while you do literally anything else.</p>
+      <p>Kill the soul-crushing weekly report. I wire your data through APIs so the numbers update themselves while you do literally anything else.</p>
       <ul>
         <li>API &amp; data-pipeline integration</li>
-        <li>Scheduled refresh — zero copy-paste</li>
+        <li>Scheduled refresh, zero copy-paste</li>
         <li>AI-assisted insight summaries</li>
       </ul>
       <span class="more">Automate reporting →</span>
@@ -865,7 +876,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="svc reveal">
       <div class="ic">🎯</div>
       <h3>Google Ads &amp; analytics</h3>
-      <p>Sharper campaigns and tracking you can trust — so your budget stops funding clicks that go nowhere.</p>
+      <p>Sharper campaigns and tracking you can trust, so your budget stops funding clicks that go nowhere.</p>
       <ul>
         <li>Campaign optimization &amp; A/B testing</li>
         <li>GA4 setup &amp; conversion tracking</li>
@@ -881,7 +892,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="sec-head reveal">
     <span class="eyebrow">Proof, not promises</span>
     <h2>Dashboards built to be used, not just admired.</h2>
-    <p>Real builds across marketing, finance and ops. Real data, real results — no lorem ipsum, no stock screenshots.</p>
+    <p>Real builds across marketing, finance and ops. Real data, real results. No lorem ipsum, no stock screenshots.</p>
   </div>
 
   <!-- FLAGSHIP -->
@@ -891,7 +902,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
       <div class="flag-text">
         <span class="flag-badge"><span class="dot"></span>FLAGSHIP PROJECT</span>
         <h3>AdCommand</h3>
-        <p class="flag-tag">An AI-powered command center managing Google Ads across <b>16 accounts</b> — with a live Claude AI analyst built in.</p>
+        <p class="flag-tag">An AI-powered command center that runs Google Ads across <b>16 accounts</b>, with a live Claude AI analyst built right in.</p>
       </div>
       <div class="flag-carousel" id="flagCarousel">
         <div class="fc-window">
@@ -906,7 +917,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
         </div>
       </div>
       <div class="flag-aside">
-        <p class="flag-note">A full web application, not a report — built on the live Google Ads API.</p>
+        <p class="flag-note">A full web app, not a report. Built on the live Google Ads API.</p>
         <div class="flag-chips">
           <span>Live Google Ads API</span><span>Claude AI Insights</span><span>AI Chat &amp; Voice</span><span>Geo-Visualization</span><span>Budget Intelligence</span>
         </div>
@@ -929,7 +940,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <button class="chip" data-f="powerbi">Power BI</button>
   </div>
   <div class="work-grid" id="workGrid"></div>
-  <p class="work-note">More on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a> — yes, the numbers are real. Live interactive demos coming soon.</p>
+  <p class="work-note">More on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a>. Yes, the numbers are real. Live demos coming soon.</p>
 </section>
 
 <!-- CLIENTS -->
@@ -937,49 +948,49 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="sec-head reveal">
     <span class="eyebrow">Clients</span>
     <h2>Brands I've delivered for.</h2>
-    <p>From UK travel leaders to US property and global BPM &mdash; including <b>£3M+ per year</b> (~&#8377;32 crore) in Google Ads budget managed on top travel accounts alone, plus <b>100+ ad accounts</b> across 4+ years.</p>
+    <p>From UK travel leaders to US property and global BPM. That includes <b>£3M+ per year</b> (~&#8377;32 crore) in Google Ads budget on the top travel accounts alone, plus <b>100+ ad accounts</b> across 4+ years.</p>
   </div>
   <div class="clients-grid">
     <a class="client reveal" href="https://www.southalltravel.co.uk/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=southalltravel.co.uk&sz=128" alt="Southall Travel" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">S</span>
         <div class="cl-id"><div class="nm">Southall Travel</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">One of the UK's largest travel agencies &mdash; paid search at scale.</div>
+      <div class="desc">One of the UK's largest travel agencies, paid search at scale.</div>
       <span class="badge2">£1.5M+/yr · ~&#8377;16 Cr</span><span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://www.awayholidays.co.uk/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=awayholidays.co.uk&sz=128" alt="Away Holidays" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">A</span>
         <div class="cl-id"><div class="nm">Away Holidays</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">UK holidays specialist &mdash; performance &amp; paid media.</div>
+      <div class="desc">UK holidays specialist, performance &amp; paid media.</div>
       <span class="badge2">£1.6M+/yr · ~&#8377;17 Cr</span><span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://www.advantage.com/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=advantage.com&sz=128" alt="Advantage Rent A Car" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">A</span>
         <div class="cl-id"><div class="nm">Advantage Rent A Car</div><div class="sector">Car Rental · USA</div></div></div>
-      <div class="desc">Major US car-rental brand &mdash; paid search &amp; analytics.</div>
+      <div class="desc">Major US car-rental brand, paid search &amp; analytics.</div>
       <span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://www.sailmgmt.com/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=sailmgmt.com&sz=128" alt="Sail" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">S</span>
         <div class="cl-id"><div class="nm">Sail</div><div class="sector">Property Mgmt · USA</div></div></div>
-      <div class="desc">US multi-family property marketing, Google Ads &amp; data &mdash; the team behind the AdCommand build.</div>
+      <div class="desc">US multi-family property marketing, Google Ads &amp; data, the team behind the AdCommand build.</div>
       <span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://qxglobalgroup.com/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=qxglobalgroup.com&sz=128" alt="QX Global Group" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">Q</span>
         <div class="cl-id"><div class="nm">QX Global Group</div><div class="sector">BPM · Global</div></div></div>
-      <div class="desc">Global business process management &mdash; current marketing &amp; data role.</div>
+      <div class="desc">Global business process management, current marketing &amp; data role.</div>
       <span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://www.flysharp.com/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=flysharp.com&sz=128" alt="FlySharp" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">F</span>
         <div class="cl-id"><div class="nm">FlySharp</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">UK flights &amp; holidays &mdash; campaign management.</div>
+      <div class="desc">UK flights &amp; holidays, campaign management.</div>
       <span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://www.traveltrolley.co.uk/" target="_blank" rel="noopener">
       <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=traveltrolley.co.uk&sz=128" alt="Travel Trolley" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">T</span>
         <div class="cl-id"><div class="nm">Travel Trolley</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">UK travel agency &mdash; analytics &amp; paid media.</div>
+      <div class="desc">UK travel agency, analytics &amp; paid media.</div>
       <span class="visit">Visit site ↗</span>
     </a>
     <a class="client reveal" href="https://www.programming.com/" target="_blank" rel="noopener">
@@ -996,7 +1007,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="sec-head reveal">
     <span class="eyebrow">Capabilities</span>
     <h2>The stack behind the work.</h2>
-    <p>The tools I reach for daily — not the ones I added to my CV in 2019 and never opened again.</p>
+    <p>The tools I reach for daily. Not the ones I added to my CV in 2019 and never opened again.</p>
   </div>
   <div class="skills-grid">
     <div class="skill-cat skill-bars reveal">
@@ -1029,9 +1040,9 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     </div>
     <div class="about-text reveal">
       <span class="eyebrow" style="display:block;margin-bottom:12px">About</span>
-      <h2>Marketing instinct meets data discipline.</h2>
-      <p>I sit in the awkward gap most analysts avoid — between the campaign that spends the money and the spreadsheet that explains where it went. I've run the Google Ads, survived the client meetings, and built the dashboards that show what actually worked — for businesses across the US and UK.</p>
-      <p>That dual view is the whole point. I don't just make numbers look pretty; I know which ones move revenue — and I automate the boring parts so the story stays current without anyone heroically updating a sheet at 11pm.</p>
+      <h2>Marketing guy. Data brain.</h2>
+      <p>I started out in marketing, running the campaigns and spending the actual budget. Then I got tired of waiting two days for a report that was already out of date, so I taught myself to build my own. Turns out I liked the data part even more than the ads.</p>
+      <p>So now I live in the overlap. I've spent the money and built the dashboards that explain where it went, which means I actually know which numbers move revenue and which ones just look busy on a slide. Then I automate the dull bits, because nobody should be hand-updating a spreadsheet at 11pm. Me least of all.</p>
       <div class="facts">
         <div class="fact"><div class="k">Based in</div><div class="v">Guwahati, India 🇮🇳</div></div>
         <div class="fact"><div class="k">Now</div><div class="v">Sr. Marketing Exec · QX Global</div></div>
@@ -1039,11 +1050,11 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
         <div class="fact"><div class="k">Works with</div><div class="v">US · UK · Global clients</div></div>
       </div>
       <div class="timeline">
-        <div class="tl"><div class="when">MAR 2026 — PRESENT</div><div class="role">Senior Marketing Executive</div><div class="co">QX Global</div></div>
-        <div class="tl"><div class="when">APR 2025 — MAR 2026</div><div class="role">Senior Digital Marketing Executive</div><div class="co">Southall Travel</div></div>
-        <div class="tl"><div class="when">AUG 2024 — FEB 2025</div><div class="role">Digital Marketing Analyst</div><div class="co">Programming.com · US clients</div></div>
-        <div class="tl"><div class="when">JUN 2023 — JUL 2024</div><div class="role">Digital Data Analyst</div><div class="co">Investosure Consultancy</div></div>
-        <div class="tl"><div class="when">2019 — 2021</div><div class="role">Freelance Digital Analyst</div><div class="co">Self-employed</div></div>
+        <div class="tl"><div class="when">MAR 2026 → PRESENT</div><div class="role">Senior Marketing Executive</div><div class="co">QX Global</div></div>
+        <div class="tl"><div class="when">APR 2025 → MAR 2026</div><div class="role">Senior Digital Marketing Executive</div><div class="co">Southall Travel</div></div>
+        <div class="tl"><div class="when">AUG 2024 → FEB 2025</div><div class="role">Digital Marketing Analyst</div><div class="co">Programming.com · US clients</div></div>
+        <div class="tl"><div class="when">JUN 2023 → JUL 2024</div><div class="role">Digital Data Analyst</div><div class="co">Investosure Consultancy</div></div>
+        <div class="tl"><div class="when">2019 → 2021</div><div class="role">Freelance Digital Analyst</div><div class="co">Self-employed</div></div>
       </div>
     </div>
   </div>
@@ -1051,7 +1062,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 
 <!-- CERTS -->
 <section class="wrap" id="certs" style="padding-top:0">
-  <div class="sec-head reveal"><span class="eyebrow">Certified</span><h2>Credentials.</h2><p>The formal stuff — proof I didn't just learn it all from YouTube.</p></div>
+  <div class="sec-head reveal"><span class="eyebrow">Certified</span><h2>Credentials.</h2><p>The formal stuff, for anyone who wants proof I didn't just learn it all from YouTube.</p></div>
   <div class="cert-grid">
     <div class="cert reveal"><div class="ic">📈</div><div class="n">Google Data Analytics Professional</div><div class="by">Google</div></div>
     <div class="cert reveal"><div class="ic">📊</div><div class="n">Power BI Certification</div><div class="by">Microsoft</div></div>
@@ -1066,7 +1077,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="contact-inner">
       <span class="eyebrow" style="display:block;margin-bottom:16px">Let's build</span>
       <h2>Still building that report by hand?</h2>
-      <p>Tell me about your reporting nightmare. I'll show you what a live, self-updating dashboard could do for it — no obligation, no sales-y nonsense.</p>
+      <p>Tell me about your reporting nightmare. I'll show you what a live, self-updating dashboard could do for it. No obligation, no sales-y nonsense.</p>
       <div class="contact-actions">
         <a href="mailto:debashishbora30@gmail.com?subject=Dashboard%20project%20enquiry" class="btn btn-primary">📧 Book a call</a>
         <a href="https://wa.me/917002820482?text=Hi%20Debashish,%20I'd%20like%20to%20discuss%20a%20dashboard%20project" target="_blank" rel="noopener" class="btn btn-ghost">💬 WhatsApp</a>
@@ -1147,17 +1158,19 @@ function buildLine(){
   const svg=document.getElementById('lineChart'); if(!svg)return;
   const W=520,H=170;
   const series=[
-    {color:'var(--indigo)',data:[35,42,38,55,60,72,68,82,90,98,110,124]},
-    {color:'var(--cyan)',data:[20,25,30,28,40,45,52,58,55,66,72,80]},
-    {color:'var(--emerald)',data:[50,55,60,70,78,85,90,100,108,118,130,142]}
+    {color:'var(--indigo)',data:[34,40,38,52,58,68,66,78,86,92,104,116]},
+    {color:'var(--cyan)',data:[18,24,28,26,36,40,46,52,50,58,62,70]},
+    {color:'var(--emerald)',data:[56,64,70,82,90,102,110,120,128,138,146,152]}
   ];
-  const max=150;
+  const max=160;
   function path(d){return d.map((v,i)=>`${i===0?'M':'L'} ${(i/(d.length-1))*W} ${H-(v/max)*H}`).join(' ');}
   let html='';
-  // area under emerald
+  html+=`<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--emerald)" stop-opacity=".26"/><stop offset="100%" stop-color="var(--emerald)" stop-opacity="0"/></linearGradient></defs>`;
+  // horizontal gridlines, aligned to the £0–£160k axis labels
+  for(let g=0; g<=4; g++){const y=(g/4)*H; html+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 5" opacity=".55"/>`;}
+  // area under emerald (total revenue)
   const area=series[2].data;
   const ap=area.map((v,i)=>`${i===0?'M':'L'} ${(i/(area.length-1))*W} ${H-(v/max)*H}`).join(' ')+` L ${W} ${H} L 0 ${H} Z`;
-  html+=`<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--emerald)" stop-opacity=".28"/><stop offset="100%" stop-color="var(--emerald)" stop-opacity="0"/></linearGradient></defs>`;
   html+=`<path d="${ap}" fill="url(#ag)" opacity="0"><animate attributeName="opacity" to="1" dur="1s" begin="1.1s" fill="freeze"/></path>`;
   series.forEach((s,idx)=>{
     const p=path(s.data);
@@ -1180,37 +1193,37 @@ bio.observe(barsEl);
 /* ============ PROJECTS ============ */
 const projects=[
   {t:'Client Campaign Performance',tool:'Looker Studio',tag:['looker'],file:'client-campaign-performance.png',
-   p:'A travel client needed paid and organic performance in one place — across millions of impressions.',
+   p:'A travel client needed paid and organic performance in one place, across millions of impressions.',
    b:'Looker Studio dashboard blending Google Ads + Search Console: KPIs, Brand vs Generic keywords, match-type performance and location insights.',
-   r:'Surfaced 121M+ impressions, 2.1M clicks & 86K conversions — with clear wins in low-CTR, cost-heavy queries.'},
+   r:'Surfaced 121M+ impressions, 2.1M clicks & 86K conversions, with clear wins in low-CTR, cost-heavy queries.'},
   {t:'GA4 Traffic Analytics',tool:'Looker Studio',tag:['looker'],file:'ga4-traffic-analytics.png',
    p:'The team couldn\'t tell where quality traffic came from, or how engagement was trending.',
    b:'GA4-powered Looker Studio dashboard: channel performance (paid vs organic), device split, landing-page conversions and YoY/MoM views.',
-   r:'Mapped 157K sessions & 70K users — revealing 79.7% mobile traffic and the pages actually converting.'},
+   r:'Mapped 157K sessions & 70K users, revealing 79.7% mobile traffic and the pages actually converting.'},
   {t:'ATM Transaction Analytics',tool:'Power BI',tag:['powerbi'],file:'atm-transaction-dashboard.png',
    p:'A financial network needed to understand ATM cost, uptime and revenue across states.',
    b:'Power BI dashboard analyzing transactions, cost breakdown (AMC, CRA, maintenance), uptime and revenue by region and month.',
-   r:'Tracked 616M ATM revenue at 91.89% uptime — exposing cost drivers and top-earning states.'},
+   r:'Tracked 616M ATM revenue at 91.89% uptime, exposing cost drivers and top-earning states.'},
   {t:'Car Sales Analytics',tool:'Power BI',tag:['powerbi'],file:'car-sales-dashboard.png',
-   p:'A dealership group had no clear view of what drove sales — by model, color or region.',
+   p:'A dealership group had no clear view of what drove sales, by model, color or region.',
    b:'Power BI dashboard with YTD KPIs, weekly trend, body-style & color breakdowns, dealer-region map and company comparison.',
-   r:'Visualized $371M YTD sales & 13.3K cars sold — pinpointing the top styles, colors and regions.'},
+   r:'Visualized $371M YTD sales & 13.3K cars sold, pinpointing the top styles, colors and regions.'},
   {t:'Food Delivery Analytics',tool:'Power BI',tag:['powerbi'],file:'food-delivery-dashboard.png',
    p:'Sales, ratings and city performance for a food-delivery brand lived in disconnected reports.',
    b:'Power BI dashboard covering revenue & orders, Veg/Non-Veg split, customer ratings, top-city ranking and year-over-year trends.',
-   r:'Unified 987M revenue across 150K orders — highlighting top cities and seasonal swings.'},
+   r:'Unified 987M revenue across 150K orders, highlighting top cities and seasonal swings.'},
   {t:'Finance Analysis',tool:'Power BI',tag:['powerbi'],file:'finance-analysis-dashboard.png',
    p:'Income, expenses and savings were impossible to compare across years.',
    b:'Power BI dashboard with income/expense/savings KPIs, year filters, monthly breakdowns and category donuts.',
-   r:'Showed a 64% savings rate on 2.8M income — making peak-spend months and saving patterns obvious.'},
+   r:'Showed a 64% savings rate on 2.8M income, making peak-spend months and saving patterns obvious.'},
   {t:'Hospital Analytics',tool:'Power BI',tag:['powerbi'],file:'hospital-analytics.png',
-   p:'Hospital operations — patients, doctors, pharmacy and finance — had no single view.',
+   p:'Hospital operations (patients, doctors, pharmacy and finance) had no single view.',
    b:'Power BI dashboard on a MySQL backend with patient & doctor metrics, medicine tracking, charges and appointments, plus drill-through and bookmarks.',
    r:'One operational view spanning a 73% discharge rate, staffing and pharmacy demand.'},
   {t:'Weather Analytics (Live API)',tool:'Power BI',tag:['powerbi'],file:'weather-analytics.png',
    p:'A build to prove Power BI can tell a live story straight from an external API.',
    b:'End-to-end pipeline connecting Power BI to a real-time WeatherAPI feed: temperature, humidity, AQI, forecasts and rain probability.',
-   r:'A live, auto-updating dashboard — real API integration in action.'}
+   r:'A live, auto-updating dashboard, real API integration in action.'}
 ];
 function mini(type){
   if(type==='bar'){let b='';const vs=[40,65,50,80,60,90,72];vs.forEach((v,i)=>{b+=`<rect x="${i*70+12}" y="${170-v}" width="42" height="${v}" rx="6" fill="url(#mg)"><animate attributeName="height" from="0" to="${v}" dur=".9s" begin="${i*.08}s" fill="freeze"/><animate attributeName="y" from="170" to="${170-v}" dur=".9s" begin="${i*.08}s" fill="freeze"/></rect>`;});return svgWrap(b);}
@@ -1272,77 +1285,80 @@ function addUser(t){addMsg(t.replace(/</g,'&lt;'),'user');}
 function botSay(html,next){const ty=document.createElement('div');ty.className='typing';ty.innerHTML='<i></i><i></i><i></i>';log.appendChild(ty);log.scrollTop=log.scrollHeight;
   setTimeout(()=>{ty.remove();addMsg(html,'bot');if(next)setQuick(next);},560+Math.random()*460);}
 const INTENTS=[
+ {kw:['priyanka','moura'],ph:['who is priyanka','what does priyanka','priyanka do','about priyanka','whos priyanka','who priyanka'],
+  a:["Ah, <b>Priyanka</b>! &#128075; She's a seriously talented <b>social media manager</b> and one of the nicest people you'll ever meet. Lives for <b>travelling</b> &#9992;&#65039;, runs entirely on <b>momos</b> &#129375;, and yes, before you ask, she's adorable. If you're reading this, Priyanka: hi, the chatbot works, you can stop testing it now &#128516;","<b>Priyanka</b> &#128075; manages social media like a pro, collects passport stamps for fun, and would trade almost anything for a plate of momos &#129375;. Genuinely lovely human. (Debashish may or may not have added this entry purely so she'd find it.)"],
+  next:['What does Debashish do?','Show me his best project','How do I hire him?']},
  {kw:['who','about','bio','introduce','background'],ph:['what does he do','what does debashish do','who is he','tell me about','about him','his story','what is he'],
-  a:["Debashish is a <b>Data &amp; Automation Analyst</b> (4+ yrs, US &amp; UK clients). He turns scattered marketing data into <b>one live, AI-powered dashboard</b> &mdash; in Looker Studio, Power BI, Google Apps Script &amp; Azure &mdash; with built-in AI chat &amp; smart recommendations. In short: he kills manual reporting and tells teams what to do next. &#128640;"],
+  a:["Debashish is a <b>Data &amp; Automation Analyst</b> (4+ yrs, US &amp; UK clients). He turns scattered marketing data into <b>one live, AI-powered dashboard</b>, in Looker Studio, Power BI, Google Apps Script &amp; Azure, with built-in AI chat &amp; smart recommendations. In short: he kills manual reporting and tells teams what to do next. &#128640;"],
   next:['See his results','What tools does he use?','Show me his best project','How do I hire him?']},
  {kw:['bot','robot','human','chatgpt','gpt'],ph:['are you a bot','are you real','are you ai','who are you','what are you','are you a robot','are you human','are you chatgpt','you a bot'],
-  a:["Guilty &mdash; I'm a bot &#129302;, running right here in your browser (no servers). The fun part: building AI assistants like me, and far smarter ones wired to <b>live data</b>, is literally one of Debashish's services. Want to see how?","I'm Debashish's site assistant &#129302;. Fittingly, he <b>builds</b> AI chatbots and AI-recommendation engines into the dashboards he ships &mdash; I'm just the little demo out front. Ask me about his work!"],
+  a:["Guilty, I'm a bot &#129302;, running right here in your browser (no servers). The fun part: building AI assistants like me, and far smarter ones wired to <b>live data</b>, is literally one of Debashish's services. Want to see how?","I'm Debashish's site assistant &#129302;. Fittingly, he <b>builds</b> AI chatbots and AI-recommendation engines into the dashboards he ships, I'm just the little demo out front. Ask me about his work!"],
   next:['What can he do with AI?','Show me his best project','How do I hire him?']},
  {kw:['ai','chatbot','chatbots','recommendation','recommendations','ml'],ph:['ai dashboard','ai chatbot','ai chat','smart recommendation','machine learning','artificial intelligence','ai analyst','ai powered','ai recommendation','built in ai','what can he do with ai','build with ai'],
-  a:["This is his edge &#129302;: he bakes <b>AI right into the dashboards</b>. Your team can ask questions in plain English and get answers, plus <b>smart recommendations</b> like &lsquo;shift 12% budget to your top performer &rarr; +$4.2k projected&rsquo;. Not just charts of what happened &mdash; AI that says what to do next."],
+  a:["This is his edge &#129302;: he bakes <b>AI right into the dashboards</b>. Your team can ask questions in plain English and get answers, plus <b>smart recommendations</b> like &lsquo;shift 12% budget to your top performer &rarr; +$4.2k projected&rsquo;. Not just charts of what happened, AI that says what to do next."],
   next:['Show me his AI command center','What tools does he use?','How do I hire him?']},
  {kw:['result','results','metric','metrics','roi','revenue','proof','outcome','outcomes','impact','achieve','achievement','success'],ph:['his results','what results','case study','track record','how good'],
-  a:["What he's handled &#128200;:<br>&bull; <b>£3M+ per year</b> (~&#8377;32 Cr) in Google Ads budget across top travel brands &mdash; Southall <b>£1.5M+/yr</b>, Away Holidays <b>£1.6M+/yr</b><br>&bull; <b>100+</b> ad accounts managed across clients<br>&bull; Manual reporting wiped out through automation<br>&bull; One Looker build surfaced <b>121M+ impressions &amp; 86K conversions</b> for a travel client."],
+  a:["What he's handled &#128200;:<br>&bull; <b>£3M+ per year</b> (~&#8377;32 Cr) in Google Ads budget across top travel brands, Southall <b>£1.5M+/yr</b>, Away Holidays <b>£1.6M+/yr</b><br>&bull; <b>100+</b> ad accounts managed across clients<br>&bull; Manual reporting wiped out through automation<br>&bull; One Looker build surfaced <b>121M+ impressions &amp; 86K conversions</b> for a travel client."],
   next:['Show me his best project','What does he do?','How do I hire him?']},
  {kw:['tool','tools','tech','stack','software','skill','skills','technology','use','uses'],ph:['what tools','his stack','tech stack','what does he use','tools he uses','what can he use'],
   a:["His toolkit &#128736;&#65039;:<br>&bull; <b>BI:</b> Power BI (DAX, Power Query), Looker Studio, Looker, Tableau<br>&bull; <b>Data:</b> SQL, MySQL, BigQuery, modeling &amp; cleaning<br>&bull; <b>Marketing:</b> GA4, Google Ads, Meta, StackAdapt, SEM<br>&bull; <b>AI &amp; automation:</b> Google Apps Script, Azure, Claude AI &#129302;"],
   next:['What can he do with AI?','See his results','How do I hire him?']},
  {kw:['powerbi','dax'],ph:['power bi','power query'],
-  a:["Power BI is one of his strongest (~90%) &mdash; full <b>DAX</b>, Power Query, data modeling and polished interactive reports. It's one of his core build tools."],
+  a:["Power BI is one of his strongest (~90%), full <b>DAX</b>, Power Query, data modeling and polished interactive reports. It's one of his core build tools."],
   next:['What other tools?','See his results','How do I hire him?']},
  {kw:['looker','tableau'],ph:['looker studio','data studio'],
-  a:["Looker Studio is a specialty (~93%) &mdash; branded, auto-refreshing dashboards blending Google Ads, GA4 &amp; Search Console. His &lsquo;Client Campaign Performance&rsquo; build is a great example."],
+  a:["Looker Studio is a specialty (~93%), branded, auto-refreshing dashboards blending Google Ads, GA4 &amp; Search Console. His &lsquo;Client Campaign Performance&rsquo; build is a great example."],
   next:['Show me his work','What other tools?','How do I hire him?']},
  {kw:['sql','mysql','bigquery','query','querying','database'],ph:['data modeling','data cleaning'],
-  a:["On the data side he works in <b>SQL, MySQL and BigQuery</b> &mdash; modeling, cleaning and validating data so the dashboards on top are actually trustworthy."],
+  a:["On the data side he works in <b>SQL, MySQL and BigQuery</b>, modeling, cleaning and validating data so the dashboards on top are actually trustworthy."],
   next:['What other tools?','See his results','How do I hire him?']},
  {kw:['dashboard','dashboards','report','reports','visual','visualization','visualisation','charts'],ph:['build a dashboard','dashboard for','reporting dashboard'],
-  a:["Dashboards are his bread &amp; butter &#128202; &mdash; <b>auto-updating, branded, interactive</b>, blending Google Ads, GA4, Meta &amp; CRM data into one screen. Drill-downs, YoY/MoM, filters, and increasingly an AI chat layer on top. Scroll to the <b>Work</b> section for real ones."],
+  a:["Dashboards are his bread &amp; butter &#128202;, <b>auto-updating, branded, interactive</b>, blending Google Ads, GA4, Meta &amp; CRM data into one screen. Drill-downs, YoY/MoM, filters, and increasingly an AI chat layer on top. Scroll to the <b>Work</b> section for real ones."],
   next:['Show me his best project','What tools does he use?','How do I hire him?']},
  {kw:['ppc','adwords','campaign','campaigns'],ph:['google ads','meta ads','paid ads','ad spend','wasted spend','paid media'],
-  a:["Paid media is core for him &mdash; campaign optimization, keyword &amp; match-type strategy, A/B testing, GA4 conversion tracking and wasted-spend analysis to claw back budget. His AdCommand project manages <b>16 Google Ads accounts</b> at once."],
+  a:["Paid media is core for him, campaign optimization, keyword &amp; match-type strategy, A/B testing, GA4 conversion tracking and wasted-spend analysis to claw back budget. His AdCommand project manages <b>16 Google Ads accounts</b> at once."],
   next:['Show me AdCommand','See his results','How do I hire him?']},
  {kw:['automation','automate','automated','pipeline','refresh','scheduled','schedule'],ph:['reporting automation','automate reporting','manual report','automate my','data pipeline'],
-  a:["He kills the manual weekly report &#128260; &mdash; connecting your sources via APIs &amp; Google Apps Script so numbers refresh themselves, with AI-assisted summaries. Zero copy-paste, ever."],
+  a:["He kills the manual weekly report &#128260;, connecting your sources via APIs &amp; Google Apps Script so numbers refresh themselves, with AI-assisted summaries. Zero copy-paste, ever."],
   next:['What tools does he use?','See his results','How do I hire him?']},
  {kw:['flagship','adcommand','command'],ph:['best project','best work','command center','ai command','his flagship','most impressive','best dashboard','biggest project'],
-  a:["&#128681; His flagship is <b>AdCommand</b> &mdash; an AI-powered command center managing Google Ads across <b>16 accounts</b>. Live Google Ads API data, a built-in <b>Claude AI analyst</b> (insights, chat &amp; voice), a 3D geo globe, budget intelligence and automated reports &mdash; 9 modules in one web app. It's private/enterprise, but he'll give a walkthrough on request. &#128231;"],
+  a:["&#128681; His flagship is <b>AdCommand</b>, an AI-powered command center managing Google Ads across <b>16 accounts</b>. Live Google Ads API data, a built-in <b>Claude AI analyst</b> (insights, chat &amp; voice), a 3D geo globe, budget intelligence and automated reports, 9 modules in one web app. It's private/enterprise, but he'll give a walkthrough on request. &#128231;"],
   next:['What other projects?','What can he do with AI?','How do I hire him?']},
  {kw:['project','projects','work','portfolio','example','examples'],ph:['his work','show me his work','other projects','see his projects','what has he built','his projects','more work'],
-  a:["Beyond the flagship, his <b>Work</b> section has real builds &#128202;: Client Campaign Performance (121M+ impressions), GA4 Traffic Analytics, ATM Transaction, Car Sales, Food Delivery, Finance &amp; Hospital dashboards &mdash; across Looker Studio &amp; Power BI. Scroll up to the Work section to explore them."],
+  a:["Beyond the flagship, his <b>Work</b> section has real builds &#128202;: Client Campaign Performance (121M+ impressions), GA4 Traffic Analytics, ATM Transaction, Car Sales, Food Delivery, Finance &amp; Hospital dashboards, across Looker Studio &amp; Power BI. Scroll up to the Work section to explore them."],
   next:['Show me his best project','What tools does he use?','How do I hire him?']},
  {kw:['hire','contact','reach','email','mail','message','whatsapp','linkedin','github','call','connect','talk','dm','book'],ph:['work with','get in touch','reach him','contact him','hire him','start a project','book a call','how do i hire','how to hire','his email','email address','reach out','get started','work together'],
-  a:["Easiest ways to reach him:<br>&bull; &#128231; <b>Email:</b> debashishbora30@gmail.com<br>&bull; &#128172; <b>WhatsApp</b> &amp; <b>LinkedIn</b> &mdash; buttons in the Contact section<br>&bull; Or hit <b>Book a call</b> up top.<br>Tell him your reporting headache and he'll show you what a live dashboard could do. He replies personally. &#128588;"],
+  a:["Easiest ways to reach him:<br>&bull; &#128231; <b>Email:</b> debashishbora30@gmail.com<br>&bull; &#128172; <b>WhatsApp</b> &amp; <b>LinkedIn</b>, buttons in the Contact section<br>&bull; Or hit <b>Book a call</b> up top.<br>Tell him your reporting headache and he'll show you what a live dashboard could do. He replies personally. &#128588;"],
   next:['Is he available?','How much does it cost?','What does he do?']},
  {kw:['price','cost','rate','rates','budget','fee','fees','charge','charges','pricing','expensive','afford','quote'],ph:['how much','what does it cost','your rates','price range','per hour','project cost','what do you charge'],
-  a:["Pricing depends on scope &mdash; a focused dashboard vs. a full automated system are different beasts &#128176;. Quickest path: tell him what you need, he'll scope it and give you a number. Most work is project-based. Reach out via <b>Book a call</b>."],
+  a:["Pricing depends on scope, a focused dashboard vs. a full automated system are different beasts &#128176;. Quickest path: tell him what you need, he'll scope it and give you a number. Most work is project-based. Reach out via <b>Book a call</b>."],
   next:['How do I contact him?','How long does it take?','Is he available?']},
  {kw:['available','availability','capacity','busy','hiring','freelance','freelancing','slots','slot'],ph:['is he available','taking clients','taking on','available for','free to take','open for work'],
-  a:["Yes &mdash; he's <b>currently available</b> for freelance dashboard &amp; automation work &#9989;. Grab a slot via <b>Book a call</b> or WhatsApp before it fills up."],
+  a:["Yes, he's <b>currently available</b> for freelance dashboard &amp; automation work &#9989;. Grab a slot via <b>Book a call</b> or WhatsApp before it fills up."],
   next:['How do I hire him?','How much does it cost?','What does he do?']},
  {kw:['long','timeline','turnaround','fast','quick','quickly','duration','deadline'],ph:['how long','how fast','turnaround time','time frame','timeframe','how quickly','delivery time','when can'],
-  a:["Depends on complexity &#9201;&#65039; &mdash; a focused dashboard can take days; a full automated, multi-source system takes longer. He'll give you a clear timeline after a quick scoping chat."],
+  a:["Depends on complexity &#9201;&#65039;, a focused dashboard can take days; a full automated, multi-source system takes longer. He'll give you a clear timeline after a quick scoping chat."],
   next:['How much does it cost?','How do I contact him?','Show me his work']},
  {kw:['process','approach','workflow','method','steps','onboarding'],ph:['how do you work','how does he work','what is the process','how does it work','your process','getting started','how do we start'],
   a:["His process is simple &#128736;&#65039;: 1) quick call to understand your data &amp; goals &rarr; 2) connect your sources &rarr; 3) build the dashboard/automation &rarr; 4) iterate with you. You walk away with something that <b>updates itself</b>."],
   next:['How long does it take?','How much does it cost?','How do I hire him?']},
  {kw:['why','different','better','unique','special','edge'],ph:['why you','why him','why hire','what makes','stand out','why should','what sets him'],
-  a:["His edge &#127919;: he sits <b>between marketing and data</b>. He's run the Google Ads campaigns AND built the dashboards &mdash; so he knows which numbers actually move revenue, not just how to plot them. Then he layers AI on top to recommend the next move."],
+  a:["His edge &#127919;: he sits <b>between marketing and data</b>. He's run the Google Ads campaigns AND built the dashboards, so he knows which numbers actually move revenue, not just how to plot them. Then he layers AI on top to recommend the next move."],
   next:['See his results','Show me his best project','How do I hire him?']},
  {kw:['where','location','based','country','remote','timezone','india'],ph:['where is he','based in','where based','work remotely','time zone','what country'],
-  a:["He's based in <b>Guwahati, India</b> &#127470;&#127475; and works <b>remotely</b> with clients across the US, UK and globally &mdash; comfortable overlapping time zones."],
+  a:["He's based in <b>Guwahati, India</b> &#127470;&#127475; and works <b>remotely</b> with clients across the US, UK and globally, comfortable overlapping time zones."],
   next:['Is he available?','How do I contact him?','What does he do?']},
  {kw:['education','study','studied','degree','mba','college','university','qualification'],ph:['his education','what degree','where did he study'],
-  a:["He holds an <b>MBA from IIT Dhanbad</b> &#127891; and a BCA from Kaziranga University &mdash; plus certifications in Google Data Analytics, Microsoft Power BI and Advanced Excel."],
+  a:["He holds an <b>MBA from IIT Dhanbad</b> &#127891; and a BCA from Kaziranga University, plus certifications in Google Data Analytics, Microsoft Power BI and Advanced Excel."],
   next:['What tools does he use?','See his results','How do I hire him?']},
  {kw:['certification','certifications','certificate','certified','credential','credentials'],ph:['his certs','what certifications'],
-  a:["Certified in <b>Google Data Analytics</b>, <b>Microsoft Power BI</b>, <b>Advanced Excel</b> and Data Analytics (Henry Harvin) &mdash; plus the IIT Dhanbad MBA. &#127941;"],
+  a:["Certified in <b>Google Data Analytics</b>, <b>Microsoft Power BI</b>, <b>Advanced Excel</b> and Data Analytics (Henry Harvin), plus the IIT Dhanbad MBA. &#127941;"],
   next:['What tools does he use?','See his results','How do I hire him?']},
  {kw:['experience','years','clients','client','worked','companies','career','brands'],ph:['how many years','his experience','who has he worked','years of experience','work history','who are his clients','his clients'],
-  a:["<b>4+ years</b> for <b>US &amp; UK clients</b> &mdash; including <b>Southall Travel</b>, <b>Away Holidays</b>, <b>Advantage Rent A Car</b>, <b>Sail</b> (US property) &amp; <b>QX Global</b>. He's managed <b>£3M+ per year</b> (~&#8377;32 Cr) in Google Ads budget and <b>100+ ad accounts</b>. See the <b>Clients</b> section for the full list. &#129309;"],
+  a:["<b>4+ years</b> for <b>US &amp; UK clients</b>, including <b>Southall Travel</b>, <b>Away Holidays</b>, <b>Advantage Rent A Car</b>, <b>Sail</b> (US property) &amp; <b>QX Global</b>. He's managed <b>£3M+ per year</b> (~&#8377;32 Cr) in Google Ads budget and <b>100+ ad accounts</b>. See the <b>Clients</b> section for the full list. &#129309;"],
   next:['See his results','Show me his best project','How do I hire him?']},
  {kw:['industry','industries','niche','sector','sectors'],ph:['what industries','who do you work with','types of clients','what kind of clients','what clients'],
-  a:["He's worked across <b>marketing, finance, real estate, e-commerce &amp; operations</b> &mdash; anywhere there's scattered data and too many manual reports. If your numbers live in five places, that's his zone."],
+  a:["He's worked across <b>marketing, finance, real estate, e-commerce &amp; operations</b>, anywhere there's scattered data and too many manual reports. If your numbers live in five places, that's his zone."],
   next:['See his results','How do I hire him?','What does he do?']},
  {kw:['resume','cv'],ph:['his resume','his cv','download cv','download resume'],
   a:["You're on his portfolio right now! &#128516; For a formal CV, ask him via <b>Book a call</b> or email and he'll send it over. Meanwhile, the <b>Work</b> section shows real builds."],
@@ -1354,12 +1370,12 @@ const INTENTS=[
   a:["Hey! &#128075; Curious about Debashish's <b>work</b>, his <b>AI dashboards</b>, or how to hire him? Fire away.","Hi there! &#128075; Ask me about his dashboards, results, tools or his AI command center."],
   next:['What does he do?','See his results','Show me his best project','How do I hire him?']},
  {kw:['thank','thanks','thx','ty','great','nice','cool','awesome','perfect','amazing','helpful','wow','impressive'],ph:['thank you','thanks a lot','well done','this is cool','this is great','love this','nice site','great site'],
-  a:["Anytime! &#128588; Fun fact &mdash; this whole site (me included) reflects what Debashish builds. When you're ready, <b>Book a call</b> up top reaches the real him.","Happy to help! &#128516; Hit <b>Book a call</b> whenever you want to talk to the real Debashish."],
+  a:["Anytime! &#128588; Fun fact, this whole site (me included) reflects what Debashish builds. When you're ready, <b>Book a call</b> up top reaches the real him.","Happy to help! &#128516; Hit <b>Book a call</b> whenever you want to talk to the real Debashish."],
   next:['How do I hire him?','What can he do with AI?','Is he available?']},
  {kw:['bye','goodbye','later','cya'],ph:['see you','got to go','gotta go','thats all','that is all'],
   a:["Catch you later! &#128075; If you want to start something, <b>Book a call</b> reaches Debashish directly. Have a good one!"]}
 ];
-const FALLBACK=["Good question &mdash; that one's best answered by Debashish himself &#128231;. Hit <b>Book a call</b> and he'll reply personally. Meanwhile I can cover his <b>work</b>, <b>results</b>, <b>tools</b> or <b>AI projects</b> &mdash; want one of those?","Hmm, I don't have that exact answer, but Debashish will &#128578;. Try <b>Book a call</b> &mdash; or ask me about his dashboards, results, AI command center, or how to hire him."];
+const FALLBACK=["Good question, that one's best answered by Debashish himself &#128231;. Hit <b>Book a call</b> and he'll reply personally. Meanwhile I can cover his <b>work</b>, <b>results</b>, <b>tools</b> or <b>AI projects</b>, want one of those?","Hmm, I don't have that exact answer, but Debashish will &#128578;. Try <b>Book a call</b>, or ask me about his dashboards, results, AI command center, or how to hire him."];
 function pick(a){return Array.isArray(a)?a[Math.floor(Math.random()*a.length)]:a;}
 function norm(s){return ' '+s.toLowerCase().replace(/[^a-z0-9& ]+/g,' ').replace(/ +/g,' ').trim()+' ';}
 function respond(q){var t=norm(q),toks=t.trim().split(' '),best=null,score=0;
@@ -1376,19 +1392,19 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
 <script>
 (function(){
   var S=[
-    ["01","Command-center overview","Live portfolio spend, clicks and conversions across all 16 accounts — 30-day trends, sparklines and vs-previous deltas, pulled straight from the Google Ads API."],
+    ["01","Command-center overview","Live portfolio spend, clicks and conversions across all 16 accounts, 30-day trends, sparklines and vs-previous deltas, pulled straight from the Google Ads API."],
     ["02","Per-account deep dive","Every account expands into campaign-level detail: impressions, clicks, CTR, spend and conversions, with active/paused status at a glance."],
-    ["03","Visual performance breakdown","Rank properties by any metric and see spend share instantly — with rankings, quadrant, compare, geo, matrix and timing views in one place."],
-    ["04","Where the audience is","An interactive 3D globe plots demand by location — spin it, zoom in, switch map styles. Real WebGL, not a static picture."],
-    ["05","When the leads come in","A day-by-hour heatmap reveals the best day, best hour and peak window — so budget goes where conversions actually happen."],
+    ["03","Visual performance breakdown","Rank properties by any metric and see spend share instantly, with rankings, quadrant, compare, geo, matrix and timing views in one place."],
+    ["04","Where the audience is","An interactive 3D globe plots demand by location, spin it, zoom in, switch map styles. Real WebGL, not a static picture."],
+    ["05","When the leads come in","A day-by-hour heatmap reveals the best day, best hour and peak window, so budget goes where conversions actually happen."],
     ["06","Find the wasted spend","Surfaces the exact search terms burning budget with zero conversions, alongside the top converters worth scaling up."],
     ["07","Keyword intelligence","Match-type breakdown across 600+ active keywords, with wasted spend flagged and the best converters ranked."],
     ["08","Ad & creative performance","Spots budget-draining ads and best-performing creatives, with top converters broken out by account."],
-    ["09","Creative scoring","Every image asset rated — low performers flagged for replacement, best performers highlighted to repeat."],
+    ["09","Creative scoring","Every image asset rated, low performers flagged for replacement, best performers highlighted to repeat."],
     ["10","Video performance","Video assets scored best / good / low, so the team knows exactly what to keep, cut or refresh."],
-    ["11","Budget pacing & occupancy","Blends live ad spend with budget and occupancy — pace/day, projected spend, and over/under flags per property."],
+    ["11","Budget pacing & occupancy","Blends live ad spend with budget and occupancy, pace/day, projected spend, and over/under flags per property."],
     ["12","Claude-powered analysis","One click: Claude reads the live data, grades portfolio health and returns a prioritized, graded action plan."],
-    ["13","Ask anything — chat or voice","A built-in Claude assistant answers natural-language questions about campaigns, budgets and creatives — even hands-free by voice."]
+    ["13","Ask anything, chat or voice","A built-in Claude assistant answers natural-language questions about campaigns, budgets and creatives, even hands-free by voice."]
   ];
   var track=document.getElementById('fcTrack'), dots=document.getElementById('fcDots'),
       countEl=document.getElementById('fcCount'), playBtn=document.getElementById('fcPlay');
@@ -1421,7 +1437,7 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
   render(); start();
   // lightbox
   var lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCap');
-  function openLB(idx){lbImg.src='images/adc-'+S[idx][0]+'.png';lbCap.innerHTML='<b>'+S[idx][1]+'</b> — '+S[idx][2];lb.classList.add('open');stop();}
+  function openLB(idx){lbImg.src='images/adc-'+S[idx][0]+'.png';lbCap.innerHTML='<b>'+S[idx][1]+'</b><br>'+S[idx][2];lb.classList.add('open');stop();}
   function closeLB(){lb.classList.remove('open');start();}
   lb.addEventListener('click',function(e){if(e.target!==lbImg)closeLB();});
   document.getElementById('lbX').addEventListener('click',closeLB);
@@ -1460,7 +1476,7 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
     var t=card&&card.querySelector('h3')?card.querySelector('h3').textContent:'';
     var r=card&&card.querySelector('.v.result')?card.querySelector('.v.result').textContent:'';
     lbImg.src=img.src; lbImg.alt=t;
-    lbCap.innerHTML='<b>'+t.replace(/</g,'&lt;')+'</b>'+(r?' — '+r.replace(/</g,'&lt;'):'');
+    lbCap.innerHTML='<b>'+t.replace(/</g,'&lt;')+'</b>'+(r?'. '+r.replace(/</g,'&lt;'):'');
     lb.classList.add('open');
   });
 })();
