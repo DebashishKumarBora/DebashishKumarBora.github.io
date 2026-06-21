@@ -168,7 +168,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .aip-chip.c5{bottom:30%; right:-12%; animation-delay:.9s}
 .aip-chip.c6{bottom:4%; right:2%; animation-delay:1.4s}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.aip-card{position:absolute; bottom:-4%; left:50%; transform:translateX(-50%); z-index:7; width:min(236px,90%); padding:13px 15px; border-radius:16px;
+.aip-card{position:absolute; bottom:-4%; left:0; right:0; margin:0 auto; transform:none; z-index:7; width:min(236px,100%); padding:13px 15px; border-radius:16px;
   background:linear-gradient(180deg,var(--surface),var(--bg2)); border:1px solid var(--border2);
   box-shadow:0 22px 50px -16px rgba(0,0,0,.75); animation:floaty 6s ease-in-out infinite .4s}
 .aip-card-h{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--cyan); margin-bottom:6px}
@@ -462,6 +462,25 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .nav-links a.active{color:var(--text);background:var(--surface)}
 
 /* ============================================================
+   PREMIUM MOTION (WOW layer) — all GPU-friendly, killed under reduce-motion
+   ============================================================ */
+/* scroll progress bar */
+.scroll-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:300;background:var(--grad);box-shadow:0 0 12px var(--glow);transition:width .08s linear;pointer-events:none}
+/* hero data-constellation canvas (sits behind hero content) */
+.hero{position:relative;isolation:isolate}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.4s var(--ease)}
+.hero-canvas.on{opacity:.85}
+.hero-grid,.hero .console{position:relative;z-index:1}
+/* animated flowing gradient on the headline + flagship title */
+.hero h1 .grad-text,.flag-text h3{background-size:220% auto;animation:gradFlow 7s linear infinite}
+@keyframes gradFlow{to{background-position:220% center}}
+/* interactive 3D tilt + cursor sheen on cards (enabled by JS on fine pointers) */
+.svc,.proj,.client,.cert{transform-style:preserve-3d}
+.tilt-sheen{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:4;opacity:0;transition:opacity .3s var(--ease);
+  background:radial-gradient(180px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb,var(--cyan) 20%,transparent), transparent 62%)}
+.cert{overflow:hidden}
+
+/* ============================================================
    TABLET  (>= 680px)
    ============================================================ */
 @media(min-width:680px){
@@ -566,7 +585,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .hero .lede{font-size:clamp(1rem,2.4vw,1.3rem)}
   .ai-portrait{width:min(500px,100%);order:0;margin:0 auto}
   .aip-chip.c2,.aip-chip.c5{display:inline-flex}
-  .aip-card{left:-8%;transform:none;bottom:-4%;width:236px}
+  .aip-card{left:-8%;right:auto;margin:0;transform:none;bottom:-4%;width:236px}
 
   .console{margin-top:50px}
   .console-body{grid-template-columns:1.4fr 1fr}
@@ -676,6 +695,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 </head>
 <body>
 
+<div class="scroll-prog" id="scrollProg" aria-hidden="true"></div>
 <div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
 <div class="grid-bg"></div>
 
@@ -703,6 +723,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 <main id="top">
 <!-- HERO -->
 <section class="hero wrap">
+  <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="hero-grid">
     <div class="hero-left">
       <span class="status"><span class="dot"></span>AVAILABLE FOR FREELANCE PROJECTS</span>
@@ -1423,6 +1444,127 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
     lbImg.src=img.src; lbImg.alt=t;
     lbCap.innerHTML='<b>'+t.replace(/</g,'&lt;')+'</b>'+(r?' — '+r.replace(/</g,'&lt;'):'');
     lb.classList.add('open');
+  });
+})();
+</script>
+<script>
+/* ============================================================
+   PREMIUM MOTION ENGINE  (no libraries) — respects reduce-motion
+   ============================================================ */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine   = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+
+  /* ---- 1. Scroll progress bar ---- */
+  (function(){
+    var bar=document.getElementById('scrollProg'); if(!bar) return;
+    function upd(){
+      var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+      bar.style.width=(max>0?(h.scrollTop/max*100):0)+'%';
+    }
+    addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd); upd();
+  })();
+
+  if(reduce) return;  /* everything below is motion — skip entirely for reduce-motion users */
+
+  /* ---- 2. Hero data-constellation canvas ---- */
+  (function(){
+    var cv=document.getElementById('heroCanvas'); if(!cv) return;
+    var hero=cv.parentElement, ctx=cv.getContext('2d');
+    var dpr=Math.min(window.devicePixelRatio||1, 2);
+    var nodes=[], rect, mouse={x:-9999,y:-9999}, raf=null, visible=true;
+    var palette=['109,94,248','34,211,238','52,211,153','244,113,181'];
+    function size(){
+      rect=hero.getBoundingClientRect();
+      cv.width=Math.max(1,rect.width*dpr); cv.height=Math.max(1,rect.height*dpr);
+      cv.style.width=rect.width+'px'; cv.style.height=rect.height+'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      var area=rect.width*rect.height, target=Math.round(area/26000);
+      target=Math.max(14, Math.min(target, window.innerWidth<700?24:52));
+      nodes=[];
+      for(var i=0;i<target;i++){
+        nodes.push({x:Math.random()*rect.width,y:Math.random()*rect.height,
+          vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,
+          r:Math.random()*1.8+1.1,c:palette[i%palette.length]});
+      }
+    }
+    function step(){
+      ctx.clearRect(0,0,rect.width,rect.height);
+      var LINK=130;
+      for(var i=0;i<nodes.length;i++){
+        var n=nodes[i];
+        n.x+=n.vx; n.y+=n.vy;
+        if(n.x<0||n.x>rect.width) n.vx*=-1;
+        if(n.y<0||n.y>rect.height) n.vy*=-1;
+        // gentle pull toward cursor
+        var dxm=mouse.x-n.x, dym=mouse.y-n.y, dm=Math.hypot(dxm,dym);
+        if(dm<170){ n.x+=dxm/dm*0.5; n.y+=dym/dm*0.5; }
+        // node glow
+        ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,6.2832);
+        ctx.fillStyle='rgba('+n.c+',0.9)'; ctx.shadowBlur=10; ctx.shadowColor='rgba('+n.c+',0.8)'; ctx.fill();
+        ctx.shadowBlur=0;
+        // links to neighbours
+        for(var j=i+1;j<nodes.length;j++){
+          var m=nodes[j], dx=n.x-m.x, dy=n.y-m.y, d=Math.hypot(dx,dy);
+          if(d<LINK){ ctx.strokeStyle='rgba('+n.c+','+(0.14*(1-d/LINK)).toFixed(3)+')'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(m.x,m.y); ctx.stroke(); }
+        }
+        // link to cursor
+        if(dm<170){ ctx.strokeStyle='rgba(34,211,238,'+(0.4*(1-dm/170)).toFixed(3)+')'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(mouse.x,mouse.y); ctx.stroke(); }
+      }
+      raf=requestAnimationFrame(step);
+    }
+    function play(){ if(!raf && visible && !document.hidden){ raf=requestAnimationFrame(step); } }
+    function pause(){ if(raf){ cancelAnimationFrame(raf); raf=null; } }
+    addEventListener('pointermove',function(e){ if(!rect) return; mouse.x=e.clientX-rect.left; mouse.y=e.clientY-rect.top; },{passive:true});
+    addEventListener('pointerleave',function(){ mouse.x=mouse.y=-9999; });
+    var rz; addEventListener('resize',function(){ clearTimeout(rz); rz=setTimeout(size,180); },{passive:true});
+    addEventListener('scroll',function(){ if(hero) rect=hero.getBoundingClientRect(); },{passive:true});
+    document.addEventListener('visibilitychange',function(){ document.hidden?pause():play(); });
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ es.forEach(function(e){ visible=e.isIntersecting; visible?play():pause(); }); },{threshold:0}).observe(hero);
+    }
+    size(); play();
+    setTimeout(function(){ cv.classList.add('on'); }, 200);
+  })();
+
+  if(!fine) return;  /* tilt / sheen / magnetic are pointer-device only */
+
+  /* ---- 3. Card 3D tilt + cursor sheen ---- */
+  function bindCard(card){
+    if(card._fx) return; card._fx=1;
+    if(getComputedStyle(card).position==='static') card.style.position='relative';
+    var sheen=document.createElement('span'); sheen.className='tilt-sheen'; card.appendChild(sheen);
+    var pending=false, lx=0, ly=0, r;
+    card.addEventListener('pointerenter',function(){ r=card.getBoundingClientRect(); sheen.style.opacity='1'; });
+    card.addEventListener('pointermove',function(e){
+      r=r||card.getBoundingClientRect(); lx=e.clientX-r.left; ly=e.clientY-r.top;
+      if(pending) return; pending=true;
+      requestAnimationFrame(function(){
+        pending=false;
+        var px=lx/r.width, py=ly/r.height;
+        var ry=(px-.5)*7, rx=(.5-py)*7;
+        card.style.transform='perspective(820px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translateY(-6px) scale(1.012)';
+        sheen.style.setProperty('--mx',lx+'px'); sheen.style.setProperty('--my',ly+'px');
+      });
+    });
+    card.addEventListener('pointerleave',function(){ card.style.transform=''; sheen.style.opacity='0'; r=null; });
+  }
+  function scanCards(root){ (root||document).querySelectorAll('.svc,.proj,.client,.cert').forEach(bindCard); }
+  scanCards(document);
+  /* work grid re-renders on filter change — rebind new cards */
+  var wg=document.getElementById('workGrid');
+  if(wg && 'MutationObserver' in window){ new MutationObserver(function(){ scanCards(wg); }).observe(wg,{childList:true}); }
+
+  /* ---- 4. Magnetic primary buttons (subtle) ---- */
+  document.querySelectorAll('.btn-primary').forEach(function(btn){
+    var r;
+    btn.addEventListener('pointerenter',function(){ r=btn.getBoundingClientRect(); });
+    btn.addEventListener('pointermove',function(e){
+      r=r||btn.getBoundingClientRect();
+      var dx=(e.clientX-(r.left+r.width/2))/r.width*10, dy=(e.clientY-(r.top+r.height/2))/r.height*10;
+      btn.style.transform='translate('+dx.toFixed(1)+'px,'+dy.toFixed(1)+'px)';
+    });
+    btn.addEventListener('pointerleave',function(){ btn.style.transform=''; r=null; });
   });
 })();
 </script>
