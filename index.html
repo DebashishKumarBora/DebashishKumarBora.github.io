@@ -129,7 +129,7 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
 .tool-strip .sep{color:var(--faint); margin:0 4px}
 
 /* AI portrait composition */
-.ai-portrait{position:relative; width:min(290px,78%); aspect-ratio:1; margin:8px auto 0}
+.ai-portrait{position:relative; width:min(264px,72%); aspect-ratio:1; margin:8px auto 0}
 .aip-glow{position:absolute; inset:-12%; background:
   radial-gradient(circle at 38% 32%, color-mix(in srgb,var(--indigo) 55%,transparent), transparent 55%),
   radial-gradient(circle at 70% 75%, color-mix(in srgb,var(--cyan) 42%,transparent), transparent 55%),
@@ -160,17 +160,18 @@ header.scrolled .nav{background:color-mix(in srgb,var(--bg) 82%,transparent); ba
   border:1px solid color-mix(in srgb,var(--emerald) 35%,transparent); padding:7px 12px; border-radius:30px}
 .aip-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}
 /* floating chips + recommendation card: OFF on phone (overlap clutter) */
-.aip-chip{position:absolute; z-index:5; display:none; align-items:center; gap:7px; font-size:.78rem; font-weight:600;
-  padding:8px 13px; border-radius:12px; color:var(--text); white-space:nowrap;
-  background:color-mix(in srgb,var(--surface) 86%,transparent); backdrop-filter:blur(10px);
-  border:1px solid var(--border2); box-shadow:0 12px 30px -12px rgba(0,0,0,.7); animation:floaty 5s ease-in-out infinite}
-.aip-chip i{width:7px;height:7px;border-radius:50%;background:var(--grad);box-shadow:0 0 8px var(--indigo)}
-.aip-chip.c1{top:2%; left:-6%; animation-delay:0s}
-.aip-chip.c2{top:30%; left:-14%; animation-delay:.6s}
-.aip-chip.c3{bottom:20%; left:-9%; animation-delay:1.1s}
-.aip-chip.c4{top:14%; right:-7%; animation-delay:.3s}
-.aip-chip.c5{bottom:30%; right:-12%; animation-delay:.9s}
-.aip-chip.c6{bottom:4%; right:2%; animation-delay:1.4s}
+/* floating skill chips — compact on phone, full set on tablet/desktop */
+.aip-chip{position:absolute; z-index:5; display:none; align-items:center; gap:6px; font-size:.6rem; font-weight:600;
+  padding:5px 9px; border-radius:10px; color:var(--text); white-space:nowrap;
+  background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(10px);
+  border:1px solid var(--border2); box-shadow:0 10px 26px -12px rgba(0,0,0,.7); animation:floaty 5s ease-in-out infinite}
+.aip-chip i{width:6px;height:6px;border-radius:50%;background:var(--grad);box-shadow:0 0 8px var(--indigo)}
+/* phone: 4 chips around the upper ring — clear of the face and the recommendation card */
+.aip-chip.c6{display:inline-flex; top:2%;  left:-9%;  right:auto; bottom:auto; animation-delay:0s}    /* Looker Studio */
+.aip-chip.c4{display:inline-flex; top:23%; right:-7%; left:auto;  bottom:auto; animation-delay:.3s}   /* Power BI */
+.aip-chip.c2{display:inline-flex; top:40%; left:-9%;  right:auto; bottom:auto; animation-delay:.6s}   /* Apps Script */
+.aip-chip.c5{display:inline-flex; top:47%; right:-6%; left:auto;  bottom:auto; animation-delay:.9s}   /* Azure */
+.aip-chip.c1,.aip-chip.c3{top:0; left:0; animation-delay:1.1s}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .aip-card{position:absolute; bottom:-4%; left:0; right:0; margin:0 auto; transform:none; z-index:7; width:min(236px,100%); padding:13px 15px; border-radius:16px;
   background:linear-gradient(180deg,var(--surface),var(--bg2)); border:1px solid var(--border2);
@@ -502,7 +503,14 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   .hero h1{font-size:clamp(2.4rem,6vw,3.4rem)}
   .hero .lede{font-size:clamp(1.05rem,2.4vw,1.2rem)}
   .ai-portrait{width:min(360px,70%)}
-  .aip-chip.c1,.aip-chip.c3,.aip-chip.c4,.aip-chip.c6{display:inline-flex}
+  .aip-chip{display:inline-flex; font-size:.78rem; padding:8px 13px; gap:7px; border-radius:12px}
+  .aip-chip i{width:7px;height:7px}
+  .aip-chip.c1{top:2%;  left:-6%;   right:auto; bottom:auto}
+  .aip-chip.c2{top:30%; left:-14%;  right:auto; bottom:auto}
+  .aip-chip.c3{top:auto; bottom:20%; left:-9%;  right:auto}
+  .aip-chip.c4{top:14%; right:-7%;  left:auto;  bottom:auto}
+  .aip-chip.c5{top:auto; bottom:30%; right:-12%; left:auto}
+  .aip-chip.c6{top:auto; bottom:4%; right:2%;   left:auto}
 
   .console{margin-top:40px}
   .console-body>div{padding:20px}
@@ -827,15 +835,15 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 <!-- SERVICES -->
 <section class="wrap" id="services">
   <div class="sec-head reveal">
-    <span class="eyebrow">What I build</span>
+    <span class="eyebrow">What I actually do</span>
     <h2>Three problems I solve really well.</h2>
-    <p>Every engagement starts with a real business pain — not a tool. Here's where I deliver the most value.</p>
+    <p>Every project starts with a real business headache — not a shiny tool nobody asked for. Here's where I earn my keep.</p>
   </div>
   <div class="svc-grid">
     <div class="svc reveal">
       <div class="ic">📊</div>
       <h3>Live marketing dashboards</h3>
-      <p>Auto-updating, branded dashboards that give your team one place to see everything that matters.</p>
+      <p>Auto-updating, branded dashboards your team will actually open — one place for every number that matters.</p>
       <ul>
         <li>Looker Studio &amp; Power BI builds from scratch</li>
         <li>Google Ads · GA4 · Meta · CRM · Sheets blended</li>
@@ -846,7 +854,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="svc reveal">
       <div class="ic">⚙️</div>
       <h3>Reporting automation</h3>
-      <p>Kill the manual weekly report. I connect your data sources through APIs so numbers update themselves.</p>
+      <p>Kill the soul-crushing weekly report. I wire your data through APIs so the numbers update themselves — while you do literally anything else.</p>
       <ul>
         <li>API &amp; data-pipeline integration</li>
         <li>Scheduled refresh — zero copy-paste</li>
@@ -857,7 +865,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="svc reveal">
       <div class="ic">🎯</div>
       <h3>Google Ads &amp; analytics</h3>
-      <p>Sharper campaigns and tracking you can trust — so budget goes where it actually converts.</p>
+      <p>Sharper campaigns and tracking you can trust — so your budget stops funding clicks that go nowhere.</p>
       <ul>
         <li>Campaign optimization &amp; A/B testing</li>
         <li>GA4 setup &amp; conversion tracking</li>
@@ -871,9 +879,9 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 <!-- WORK -->
 <section class="wrap" id="work">
   <div class="sec-head reveal">
-    <span class="eyebrow">Selected work</span>
+    <span class="eyebrow">Proof, not promises</span>
     <h2>Dashboards built to be used, not just admired.</h2>
-    <p>Real builds across marketing, finance and operations — each one turning raw data into decisions.</p>
+    <p>Real builds across marketing, finance and ops. Real data, real results — no lorem ipsum, no stock screenshots.</p>
   </div>
 
   <!-- FLAGSHIP -->
@@ -921,7 +929,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <button class="chip" data-f="powerbi">Power BI</button>
   </div>
   <div class="work-grid" id="workGrid"></div>
-  <p class="work-note">More projects on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a> · live interactive dashboards coming soon</p>
+  <p class="work-note">More on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a> — yes, the numbers are real. Live interactive demos coming soon.</p>
 </section>
 
 <!-- CLIENTS -->
@@ -988,6 +996,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="sec-head reveal">
     <span class="eyebrow">Capabilities</span>
     <h2>The stack behind the work.</h2>
+    <p>The tools I reach for daily — not the ones I added to my CV in 2019 and never opened again.</p>
   </div>
   <div class="skills-grid">
     <div class="skill-cat skill-bars reveal">
@@ -1021,8 +1030,8 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="about-text reveal">
       <span class="eyebrow" style="display:block;margin-bottom:12px">About</span>
       <h2>Marketing instinct meets data discipline.</h2>
-      <p>I sit where most analysts don't: between the campaign and the spreadsheet. I've run the Google Ads, lived the client meetings, and built the dashboards that explain what actually worked — for businesses across the US and UK.</p>
-      <p>That dual view is the point. I don't just visualize numbers; I know which numbers move revenue, and I automate the boring parts so the story stays current without anyone touching a sheet.</p>
+      <p>I sit in the awkward gap most analysts avoid — between the campaign that spends the money and the spreadsheet that explains where it went. I've run the Google Ads, survived the client meetings, and built the dashboards that show what actually worked — for businesses across the US and UK.</p>
+      <p>That dual view is the whole point. I don't just make numbers look pretty; I know which ones move revenue — and I automate the boring parts so the story stays current without anyone heroically updating a sheet at 11pm.</p>
       <div class="facts">
         <div class="fact"><div class="k">Based in</div><div class="v">Guwahati, India 🇮🇳</div></div>
         <div class="fact"><div class="k">Now</div><div class="v">Sr. Marketing Exec · QX Global</div></div>
@@ -1042,7 +1051,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 
 <!-- CERTS -->
 <section class="wrap" id="certs" style="padding-top:0">
-  <div class="sec-head reveal"><span class="eyebrow">Certified</span><h2>Credentials.</h2></div>
+  <div class="sec-head reveal"><span class="eyebrow">Certified</span><h2>Credentials.</h2><p>The formal stuff — proof I didn't just learn it all from YouTube.</p></div>
   <div class="cert-grid">
     <div class="cert reveal"><div class="ic">📈</div><div class="n">Google Data Analytics Professional</div><div class="by">Google</div></div>
     <div class="cert reveal"><div class="ic">📊</div><div class="n">Power BI Certification</div><div class="by">Microsoft</div></div>
@@ -1056,8 +1065,8 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   <div class="contact-card reveal">
     <div class="contact-inner">
       <span class="eyebrow" style="display:block;margin-bottom:16px">Let's build</span>
-      <h2>Got data that's hard to make sense of?</h2>
-      <p>Tell me about your reporting headache. I'll show you what a live, automated dashboard could look like — no obligation.</p>
+      <h2>Still building that report by hand?</h2>
+      <p>Tell me about your reporting nightmare. I'll show you what a live, self-updating dashboard could do for it — no obligation, no sales-y nonsense.</p>
       <div class="contact-actions">
         <a href="mailto:debashishbora30@gmail.com?subject=Dashboard%20project%20enquiry" class="btn btn-primary">📧 Book a call</a>
         <a href="https://wa.me/917002820482?text=Hi%20Debashish,%20I'd%20like%20to%20discuss%20a%20dashboard%20project" target="_blank" rel="noopener" class="btn btn-ghost">💬 WhatsApp</a>
