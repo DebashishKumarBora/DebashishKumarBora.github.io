@@ -782,7 +782,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .ba-before{clip-path:inset(0 calc(100% - var(--pos)) 0 0)}
 .ba-divider{position:absolute; top:0; bottom:0; left:var(--pos); width:2px; background:linear-gradient(var(--indigo),var(--cyan)); transform:translateX(-1px); pointer-events:none; z-index:3}
 .ba-handle{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:46px; height:46px; border-radius:50%; background:rgba(10,11,20,.72); backdrop-filter:blur(6px); border:2px solid #fff; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.05rem; box-shadow:0 6px 20px rgba(0,0,0,.5)}
-.ba-tag{position:absolute; top:12px; z-index:4; font-family:var(--mono); font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; padding:6px 11px; border-radius:30px; background:rgba(10,11,20,.7); backdrop-filter:blur(6px); border:1px solid var(--border2); color:var(--text); pointer-events:none; white-space:nowrap}
+.ba-tag{position:absolute; bottom:12px; z-index:4; font-family:var(--mono); font-size:.56rem; letter-spacing:.1em; text-transform:uppercase; padding:5px 10px; border-radius:30px; background:rgba(10,11,20,.6); backdrop-filter:blur(6px); border:1px solid var(--border2); color:var(--text); pointer-events:none; white-space:nowrap}
 .ba-tag-l{left:12px}
 .ba-tag-r{right:12px; color:var(--emerald); border-color:color-mix(in srgb,var(--emerald) 40%,transparent)}
 .ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:5}
@@ -800,7 +800,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 <!-- NAV -->
 <header id="hdr">
   <nav class="nav wrap">
-    <a href="#top" class="logo"><span class="mark">DKB</span> Deb</a>
+    <a href="#top" class="logo"><span class="mark">DKB</span> Debashish Bora</a>
     <div class="nav-links" id="navlinks">
       <a href="#work">Work</a>
       <a href="#clients">Clients</a>
@@ -1239,7 +1239,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
     <div class="av">🤖</div>
     <div>
       <div class="who">DataBot</div>
-      <div class="stat"><span class="d"></span>Deb's AI assistant</div>
+      <div class="stat"><span class="d"></span>Debashish's AI assistant</div>
     </div>
     <button class="x" id="chatClose" aria-label="Close">✕</button>
   </div>
@@ -1404,7 +1404,7 @@ const DEFAULTQ=QUICK;
 function setQuick(arr){quickEl.innerHTML=arr.map(q=>`<button>${q}</button>`).join('');
   quickEl.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{addUser(b.textContent);respond(b.textContent);}));}
 function openChat(){panel.classList.add('open');var bd=fab.querySelector('.badge');if(bd)bd.style.display='none';
-  if(!greeted){greeted=true;setQuick(QUICK);setTimeout(()=>botSay("Hey! &#128075; I'm Deb's assistant. Ask me about his <b>dashboards</b>, <b>results</b>, <b>tools &amp; AI skills</b>, his <b>AdCommand</b> command center, or how to <b>start a project</b>."),300);}}
+  if(!greeted){greeted=true;setQuick(QUICK);setTimeout(()=>botSay("Hey! &#128075; I'm Debashish's assistant. Ask me about his <b>dashboards</b>, <b>results</b>, <b>tools &amp; AI skills</b>, his <b>AdCommand</b> command center, or how to <b>start a project</b>."),300);}}
 fab.addEventListener('click',()=>panel.classList.contains('open')?panel.classList.remove('open'):openChat());
 closeBtn.addEventListener('click',()=>panel.classList.remove('open'));
 function addMsg(html,cls){const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;}
@@ -1413,64 +1413,64 @@ function botSay(html,next){const ty=document.createElement('div');ty.className='
   setTimeout(()=>{ty.remove();addMsg(html,'bot');if(next)setQuick(next);},560+Math.random()*460);}
 const INTENTS=[
  {kw:['priyanka','moura'],ph:['who is priyanka','what does priyanka','priyanka do','about priyanka','whos priyanka','who priyanka'],
-  a:["Ah, <b>Priyanka</b>! &#128075; She's a seriously talented <b>social media manager</b> and one of the nicest people you'll ever meet. Lives for <b>travelling</b> &#9992;&#65039;, runs entirely on <b>momos</b> &#129375;, and yes, before you ask, she's adorable. If you're reading this, Priyanka: hi, the chatbot works, you can stop testing it now &#128516;","<b>Priyanka</b> &#128075; manages social media like a pro, collects passport stamps for fun, and would trade almost anything for a plate of momos &#129375;. Genuinely lovely human. (Deb may or may not have added this entry purely so she'd find it.)"],
-  next:['What does Deb do?','Show me his best project','How do I hire him?']},
+  a:["Ah, <b>Priyanka</b>! &#128075; She's a seriously talented <b>social media manager</b> and one of the nicest people you'll ever meet. Lives for <b>travelling</b> &#9992;&#65039;, runs entirely on <b>momos</b> &#129375;, and yes, before you ask, she's adorable. If you're reading this, Priyanka: hi, the chatbot works, you can stop testing it now &#128516;","<b>Priyanka</b> &#128075; manages social media like a pro, collects passport stamps for fun, and would trade almost anything for a plate of momos &#129375;. Genuinely lovely human. (Debashish may or may not have added this entry purely so she'd find it.)"],
+  next:['What does Debashish do?','Show me his best project','How do I hire him?']},
  {kw:['howareyou','doing','going'],ph:['how are you','how r u','how are u','how are ya','how you doing','how are things','how is it going','hows it going','how do you do','how have you been','you good','you ok','are you ok','are you good','hows life','how about you','what about you'],
-  a:["Doing great, thanks for asking! &#128578; I run on zero servers and infinite patience. More to the point, how can I help, want to see Deb's <b>work</b>, <b>results</b> or his <b>AI command center</b>?","All good on my end &#129302;, I don't sleep, so I'm always ready to talk dashboards. What about you, curious about his <b>work</b>, <b>pricing</b> or <b>availability</b>?"],
+  a:["Doing great, thanks for asking! &#128578; I run on zero servers and infinite patience. More to the point, how can I help, want to see Debashish's <b>work</b>, <b>results</b> or his <b>AI command center</b>?","All good on my end &#129302;, I don't sleep, so I'm always ready to talk dashboards. What about you, curious about his <b>work</b>, <b>pricing</b> or <b>availability</b>?"],
   next:['What does he do?','See his results','Show me his best project']},
  {kw:['whatsup','new'],ph:['whats up','what is up','what is new','whats new','what are you up to','what are you doing'],
   a:["Not much, just living in this portfolio waiting to talk dashboards &#128202;. You? If you like, I can show you his <b>best project</b> or his <b>results</b>."],
   next:['Show me his best project','See his results','How do I hire him?']},
  {kw:['name','called'],ph:['your name','whats your name','what is your name','what should i call you','do you have a name'],
-  a:["I'm <b>DataBot</b> &#129302;, Deb's little in-browser assistant. He builds much smarter ones wired to live data. Want to see one?"],
+  a:["I'm <b>DataBot</b> &#129302;, Debashish's little in-browser assistant. He builds much smarter ones wired to live data. Want to see one?"],
   next:['What can he do with AI?','Show me his best project','How do I hire him?']},
  {kw:['made','built','created','creator','developed','programmed','coded'],ph:['who made you','who built you','who created you','who coded you','who developed you','who programmed you','your creator','who designed you','who made this'],
-  a:["Deb built me &#129302;, a rule-based assistant, no paid AI and no servers, running entirely in your browser. Building assistants like me (and far smarter live-data ones) is one of his actual services."],
+  a:["Debashish built me &#129302;, a rule-based assistant, no paid AI and no servers, running entirely in your browser. Building assistants like me (and far smarter live-data ones) is one of his actual services."],
   next:['What can he do with AI?','Show me his best project','How do I hire him?']},
  {kw:['smart','intelligent','clever','genius','dumb','stupid','useless'],ph:['are you smart','are you intelligent','are you clever','how smart','are you dumb','are you stupid','you are dumb','you are useless','are you really ai'],
-  a:["Smart enough to talk shop about dashboards &#128521;. Honestly I'm rule-based, not a large language model, but Deb builds the genuinely clever, live-data kind. That's the good stuff, want a peek?"],
+  a:["Smart enough to talk shop about dashboards &#128521;. Honestly I'm rule-based, not a large language model, but Debashish builds the genuinely clever, live-data kind. That's the good stuff, want a peek?"],
   next:['What can he do with AI?','Show me his best project','How do I hire him?']},
  {kw:['joke','funny','laugh','haha'],ph:['tell me a joke','tell a joke','make me laugh','say something funny','know any jokes','be funny'],
-  a:["Why did the analyst dump the spreadsheet? Too many unresolved <b>#REF!</b> issues &#128514;. Okay, back to dashboards, want to see Deb's best one?","A SQL query walks into a bar, spots two tables and asks: &lsquo;mind if I JOIN you?&rsquo; &#128517; Anyway, ask me about his work!"],
+  a:["Why did the analyst dump the spreadsheet? Too many unresolved <b>#REF!</b> issues &#128514;. Okay, back to dashboards, want to see Debashish's best one?","A SQL query walks into a bar, spots two tables and asks: &lsquo;mind if I JOIN you?&rsquo; &#128517; Anyway, ask me about his work!"],
   next:['Show me his best project','What does he do?','See his results']},
  {kw:['bored','boring','entertain'],ph:['i am bored','im bored','entertain me','this is boring'],
   a:["Then you're in the right place, want to see a live AI command center running 16 ad accounts at once? That tends to wake people up &#128064;."],
   next:['Show me his best project','What can he do with AI?','See his results']},
  {kw:['love','marry'],ph:['i love you','love you','marry me','you are cute','you are the best','i like you','will you marry'],
-  a:["Aw, flattered &#128525;. I'm just a humble chatbot, but if you love a good dashboard, you and Deb will get along great. Want to see his work?"],
+  a:["Aw, flattered &#128525;. I'm just a humble chatbot, but if you love a good dashboard, you and Debashish will get along great. Want to see his work?"],
   next:['Show me his best project','See his results','How do I hire him?']},
  {kw:['weather','rain','temperature','sunny'],ph:['the weather','whats the weather','how is the weather','is it raining'],
-  a:["I only forecast one thing reliably: cleaner dashboards &#9748;&#65039;. Fun fact, Deb built a live Power BI dashboard off a real weather API, it's in the Work section. Want to see it?"],
+  a:["I only forecast one thing reliably: cleaner dashboards &#9748;&#65039;. Fun fact, Debashish built a live Power BI dashboard off a real weather API, it's in the Work section. Want to see it?"],
   next:['Show me his work','What tools does he use?','How do I hire him?']},
  {kw:['time','date','clock'],ph:['what time','whats the time','what is the time','what day','todays date','what is the date'],
-  a:["No clock on me &#9201;&#65039;, but Deb keeps dashboards refreshing right on schedule. Curious how he automates that?"],
+  a:["No clock on me &#9201;&#65039;, but Debashish keeps dashboards refreshing right on schedule. Curious how he automates that?"],
   next:['Tell me about automation','What tools does he use?','How do I hire him?']},
  {kw:['yes','sure','okay','definitely','absolutely'],ph:['yes please','go on','sounds good','sure thing','why not','tell me more','go ahead'],
   a:["Nice &#128077;. Quick picks: his <b>results</b>, his <b>AdCommand</b> project, or <b>how to hire</b> him, which one?"],
   next:['See his results','Show me his best project','How do I hire him?']},
  {kw:['no','nope','nothing'],ph:['no thanks','not really','im good','nothing else','not now'],
-  a:["No worries &#128578;. If something comes to mind, just ask, or hit <b>Book a call</b> to reach Deb directly."],
+  a:["No worries &#128578;. If something comes to mind, just ask, or hit <b>Book a call</b> to reach Debashish directly."],
   next:['What does he do?','See his results','How do I hire him?']},
  {kw:['maybe','idk','dunno','unsure'],ph:['i dont know','not sure','dont know','no idea','i am not sure'],
   a:["All good, take your time &#128578;. Popular starting points: <b>what he does</b>, <b>his results</b>, or <b>his best project</b>."],
   next:['What does he do?','See his results','Show me his best project']},
  {kw:['site','website','portfolio'],ph:['what is this','what is this site','what is this website','whats this','what is this page','where am i'],
-  a:["This is <b>Deb's</b> portfolio &#128202; (that's Debashish Kumar Bora), a data &amp; automation analyst who builds live, AI-powered dashboards. I'm the assistant out front. Ask me anything about his work!"],
+  a:["This is <b>Debashish Kumar Bora's</b> portfolio &#128202;, a data &amp; automation analyst who builds live, AI-powered dashboards. I'm the assistant out front. Ask me anything about his work!"],
   next:['What does he do?','See his results','Show me his best project']},
  {kw:['language','languages','speak'],ph:['do you speak','what languages','speak english','which language'],
-  a:["English works best for me &#128578;. Deb works with US, UK and global clients, so it's English all the way. What would you like to know?"],
+  a:["English works best for me &#128578;. Debashish works with US, UK and global clients, so it's English all the way. What would you like to know?"],
   next:['What does he do?','See his results','How do I hire him?']},
  {kw:['momo','momos'],ph:['do you eat','favourite food','favorite food','like momos'],
   a:["Now you're speaking my language &#129375;, Priyanka would approve. I'm better at dashboards though, want to see one?"],
   next:['Who is Priyanka?','Show me his best project','See his results']},
  {kw:['instagram','insta','twitter','facebook','social'],ph:['social media','your instagram','do you have instagram','find you online'],
-  a:["Best ways to reach Deb are <b>LinkedIn</b>, <b>WhatsApp</b> and <b>email</b>, all in the Contact section &#128241;. Want the details?"],
+  a:["Best ways to reach Debashish are <b>LinkedIn</b>, <b>WhatsApp</b> and <b>email</b>, all in the Contact section &#128241;. Want the details?"],
   next:['How do I contact him?','Is he available?','What does he do?']},
  {kw:['who','about','bio','introduce','background'],ph:['what does he do','what does debashish do','who is he','tell me about','about him','his story','what is he'],
-  a:["Deb is a <b>Data &amp; Automation Analyst</b> (4+ yrs, US &amp; UK clients). He turns scattered marketing data into <b>one live, AI-powered dashboard</b>, in Looker Studio, Power BI, Google Apps Script &amp; Azure, with built-in AI chat &amp; smart recommendations. In short: he kills manual reporting and tells teams what to do next. &#128640;"],
+  a:["Debashish is a <b>Data &amp; Automation Analyst</b> (4+ yrs, US &amp; UK clients). He turns scattered marketing data into <b>one live, AI-powered dashboard</b>, in Looker Studio, Power BI, Google Apps Script &amp; Azure, with built-in AI chat &amp; smart recommendations. In short: he kills manual reporting and tells teams what to do next. &#128640;"],
   next:['See his results','What tools does he use?','Show me his best project','How do I hire him?']},
  {kw:['bot','robot','human','chatgpt','gpt'],ph:['are you a bot','are you real','are you ai','who are you','what are you','are you a robot','are you human','are you chatgpt','you a bot'],
-  a:["Guilty, I'm a bot &#129302;, running right here in your browser (no servers). The fun part: building AI assistants like me, and far smarter ones wired to <b>live data</b>, is literally one of Deb's services. Want to see how?","I'm Deb's site assistant &#129302;. Fittingly, he <b>builds</b> AI chatbots and AI-recommendation engines into the dashboards he ships, I'm just the little demo out front. Ask me about his work!"],
+  a:["Guilty, I'm a bot &#129302;, running right here in your browser (no servers). The fun part: building AI assistants like me, and far smarter ones wired to <b>live data</b>, is literally one of Debashish's services. Want to see how?","I'm Debashish's site assistant &#129302;. Fittingly, he <b>builds</b> AI chatbots and AI-recommendation engines into the dashboards he ships, I'm just the little demo out front. Ask me about his work!"],
   next:['What can he do with AI?','Show me his best project','How do I hire him?']},
  {kw:['ai','chatbot','chatbots','recommendation','recommendations','ml'],ph:['ai dashboard','ai chatbot','ai chat','smart recommendation','machine learning','artificial intelligence','ai analyst','ai powered','ai recommendation','built in ai','what can he do with ai','build with ai'],
   a:["This is his edge &#129302;: he bakes <b>AI right into the dashboards</b>. Your team can ask questions in plain English and get answers, plus <b>smart recommendations</b> like &lsquo;shift 12% budget to your top performer &rarr; +$4.2k projected&rsquo;. Not just charts of what happened, AI that says what to do next."],
@@ -1512,7 +1512,7 @@ const INTENTS=[
   a:["Pricing depends on scope, a focused dashboard vs. a full automated system are different beasts &#128176;. Quickest path: tell him what you need, he'll scope it and give you a number. Most work is project-based. Reach out via <b>Book a call</b>."],
   next:['How do I contact him?','How long does it take?','Is he available?']},
  {kw:['available','availability','capacity','busy','hiring','freelance','freelancing','slots','slot'],ph:['is he available','taking clients','taking on','available for','free to take','open for work'],
-  a:["Yes, Deb is <b>open to new opportunities</b> &#9989;, both select freelance dashboard/automation projects and full-time roles. Grab a slot via <b>Book a call</b>, or reach out on WhatsApp or LinkedIn."],
+  a:["Yes, Debashish is <b>open to new opportunities</b> &#9989;, both select freelance dashboard/automation projects and full-time roles. Grab a slot via <b>Book a call</b>, or reach out on WhatsApp or LinkedIn."],
   next:['How do I hire him?','How much does it cost?','What does he do?']},
  {kw:['long','timeline','turnaround','fast','quick','quickly','duration','deadline'],ph:['how long','how fast','turnaround time','time frame','timeframe','how quickly','delivery time','when can'],
   a:["Depends on complexity &#9201;&#65039;, a focused dashboard can take days; a full automated, multi-source system takes longer. He'll give you a clear timeline after a quick scoping chat."],
@@ -1542,20 +1542,20 @@ const INTENTS=[
   a:["You're on his portfolio right now! &#128516; For a formal CV, ask him via <b>Book a call</b> or email and he'll send it over. Meanwhile, the <b>Work</b> section shows real builds."],
   next:['Show me his work','How do I contact him?','What does he do?']},
  {kw:['help','options','commands','menu'],ph:['what can you do','what can you tell','what do you know','help me','what can i ask'],
-  a:["I can tell you about Deb's <b>work</b>, <b>results</b>, <b>tools &amp; AI skills</b>, his <b>AdCommand</b> project, <b>pricing</b>, <b>availability</b> and <b>how to hire</b> him. What's on your mind? &#128578;"],
+  a:["I can tell you about Debashish's <b>work</b>, <b>results</b>, <b>tools &amp; AI skills</b>, his <b>AdCommand</b> project, <b>pricing</b>, <b>availability</b> and <b>how to hire</b> him. What's on your mind? &#128578;"],
   next:['What does he do?','See his results','Show me his best project','How do I hire him?']},
  {kw:['hi','hey','hello','yo','hiya','heya','howdy','greetings','hii','hiii','heyy','heyyy','helloo','hellow','hola','namaste','holla'],ph:['good morning','good evening','good afternoon'],
-  a:["Hey! &#128075; Curious about Deb's <b>work</b>, his <b>AI dashboards</b>, or how to hire him? Fire away.","Hi there! &#128075; Ask me about his dashboards, results, tools or his AI command center."],
+  a:["Hey! &#128075; Curious about Debashish's <b>work</b>, his <b>AI dashboards</b>, or how to hire him? Fire away.","Hi there! &#128075; Ask me about his dashboards, results, tools or his AI command center."],
   next:['What does he do?','See his results','Show me his best project','How do I hire him?']},
  {kw:['thank','thanks','thx','ty','great','nice','cool','awesome','perfect','amazing','helpful','wow','impressive'],ph:['thank you','thanks a lot','well done','this is cool','this is great','love this','nice site','great site'],
-  a:["Anytime! &#128588; Fun fact, this whole site (me included) reflects what Deb builds. When you're ready, <b>Book a call</b> up top reaches the real him.","Happy to help! &#128516; Hit <b>Book a call</b> whenever you want to talk to the real Deb."],
+  a:["Anytime! &#128588; Fun fact, this whole site (me included) reflects what Debashish builds. When you're ready, <b>Book a call</b> up top reaches the real him.","Happy to help! &#128516; Hit <b>Book a call</b> whenever you want to talk to the real Debashish."],
   next:['How do I hire him?','What can he do with AI?','Is he available?']},
  {kw:['bye','goodbye','later','cya'],ph:['see you','got to go','gotta go','thats all','that is all'],
-  a:["Catch you later! &#128075; If you want to start something, <b>Book a call</b> reaches Deb directly. Have a good one!"]}
+  a:["Catch you later! &#128075; If you want to start something, <b>Book a call</b> reaches Debashish directly. Have a good one!"]}
 ];
 var lastAns=null;
 var SYN={u:'you',ur:'your',r:'are',youre:'you are',pls:'please',plz:'please',thx:'thanks',thnx:'thanks',ty:'thanks',tysm:'thanks',wat:'what',wht:'what',wassup:'whatsup',wazzup:'whatsup',sup:'whatsup',hru:'how are you',hbu:'how about you',wbu:'how about you',abt:'about',coz:'because',cuz:'because',bcoz:'because',yrs:'years',yr:'year',pbi:'powerbi',ya:'yes',yeah:'yes',yep:'yes',yup:'yes',nah:'no',nope:'no',gud:'good',ok:'okay',k:'okay',kk:'okay',wanna:'want to',gonna:'going to'};
-const FALLBACK=["I'm not totally sure I caught that &#128578;, but I'm sharp on a few things. Want <b>what he does</b>, <b>his results</b>, his <b>AI command center</b>, or <b>how to hire him</b>?","That one's a little outside my script &#129302;, I'm a simple in-browser bot. I can cover his <b>dashboards</b>, <b>tools &amp; AI</b>, <b>pricing</b> or <b>availability</b> though, pick one?","Good question! I might not have that exact answer, but try me on his <b>work</b>, <b>results</b> or his <b>AdCommand</b> project, or hit <b>Book a call</b> to ask the real Deb &#128231;."];
+const FALLBACK=["I'm not totally sure I caught that &#128578;, but I'm sharp on a few things. Want <b>what he does</b>, <b>his results</b>, his <b>AI command center</b>, or <b>how to hire him</b>?","That one's a little outside my script &#129302;, I'm a simple in-browser bot. I can cover his <b>dashboards</b>, <b>tools &amp; AI</b>, <b>pricing</b> or <b>availability</b> though, pick one?","Good question! I might not have that exact answer, but try me on his <b>work</b>, <b>results</b> or his <b>AdCommand</b> project, or hit <b>Book a call</b> to ask the real Debashish &#128231;."];
 function pick(a,avoid){if(!Array.isArray(a))return a;if(a.length<2)return a[0];var c=a.filter(function(x){return x!==avoid;});var pool=c.length?c:a;return pool[Math.floor(Math.random()*pool.length)];}
 function norm(s){return ' '+s.toLowerCase().replace(/[^a-z0-9& ]+/g,' ').replace(/ +/g,' ').trim()+' ';}
 function expand(q){var ts=norm(q).trim().split(' ').map(function(w){return SYN.hasOwnProperty(w)?SYN[w]:w;});return ' '+ts.join(' ').replace(/ +/g,' ').trim()+' ';}
@@ -1794,7 +1794,7 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
    they open your Calendly popup.
    ============================================================ */
 (function(){
-  var CALENDLY_URL = "https://calendly.com/debashishbora29/30min";   // <-- your link (30-min intro)
+  var CALENDLY_URL = "https://calendly.com/debashishbora/30min";   // <-- your link (30-min intro)
   if(!CALENDLY_URL || CALENDLY_URL.indexOf("REPLACE") !== -1) return; // not set yet → leave fallbacks
 
   var btns = document.querySelectorAll("[data-book]");
