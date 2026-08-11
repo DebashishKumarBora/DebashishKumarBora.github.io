@@ -114,3 +114,8 @@
   .jv-core,.jv-ring,.jv-bars i,.jv-hear .dot{animation:none!important}
   .jv-toast{transition:opacity .2s}
 }
+
+/* language button carries a text label, so it needs room */
+.jv-ctl button.lang{width:auto;min-width:34px;padding:0 9px;font-family:var(--mono);
+  font-size:.58rem;letter-spacing:.02em;font-weight:600}
+@media(max-width:400px){ .jv-ctl{gap:4px} .jv-ctl button{width:28px;height:28px;font-size:.66rem} .jv-ctl button.lang{padding:0 7px;min-width:30px} }
