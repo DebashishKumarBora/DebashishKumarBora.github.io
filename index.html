@@ -930,6 +930,7 @@ body.dm-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   .sprog i{transition:none}
 }
 </style>
+<link rel="stylesheet" href="assets/jarvis.css" />
 </head>
 <body>
 
@@ -2144,6 +2145,7 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
       if(!dmLoad.classList.contains('gone')) dmLoadTxt.textContent='Taking a moment. You can open it in a new tab.';
     },7000);
   }
+  window.__openDemo=function(u,n){openDemo(u,n);};
   function closeDemo(){
     if(!dm)return;
     dm.classList.remove('open'); dm.setAttribute('aria-hidden','true');
@@ -2192,5 +2194,6 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
   }
 })();
 </script>
+<script src="assets/jarvis.js" defer></script>
 </body>
 </html>
