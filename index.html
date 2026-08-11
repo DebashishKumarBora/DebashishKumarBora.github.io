@@ -862,8 +862,10 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 
 /* ---- 6. live demo modal (real iframe of the deployed app) ---- */
 .dm{position:fixed;inset:0;z-index:500;display:none;background:color-mix(in srgb,#05060c 88%,transparent);
-  backdrop-filter:blur(14px);padding:0}
+  backdrop-filter:blur(14px);padding:0;height:100vh;height:100dvh}
 .dm.open{display:flex;flex-direction:column;animation:dmIn .32s var(--ease)}
+/* the inner shell must be a full-height flex column at EVERY width */
+.dm-inner{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%}
 @keyframes dmIn{from{opacity:0}to{opacity:1}}
 .dm-top{display:flex;align-items:center;gap:10px;padding:12px 14px;
   padding-top:calc(12px + env(safe-area-inset-top));border-bottom:1px solid var(--border);
@@ -877,8 +879,10 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .dm-x{width:40px;height:40px;min-width:40px;border-radius:50%;border:1px solid var(--border);
   background:var(--surface);color:var(--text);font-size:1.1rem;display:grid;place-items:center;flex-shrink:0}
 .dm-x:active{transform:scale(.94)}
-.dm-body{flex:1;position:relative;overflow:hidden}
-.dm-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0d16}
+.dm-body{flex:1 1 auto;min-height:0;position:relative;overflow:hidden;background:#0b0d16}
+.dm-scroll{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch}
+.dm-body iframe{border:0;background:#0b0d16;display:block;width:100%;height:100%;
+  transform-origin:top left}
 .dm-load{position:absolute;inset:0;display:grid;place-items:center;gap:14px;align-content:center;z-index:2;
   background:var(--bg);transition:opacity .5s var(--ease)}
 .dm-load.gone{opacity:0;pointer-events:none}
@@ -896,7 +900,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 @media(min-width:860px){
   .dm{padding:34px}
   .dm.open{border-radius:0}
-  .dm-inner{max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;flex:1;
+  .dm-inner{max-width:1240px;margin:0 auto;
     border:1px solid var(--border2);border-radius:16px;overflow:hidden;background:var(--bg);
     box-shadow:0 40px 120px -30px #000}
 }
@@ -912,7 +916,7 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .mbar a.pri{background:var(--grad);color:#fff;border-color:transparent}
 .mbar a:active{transform:scale(.97)}
 @media(min-width:860px){.mbar{display:none}}
-body.dm-lock{overflow:hidden}
+body.dm-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 
 /* keep back-to-top clear of the bar */
 @media(max-width:859px){.to-top{bottom:calc(78px + env(safe-area-inset-bottom))}}
@@ -1461,16 +1465,16 @@ const projects=[
    p:'A marketing lead had spend, leads, occupancy and reviews scattered across six different tools.',
    b:'One control room unifying Google Ads, GA4, Business Profile, Search Console and leasing data, with an AI operator that answers questions in plain English.',
    r:'Every channel, community and alert in a single portfolio view, with wasted spend and occupancy strategy surfaced automatically.'},
-  {t:'Leasing Dashboard',shots:['shots/lease-1.webp','shots/lease-2.webp','shots/lease-3.webp','shots/lease-4.webp','shots/lease-5.webp','shots/lease-6.webp'],tool:'Apps Script + Snowflake',tag:['app'],file:'shots/lease-1.webp',
-   live:'https://debashishkumarbora.github.io/snowflake-leasing-dashboard',repo:'https://github.com/DebashishKumarBora/snowflake-leasing-dashboard',
-   p:'Leasing performance lived in raw Snowflake tables that no one on the team could read.',
-   b:'A live funnel from prospect to signed lease, plus occupancy, renewals, speed to lead and an availability board matched against demand.',
-   r:'The whole leasing operation in one view, with an AI analyst grading health and returning a prioritized plan.'},
   {t:'Analytics Dashboard (GA4)',shots:['shots/ga4-1.webp','shots/ga4-2.webp','shots/ga4-3.webp','shots/ga4-4.webp','shots/ga4-5.webp','shots/ga4-6.webp'],tool:'Apps Script + GA4',tag:['app'],file:'shots/ga4-1.webp',
    live:'https://debashishkumarbora.github.io/ga4-analytics-dashboard',repo:'https://github.com/DebashishKumarBora/ga4-analytics-dashboard',
    p:'The team could not tell which channels and which communities actually drove leads.',
    b:'A GA4-powered dashboard covering sessions, acquisition, engagement, conversions and audience across 16 communities.',
    r:'Cross-channel performance at a glance, with a conversion tracking break at one community caught by the AI analyst.'},
+  {t:'Leasing Dashboard',shots:['shots/lease-1.webp','shots/lease-2.webp','shots/lease-3.webp','shots/lease-4.webp','shots/lease-5.webp','shots/lease-6.webp'],tool:'Apps Script + Snowflake',tag:['app'],file:'shots/lease-1.webp',
+   live:'https://debashishkumarbora.github.io/snowflake-leasing-dashboard',repo:'https://github.com/DebashishKumarBora/snowflake-leasing-dashboard',
+   p:'Leasing performance lived in raw Snowflake tables that no one on the team could read.',
+   b:'A live funnel from prospect to signed lease, plus occupancy, renewals, speed to lead and an availability board matched against demand.',
+   r:'The whole leasing operation in one view, with an AI analyst grading health and returning a prioritized plan.'},
   {t:'Reviews Dashboard (Business Profile)',shots:['shots/gbp-1.webp','shots/gbp-2.webp','shots/gbp-3.webp','shots/gbp-4.webp','shots/gbp-5.webp','shots/gbp-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/gbp-1.webp',
    live:'https://debashishkumarbora.github.io/gbp-reviews-dashboard',repo:'https://github.com/DebashishKumarBora/gbp-reviews-dashboard',
    p:'Dozens of Google Business Profiles with no single view of rating, reviews or profile health.',
@@ -1978,8 +1982,10 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
     </div>
     <div class="dm-body">
       <div class="dm-load" id="dmLoad"><span class="dm-spin"></span><p id="dmLoadTxt">Loading live demo</p></div>
-      <iframe id="dmFrame" title="Live demo" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="dm-scroll" id="dmScroll">
+        <iframe id="dmFrame" title="Live demo" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
     </div>
     <div class="dm-foot">
       <a id="dmOpen" href="#" target="_blank" rel="noopener" class="pri">Open live demo &#8599;</a>
@@ -2100,16 +2106,39 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
       dmUrl=document.getElementById('dmUrl'), dmOpen=document.getElementById('dmOpen'),
       dmLoad=document.getElementById('dmLoad'), dmLoadTxt=document.getElementById('dmLoadTxt'),
       dmX=document.getElementById('dmX');
-  var failTimer=null;
+  var failTimer=null, lockY=0;
+  var dmScroll=document.getElementById('dmScroll');
+
+  /* phones are far narrower than a dashboard. render the frame at desktop
+     width and scale it down so the whole app is visible and usable. */
+  var DESK=1060;
+  function fitFrame(){
+    if(!dm||!dm.classList.contains('open')||!dmFrame)return;
+    var body=dm.querySelector('.dm-body'); if(!body)return;
+    var w=body.clientWidth, hgt=body.clientHeight;
+    if(w>=DESK){ dmFrame.style.width='100%'; dmFrame.style.height='100%'; dmFrame.style.transform='none'; return; }
+    var s=w/DESK;
+    dmFrame.style.width=DESK+'px';
+    dmFrame.style.height=Math.round(hgt/s)+'px';
+    dmFrame.style.transform='scale('+s+')';
+  }
+  addEventListener('resize',fitFrame);
+  addEventListener('orientationchange',function(){setTimeout(fitFrame,250);});
+
   function openDemo(url,name){
     if(!dm)return;
     dmUrl.textContent=url.replace(/^https?:\/\//,'');
     dmOpen.href=url;
     dmLoad.classList.remove('gone');
     dmLoadTxt.textContent='Loading live demo';
+    lockY=window.scrollY||window.pageYOffset||0;
     dm.classList.add('open'); dm.setAttribute('aria-hidden','false');
+    document.body.style.top=(-lockY)+'px';
     document.body.classList.add('dm-lock');
+    if(dmScroll) dmScroll.scrollTop=0;
     dmFrame.src=url;
+    requestAnimationFrame(fitFrame);
+    setTimeout(fitFrame,300);
     clearTimeout(failTimer);
     failTimer=setTimeout(function(){
       if(!dmLoad.classList.contains('gone')) dmLoadTxt.textContent='Taking a moment. You can open it in a new tab.';
@@ -2119,10 +2148,12 @@ input.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
     if(!dm)return;
     dm.classList.remove('open'); dm.setAttribute('aria-hidden','true');
     document.body.classList.remove('dm-lock');
+    document.body.style.top='';
+    window.scrollTo(0,lockY);
     dmFrame.src='about:blank'; clearTimeout(failTimer);
   }
   if(dmFrame) dmFrame.addEventListener('load',function(){
-    if(dmFrame.src&&dmFrame.src!=='about:blank'){dmLoad.classList.add('gone');clearTimeout(failTimer);}
+    if(dmFrame.src&&dmFrame.src!=='about:blank'){dmLoad.classList.add('gone');clearTimeout(failTimer);fitFrame();}
   });
   dmX&&dmX.addEventListener('click',closeDemo);
   dm&&dm.addEventListener('click',function(e){ if(e.target===dm)closeDemo(); });
