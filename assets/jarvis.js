@@ -70,7 +70,9 @@
         yOpen:'Open it', yTour:'Give me a tour', yBook:'Book a call', no:'Not now',
         langSet:'Switched to English.',
         noVoice:'This device has no English voice, so I will answer in text.',
-        elsewhere:'I have that answer in English. Switch to EN, or ask me to open a dashboard.'
+        elsewhere:'I have that answer in English. Switch to EN, or ask me to open a dashboard.',
+        followHint:'still listening, just ask',
+        noMore:'That is the short version. For the detail behind it, a quick call with Deb is the fastest way. Want me to open his calendar?'
       },
       kb:[]
     },
@@ -117,7 +119,9 @@
         yOpen:'\u0916\u094B\u0932\u093F\u090F', yTour:'\u091F\u0942\u0930 \u0926\u093F\u0916\u093E\u0913', yBook:'\u0915\u0949\u0932 \u092C\u0941\u0915 \u0915\u0930\u0947\u0902', no:'\u0905\u092D\u0940 \u0928\u0939\u0940\u0902',
         langSet:'\u0905\u092C \u092E\u0948\u0902 \u0939\u093F\u0928\u094D\u0926\u0940 \u092E\u0947\u0902 \u092C\u093E\u0924 \u0915\u0930\u0942\u0901\u0917\u093E\u0964',
         noVoice:'\u0907\u0938 \u0921\u093F\u0935\u093E\u0907\u0938 \u092E\u0947\u0902 \u0939\u093F\u0928\u094D\u0926\u0940 \u0906\u0935\u093E\u091C\u093C \u0928\u0939\u0940\u0902 \u0939\u0948, \u0907\u0938\u0932\u093F\u090F \u092E\u0948\u0902 \u0932\u093F\u0916\u0915\u0930 \u091C\u0935\u093E\u092C \u0926\u0942\u0901\u0917\u093E\u0964',
-        elsewhere:'\u092F\u0939 \u091C\u0935\u093E\u092C \u092E\u0947\u0930\u0947 \u092A\u093E\u0938 \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940 \u092E\u0947\u0902 \u0939\u0948\u0964 EN \u092A\u0930 \u0938\u094D\u0935\u093F\u091A \u0915\u0930\u0947\u0902, \u092F\u093E \u092E\u0941\u091D\u0938\u0947 \u0921\u0948\u0936\u092C\u094B\u0930\u094D\u0921 \u0916\u094B\u0932\u0928\u0947 \u0915\u094B \u0915\u0939\u0947\u0902\u0964'
+        elsewhere:'\u092F\u0939 \u091C\u0935\u093E\u092C \u092E\u0947\u0930\u0947 \u092A\u093E\u0938 \u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940 \u092E\u0947\u0902 \u0939\u0948\u0964 EN \u092A\u0930 \u0938\u094D\u0935\u093F\u091A \u0915\u0930\u0947\u0902, \u092F\u093E \u092E\u0941\u091D\u0938\u0947 \u0921\u0948\u0936\u092C\u094B\u0930\u094D\u0921 \u0916\u094B\u0932\u0928\u0947 \u0915\u094B \u0915\u0939\u0947\u0902\u0964',
+        followHint:'\u0938\u0941\u0928 \u0930\u0939\u093E \u0939\u0942\u0901, \u092C\u094B\u0932\u093F\u090F',
+        noMore:'\u0907\u0924\u0928\u093E \u0939\u0940 \u092E\u0947\u0930\u0947 \u092A\u093E\u0938 \u0939\u0948\u0964 \u0907\u0938\u0938\u0947 \u0917\u0939\u0930\u093E\u0908 \u092E\u0947\u0902 \u091C\u093E\u0928\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F \u0926\u0947\u092C \u0938\u0947 \u0938\u0940\u0927\u0940 \u092C\u093E\u0924 \u0938\u092C\u0938\u0947 \u0905\u091A\u094D\u091B\u0940 \u0939\u0948\u0964 \u0915\u0948\u0932\u0947\u0902\u0921\u0930 \u0916\u094B\u0932\u0942\u0901?'
       },
       kb:[
         {m:['\u0915\u094D\u092F\u093E \u0915\u0930\u0924\u0947','\u0915\u094C\u0928','\u092A\u0930\u093F\u091A\u092F','\u0905\u092C\u093E\u0909\u091F'],
@@ -173,7 +177,9 @@
         yOpen:'\u0996\u09CB\u09B2\u0995', yTour:'\u099F\u09CD\u09AF\u09C1\u09F0 \u09A6\u09BF\u09AF\u09BC\u0995', yBook:'\u0995\u09B2 \u09AC\u09C1\u0995 \u0995\u09F0\u0995', no:'\u098F\u09A4\u09BF\u09AF\u09BC\u09BE \u09A8\u09B9\u09AF\u09BC',
         langSet:'\u098F\u09A4\u09BF\u09AF\u09BC\u09BE\u09F0 \u09AA\u09F0\u09BE \u09AE\u0987 \u0985\u09B8\u09AE\u09C0\u09AF\u09BC\u09BE\u09A4 \u0995\u09AE\u0964',
         noVoice:'\u098F\u0987 \u09A1\u09BF\u09AD\u09BE\u0987\u099A\u09A4 \u0985\u09B8\u09AE\u09C0\u09AF\u09BC\u09BE \u09AE\u09BE\u09A4 \u09A8\u09BE\u0987, \u09B8\u09C7\u09AF\u09BC\u09C7\u09B9\u09C7 \u09AE\u0987 \u0993\u099A\u09F0\u09F0 \u09AE\u09BE\u09A4 \u09AC\u09CD\u09AF\u09F1\u09B9\u09BE\u09F0 \u0995\u09F0\u09BF\u09AE\u0964',
-        elsewhere:'\u098F\u0987 \u0989\u09A4\u09CD\u09A4\u09F0\u099F\u09CB \u09AE\u09CB\u09F0 \u0993\u099A\u09F0\u09A4 \u0987\u0982\u09F0\u09BE\u099C\u09C0\u09A4 \u0986\u099B\u09C7\u0964 EN \u09B2\u09C8 \u09B8\u09B2\u09A8\u09BF \u0995\u09F0\u0995, \u09AC\u09BE \u09AE\u09CB\u0995 \u09A1\u09C7\u099B\u09AC\u09F0\u09CD\u09A1 \u0996\u09C1\u09B2\u09BF\u09AC\u09B2\u09C8 \u0995\u0993\u0995\u0964'
+        elsewhere:'\u098F\u0987 \u0989\u09A4\u09CD\u09A4\u09F0\u099F\u09CB \u09AE\u09CB\u09F0 \u0993\u099A\u09F0\u09A4 \u0987\u0982\u09F0\u09BE\u099C\u09C0\u09A4 \u0986\u099B\u09C7\u0964 EN \u09B2\u09C8 \u09B8\u09B2\u09A8\u09BF \u0995\u09F0\u0995, \u09AC\u09BE \u09AE\u09CB\u0995 \u09A1\u09C7\u099B\u09AC\u09F0\u09CD\u09A1 \u0996\u09C1\u09B2\u09BF\u09AC\u09B2\u09C8 \u0995\u0993\u0995\u0964',
+        followHint:'\u09B6\u09C1\u09A8\u09BF \u0986\u099B\u09CB\u0981, \u0995\u0993\u0995',
+        noMore:'\u09AE\u09CB\u09F0 \u0993\u099A\u09F0\u09A4 \u098F\u0987\u099F\u09CB\u0987 \u0986\u099B\u09C7\u0964 \u0987\u09AF\u09BC\u09BE\u09A4\u0995\u09C8 \u0997\u09AD\u09BF\u09F0\u09B2\u09C8 \u09AF\u09BE\u09AC\u09B2\u09C8 \u09A6\u09C7\u09AC\u09F0 \u09B8\u09C8\u09A4\u09C7 \u09AA\u09CB\u09A8\u09AA\u099F\u09C0\u09AF\u09BC\u09BE \u0995\u09A5\u09BE \u09AA\u09BE\u09A4\u09BF\u09B2\u09C7 \u09AD\u09BE\u09B2\u0964 \u0995\u09C7\u09B2\u09C7\u09A3\u09CD\u09A1\u09BE\u09F0 \u0996\u09C1\u09B2\u09BF\u09AE \u09A8\u09C7\u0995\u09BF?'
       },
       kb:[
         {m:['\u0995\u09BF \u0995\u09F0\u09C7','\u0995\u09CB\u09A8','\u09AA\u09F0\u09BF\u099A\u09AF\u09BC'],
@@ -415,12 +421,16 @@
        needs the most room or the fricatives blur together */
     u.rate=mem.lang==='en'?1.02:(mem.lang==='as'?0.86:0.93);
     u.pitch=mem.lang==='en'?0.92:1.0;
-    u.onstart=function(){ if(state!=='listening') setState('speaking'); };
-    u.onend=function(){ if(state==='speaking') setState('idle'); };
-    u.onerror=function(){ if(state==='speaking') setState('idle'); };
+    u.onstart=function(){ speaking=s; if(state!=='listening') setState('speaking'); };
+    u.onend=function(){
+      speaking='';
+      if(state==='speaking') setState('idle');
+      openFollowWindow();          /* stay listening so a follow up needs no wake word */
+    };
+    u.onerror=function(){ speaking=''; if(state==='speaking') setState('idle'); };
     try{TTS.speak(u);}catch(e){}
   }
-  function shutUp(){try{TTS&&TTS.cancel();}catch(e){} if(state==='speaking')setState('idle');}
+  function shutUp(){ speaking=''; try{TTS&&TTS.cancel();}catch(e){} if(state==='speaking')setState('idle'); }
   function unlock(){
     if(voiceUnlocked||!TTS) return;
     voiceUnlocked=true;
@@ -433,6 +443,89 @@
   /* =====================================================================
      VOICE IN
      ===================================================================== */
+  /* =====================================================================
+     CONVERSATION STATE
+     Real assistants do not make you say the wake word before every single
+     turn, and they let you cut in while they are talking. Two mechanics:
+
+       follow up window  after an answer the mic stays armed for a while,
+                         so "why?" or "how much?" just works.
+       barge in          the mic stays open while speaking, so you can
+                         interrupt mid sentence with a counter question.
+
+     Barge in only works with an echo guard. Without one the microphone
+     hears Jarvis through the speakers and interrupts itself forever, so
+     any transcript that overlaps what he is currently saying is ignored.
+     ===================================================================== */
+  var CONV={topic:null, lastQ:'', lastA:'', turns:0, until:0};
+  var FOLLOW_MS=14000;          /* how long the mic stays open after a reply */
+  var speaking='';              /* what is being said right now, for the echo guard */
+
+  var FOLLOWUP={
+    en:['why','why not','how','how so','how much','how many','more','tell me more','go on','and',
+        'what else','example','for example','really','such as','like what','which one','when','who',
+        'explain','elaborate','details','so','then','what about','and then','continue','anything else'],
+    hi:['क्यों','क्यूं','कैसे','कितना','और','ज़्यादा','अधिक','बताओ और','उदाहरण','सच','फिर','मतलब',
+        'kyon','kyu','kaise','kitna','aur','zyada','udaharan','phir','matlab','aur batao'],
+    as:['কিয়','কেনেকৈ','কিমান','আৰু','অধিক','উদাহৰণ','সঁচা','তেতিয়া','মানে','আৰু কওক',
+        'kiyo','kenekoi','kiman','aru','odhik','udahoron','mane','aru kowok']
+  };
+  var STOPWORDS=['stop','quiet','shut up','silence','pause','enough','wait',
+                 'रुको','चुप','बंद','ruko','chup','band','ৰখা','চুপ','বন্ধ','rokha','sup'];
+
+  function isFollowUp(raw){
+    var x=norm(raw); if(!x) return false;
+    if(x.split(' ').length>7) return false;         /* long enough to stand alone */
+    var list=(FOLLOWUP[mem.lang]||[]).concat(FOLLOWUP.en);
+    for(var i=0;i<list.length;i++){
+      var f=list[i];
+      if(x===f||x.indexOf(f+' ')===0||x.indexOf(' '+f)>=0||x===f+'?') return true;
+    }
+    return false;
+  }
+  function isStopPhrase(raw){
+    var x=norm(raw);
+    for(var i=0;i<STOPWORDS.length;i++) if(x===STOPWORDS[i]||x.indexOf(STOPWORDS[i])>=0) return true;
+    return false;
+  }
+  /* does this transcript look like Jarvis hearing himself? */
+  function isEcho(raw){
+    if(!speaking) return false;
+    var a=norm(raw).split(' ').filter(function(w){return w.length>2;});
+    if(!a.length) return false;
+    var b=' '+norm(speaking)+' ';
+    var hit=0;
+    for(var i=0;i<a.length;i++) if(b.indexOf(' '+a[i]+' ')>=0) hit++;
+    return (hit/a.length)>=0.5;                      /* half the words came from him */
+  }
+  function inFollowWindow(){ return Date.now()<CONV.until; }
+  function openFollowWindow(){
+    if(!mem.wake||!SR) return;                       /* only when always listening is on */
+    CONV.until=Date.now()+FOLLOW_MS;
+    armed=true; wakeMode=false;
+    setState('listening');
+    if(heardEl) heardEl.textContent=t('followHint');
+    startMeter();
+    if(!recogOn) startRecog();
+    clearTimeout(followTimer);
+    followTimer=setTimeout(function(){
+      if(!inFollowWindow()&&armed){
+        armed=false; wakeMode=true; stopMeter(); setState('idle');
+        if(mem.wake){ try{recog&&recog.stop();}catch(e){} recog=null; recogOn=false; setTimeout(startRecog,200); }
+      }
+    },FOLLOW_MS+250);
+  }
+  var followTimer=null;
+
+  /* expand a bare follow up using the topic of the previous answer */
+  function expandFollowUp(raw){
+    if(!CONV.topic||!B) return raw;
+    var pack=B.TOPIC[CONV.topic];
+    if(!pack) return raw;
+    var terms=(pack[mem.lang]||pack.en||[]);
+    return raw+' '+(terms[0]||'');
+  }
+
   /* =====================================================================
      WAKE ENGINE
      Speech recognition hears "hey jarvis" as travis, jervis, javis, and a
@@ -491,6 +584,30 @@
       }
       var shown=(fin||interim).trim();
       if(shown&&heardEl) heardEl.textContent=shown;
+
+      /* ---- barge in: he is talking, you cut in ---- */
+      if(state==='speaking'||speaking){
+        var cut=(fin||interim).trim();
+        if(cut){
+          if(isStopPhrase(cut)){ shutUp(); armed=false; openFollowWindow(); return; }
+          /* ignore his own voice coming back through the speakers */
+          if(!isEcho(cut) && cut.split(' ').length>=2){
+            if(fin.trim()){
+              shutUp();
+              var q=fin.trim(); armed=false; setState('thinking');
+              if(heardEl) heardEl.textContent=q;
+              handle(q); return;
+            }
+            shutUp();            /* stop talking immediately, wait for the full sentence */
+            armed=true; setState('listening');
+            return;
+          }
+        }
+        return;
+      }
+
+      /* ---- inside the follow up window no wake word is needed ---- */
+      if(!armed&&inFollowWindow()){ armed=true; }
 
       if(!armed){
         var probe=(fin||interim);
@@ -668,7 +785,11 @@
       if(state==='thinking') setState(mem.muted?'idle':'speaking');
     };
   }
-  function botTell(html){ if(typeof window.botSay==='function') window.botSay(html); else speak(html); }
+  function botTell(html){
+    if(typeof window.botSay==='function') window.botSay(html); else speak(html);
+    /* if voice is off there is no speech-end event, so open the window now */
+    if(mem.muted) openFollowWindow();
+  }
   function userEcho(txt){ if(typeof window.addUser==='function') window.addUser(txt); }
 
   var origRespond=window.respond;
@@ -786,11 +907,32 @@
   }
 
   function resolve(q){
-    var hit=brainMatch(q);                       // tiers 1 and 2
-    if(hit){ botTell(hit.answer); return; }
+    var query=q;
+    /* try the question on its own first. an explicit new topic always wins,
+       so "what about his rates" is about rates, not the previous subject. */
+    var hit=brainMatch(q);
+    if(!hit&&isFollowUp(q)&&CONV.topic){
+      /* nothing of its own to go on, so "why?" means "why, about that" */
+      query=expandFollowUp(q);
+      hit=brainMatch(query);
+    }
+    if(hit){
+      /* a follow up that produces the identical answer means we are out of
+         detail on that topic, so say that rather than repeating verbatim */
+      if(isFollowUp(q)&&hit.answer===CONV.lastA){
+        CONV.lastA=t('noMore');
+        botTell(CONV.lastA);
+        if(mem.muted) openFollowWindow();
+        return;
+      }
+      CONV.topic=hit.topic; CONV.lastQ=q; CONV.lastA=hit.answer; CONV.turns++;
+      botTell(hit.answer);
+      if(mem.muted) openFollowWindow();          /* no speech end event to wait for */
+      return;
+    }
     setState('thinking');
-    nanoAsk(q).then(function(ans){               // tier 3
-      if(ans){ botTell(esc(ans)); return; }
+    nanoAsk(query).then(function(ans){           // tier 3
+      if(ans){ CONV.lastA=ans; CONV.turns++; botTell(esc(ans)); if(mem.muted) openFollowWindow(); return; }
       if(mem.lang==='en' && typeof origRespond==='function'){
         origRespond.call(window,q);              // the original keyword bot
         return;
@@ -801,6 +943,7 @@
 
   function kbHit(q){ var h=brainMatch(q); return h?h.answer:null; }
   function handle(text){
+    CONV.until=0;                 /* a new turn starts, window resets on the reply */
     userEcho(text);
     if(typeof window.respond==='function') window.respond(text);
     else if(!runAction(text)) resolve(text);
