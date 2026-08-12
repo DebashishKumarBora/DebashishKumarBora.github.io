@@ -426,27 +426,136 @@
   var origRespond=window.respond;
   if(typeof origRespond==='function'){
     window.respond=function(q){
-      if(runAction(q)) return;
-      if(mem.lang!=='en'){                       // localized mini brain
-        var hit=kbHit(q);
-        botTell(hit||t('elsewhere'));
-        return;
-      }
-      setState('thinking');
-      origRespond.apply(this,arguments);
+      if(runAction(q)) return;            // tier 0: site commands
+      resolve(q);                         // tier 1 to 4
     };
   }
-  function kbHit(q){
-    var n=norm(q), kb=L().kb||[];
-    for(var i=0;i<kb.length;i++)
-      for(var j=0;j<kb[i].m.length;j++)
-        if(n.indexOf(kb[i].m[j])>=0) return kb[i].a;
-    return null;
+
+  /* =====================================================================
+     UNDERSTANDING  ·  four tiers, each falling back to the next
+       1. brain grammar   millions of accepted phrasings, no network
+       2. fuzzy match     typos, inflections, romanized Indic
+       3. on-device LLM   Chrome built in Gemini Nano, free, local, if present
+       4. graceful reply  in the visitor's language
+     ===================================================================== */
+  var B=window.JARVIS_BRAIN||null;
+  var lastVariant={};
+
+  function pickVariant(list,key){
+    if(!list||!list.length) return null;
+    if(list.length===1) return list[0];
+    var i=(lastVariant[key]===undefined)?-1:lastVariant[key];
+    var n=(i+1)%list.length; lastVariant[key]=n;   // rotate: never repeat back to back
+    return list[n];
   }
+  function editOk(a,b){
+    /* cheap distance <= 1 for short words, <= 2 for longer, used for typos */
+    if(a===b) return true;
+    var la=a.length, lb=b.length, lim=(la>7?2:1);
+    if(Math.abs(la-lb)>lim) return false;
+    var i=0,j=0,edits=0;
+    while(i<la&&j<lb){
+      if(a[i]===b[j]){i++;j++;continue;}
+      if(++edits>lim) return false;
+      if(la>lb) i++; else if(lb>la) j++; else {i++;j++;}
+    }
+    return edits+(la-i)+(lb-j)<=lim;
+  }
+  function brainMatch(raw){
+    if(!B) return null;
+    var x=' '+norm(raw)+' ', toks=x.trim().split(' ').filter(Boolean);
+    var lang=mem.lang, best=null, bestScore=0;
+
+    /* small talk first, it is short and unambiguous */
+    var sk=Object.keys(B.SMALL);
+    for(var s=0;s<sk.length;s++){
+      var terms=B.SMALL[sk[s]];
+      for(var q=0;q<terms.length;q++){
+        if(toks.length<=3 && x.indexOf(' '+terms[q]+' ')>=0){
+          var sm=(B.A[lang]&&B.A[lang][sk[s]])||B.A.en[sk[s]];
+          if(sm) return {topic:sk[s], answer:pickVariant(sm,lang+sk[s])};
+        }
+      }
+    }
+
+    Object.keys(B.TOPIC).forEach(function(topic){
+      var pack=B.TOPIC[topic];
+      var terms=(pack[lang]||[]).concat(pack.en||[]);
+      var score=0;
+      for(var i=0;i<terms.length;i++){
+        var term=terms[i];
+        if(x.indexOf(' '+term+' ')>=0 || x.indexOf(term)>=0){
+          /* a multi word phrase is far more specific than a single token */
+          score+=term.length*(term.indexOf(' ')>=0?5:2); continue; }
+        if(term.length>4){
+          for(var t=0;t<toks.length;t++){
+            if(toks[t].length>3 && editOk(toks[t],term)){ score+=term.length; break; }
+          }
+        }
+      }
+      if(score>bestScore){ bestScore=score; best=topic; }
+    });
+
+    if(!best || bestScore<6) return null;
+    var pool=(B.A[lang]&&B.A[lang][best])||B.A.en[best];
+    if(!pool) return null;
+    return {topic:best, answer:pickVariant(pool,lang+best), score:bestScore};
+  }
+
+  /* ---------- Chrome built in Gemini Nano, used only when present ---------- */
+  var FACTS=[
+    'Debashish Kumar Bora (Deb) is a marketing and data analyst who builds AI powered dashboards and automation.',
+    'Managed over 3 million pounds per year in Google Ads for UK travel brands including Southall Travel and Away Holidays.',
+    'Career totals: 100+ ad accounts, 8+ brands, 4+ years. One Looker Studio build surfaced 121M+ impressions and 86K+ conversions.',
+    'Now does marketing, data and automation for a US property management company with about 35 properties, 16 ad accounts.',
+    'Stack: Looker Studio, Power BI, Google Apps Script, Snowflake, BigQuery, GA4, Google Ads API, Python, React, FastAPI, Claude.',
+    'This portfolio has six live browser dashboards plus AdCommand, a Google Ads command center with a Claude analyst built in.',
+    'All demo data is fictional and anonymized. Nothing confidential is shown.',
+    'Works remotely from India, overlapping UK and US hours. Speaks English, Hindi and Assamese.',
+    'Contact: '+E+'. A booking calendar is at the bottom of the page.'
+  ].join(' ');
+  var nanoSession=null, nanoState='unknown';
+  function langName(){ return mem.lang==='hi'?'Hindi':(mem.lang==='as'?'Assamese':'English'); }
+  async function nanoAsk(q){
+    try{
+      if(!('LanguageModel' in window)) { nanoState='absent'; return null; }
+      if(nanoState==='absent') return null;
+      var avail=await window.LanguageModel.availability();
+      if(avail!=='available'){ nanoState='absent'; return null; }
+      if(!nanoSession){
+        nanoSession=await window.LanguageModel.create({initialPrompts:[{role:'system',
+          content:'You are Jarvis, the assistant on Debashish Kumar Bora\'s portfolio site. '+
+                  'Answer only from these facts, in two sentences maximum, warm and plain spoken. '+
+                  'If the answer is not in the facts, say you do not have that detail and suggest booking a call. '+
+                  'Never invent numbers. FACTS: '+FACTS}]});
+      }
+      var out=await Promise.race([
+        nanoSession.prompt('Reply in '+langName()+'. Question: '+q),
+        new Promise(function(_,rej){setTimeout(function(){rej(new Error('slow'));},12000);})
+      ]);
+      return (out||'').trim()||null;
+    }catch(e){ return null; }
+  }
+
+  function resolve(q){
+    var hit=brainMatch(q);                       // tiers 1 and 2
+    if(hit){ botTell(hit.answer); return; }
+    setState('thinking');
+    nanoAsk(q).then(function(ans){               // tier 3
+      if(ans){ botTell(esc(ans)); return; }
+      if(mem.lang==='en' && typeof origRespond==='function'){
+        origRespond.call(window,q);              // the original keyword bot
+        return;
+      }
+      botTell(t('elsewhere'));                   // tier 4
+    });
+  }
+
+  function kbHit(q){ var h=brainMatch(q); return h?h.answer:null; }
   function handle(text){
     userEcho(text);
     if(typeof window.respond==='function') window.respond(text);
-    else if(!runAction(text)) botTell(t('elsewhere'));
+    else if(!runAction(text)) resolve(text);
   }
 
   /* =====================================================================
@@ -526,11 +635,16 @@
     if(/(all work|show all|\u0938\u092C \u0915\u0941\u091B|\u09B8\u0995\u09B2\u09CB)/.test(x)){chip('all');botTell(t('all'));return true;}
 
     if(has(x,kws('work'))&&has(x,kws('open').concat(['go','scroll','where']))){go('#work');botTell(t('work'));return true;}
-    if(/(about|background|\u092A\u0930\u093F\u091A\u092F|\u09AA\u09F0\u09BF\u099A\u09AF\u09BC)/.test(x)){go('#about');botTell(t('about'));return true;}
-    if(/(skill|stack|\u091F\u0942\u0932|\u099F\u09C1\u09B2)/.test(x)){go('#skills');botTell(t('skills'));return true;}
-    if(/(client|brand|\u0915\u094D\u0932\u093E\u0907\u0902\u091F|\u0995\u09CD\u09B2\u09BE\u0987\u09A3\u09CD\u099F)/.test(x)){go('#clients');botTell(t('clients'));return true;}
+    /* only navigate when the visitor actually asked to move, otherwise the
+       brain should answer the question instead of scrolling the page */
+    var navVerb=/(go to|take me|scroll|jump to|show me the|open the|section)/.test(x);
+    if(navVerb&&/(about|background)/.test(x)){go('#about');botTell(t('about'));return true;}
+    if(navVerb&&/(skill|stack)/.test(x)){go('#skills');botTell(t('skills'));return true;}
+    if(navVerb&&/(client|brand)/.test(x)){go('#clients');botTell(t('clients'));return true;}
 
-    if(has(x,kws('book'))){go('#contact');botTell(t('booking'));return true;}
+    /* "why should i hire him" is a question, not a booking request */
+    var isWhy=/(why|what makes|how come|\u0915\u094D\u092F\u094B\u0902|\u0995\u09BF\u09AF\u09BC)/.test(x);
+    if(has(x,kws('book'))&&!isWhy){go('#contact');botTell(t('booking'));return true;}
     if(has(x,kws('email'))){copy(E);botTell(t('email'));return true;}
 
     if(/(dark mode|light mode|theme|\u0925\u0940\u092E|\u09A5\u09C0\u09AE)/.test(x)){
@@ -686,6 +800,8 @@
     langs:function(){return ORDER.slice();},
     open:function(k){var d=findDemo(norm(k));if(d)openDemoFor(d);},
     memory:function(){return JSON.parse(JSON.stringify(mem));},
+    capacity:function(){return window.JARVIS_BRAIN?window.JARVIS_BRAIN.capacity():null;},
+    ask:function(q){return resolve(q);},
     forget:function(){try{localStorage.removeItem(STORE);}catch(e){}mem=load();applyLangUI();}
   };
 })();
