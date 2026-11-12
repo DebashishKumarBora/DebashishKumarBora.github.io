@@ -10,8 +10,8 @@
   --jv-dim:#8b93ab;
   --jv-line:rgba(255,255,255,.09);
   --jv-line2:rgba(255,255,255,.16);
-  --jv-glass:rgba(14,16,26,.72);
-  --jv-glass2:rgba(22,25,38,.86);
+  --jv-glass:rgba(13,15,25,.94);
+  --jv-glass2:rgba(24,27,42,.96);
   --jv-a1:#6d8cff;   /* indigo   */
   --jv-a2:#38e8ff;   /* cyan     */
   --jv-a3:#b07cff;   /* violet   */
@@ -308,14 +308,22 @@
 .jv-toast button:active{transform:scale(.97)}
 @media(max-width:859px){.jv-toast{bottom:calc(152px + env(safe-area-inset-bottom))}}
 
-/* ============================================== light theme adaptation */
-body.light .chat-panel{background:rgba(252,253,255,.9)!important;border-color:rgba(15,20,40,.1)!important}
-body.light .chat-top{background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(244,247,253,.8))!important;
-  border-bottom-color:rgba(15,20,40,.09)!important}
-body.light .chat-top .who,body.light .chat-log .msg:not(.user),body.light .chat-input input{color:#111726!important}
-body.light .chat-log .msg:not(.user){background:#fff!important;border-color:rgba(15,20,40,.09)!important}
-body.light .jv-toast{background:rgba(252,253,255,.94)!important}
-body.light .jv-toast p{color:#111726}
+/* ============================================== light theme adaptation
+   The site sets the theme on <html data-theme>, so the tokens follow that. */
+html[data-theme="light"]{
+  --jv-ink:#111726; --jv-dim:#5a6076;
+  --jv-line:rgba(15,20,40,.10); --jv-line2:rgba(15,20,40,.18);
+  --jv-glass:rgba(250,251,255,.96); --jv-glass2:#ffffff;
+}
+html[data-theme="light"] .chat-panel{box-shadow:0 30px 80px -30px rgba(40,50,90,.45), inset 0 1px 0 rgba(255,255,255,.7)!important}
+html[data-theme="light"] .chat-top{background:linear-gradient(180deg,#ffffff,#f3f5fb)!important}
+html[data-theme="light"] .chat-top .x,html[data-theme="light"] .jv-ctl button{background:rgba(15,20,40,.04)!important}
+html[data-theme="light"] .jv-ctl button.on{background:linear-gradient(140deg,var(--jv-a2),var(--jv-a1))!important}
+html[data-theme="light"] .chat-log .msg b,html[data-theme="light"] .chat-log .msg strong,html[data-theme="light"] .jv-toast p b{color:#0b1020}
+html[data-theme="light"] .chat-log .msg.user{color:#111726!important;background:linear-gradient(140deg,rgba(109,140,255,.20),rgba(56,232,255,.16))!important}
+html[data-theme="light"] .chat-input{background:linear-gradient(180deg,transparent,rgba(15,20,40,.04))!important}
+html[data-theme="light"] .chat-input input,html[data-theme="light"] .quick button,html[data-theme="light"] .jv-sheet select{background:rgba(15,20,40,.04)!important}
+html[data-theme="light"] .chat-log{scrollbar-color:rgba(15,20,40,.2) transparent}
 
 /* ===================================================== reduced motion */
 @media(prefers-reduced-motion:reduce){
@@ -333,3 +341,71 @@ body.light .jv-toast p{color:#111726}
   .chat-top .stat{max-width:104px}
   .chat-top{padding:11px 10px!important;gap:8px!important}
 }
+
+/* =====================================================================
+   V3  ·  rich cards, typing dots, mobile bottom sheet
+   ===================================================================== */
+.chat-log .typing{background:var(--jv-glass2);border:1px solid var(--jv-line);border-radius:16px;border-bottom-left-radius:6px;padding:13px 15px}
+.chat-log .typing i{background:var(--jv-dim)}
+.chat-log .msg{margin-bottom:0!important}
+.jc-wrap{align-self:stretch;animation:jvIn .45s var(--jv-ease) both;animation-delay:.08s}
+.jc{position:relative;z-index:2}
+.jc+.jc{margin-top:8px}
+.jc svg{width:16px;height:16px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* welcome tiles */
+.jc-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jc-tile{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;cursor:pointer;
+  padding:12px;border-radius:14px;min-height:92px;color:var(--jv-ink);
+  background:var(--jv-glass2);border:1px solid var(--jv-line);transition:.22s var(--jv-ease)}
+.jc-tile svg{width:20px;height:20px;color:var(--jv-a2);margin-bottom:6px}
+.jc-tile b{font:600 12.5px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif}
+.jc-tile span{font:400 11px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;color:var(--jv-dim)}
+.jc-tile:hover{border-color:var(--jv-a1);transform:translateY(-2px);background:rgba(109,140,255,.12)}
+.jc-tile:active{transform:scale(.97)}
+
+/* demo scroller */
+.jc-demos{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;margin-right:-13px;padding-right:13px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.jc-demos::-webkit-scrollbar{display:none}
+.jc-demo{flex:0 0 172px;scroll-snap-align:start;display:flex;flex-direction:column;text-align:left;cursor:pointer;padding:0 0 10px;overflow:hidden;
+  border-radius:14px;color:var(--jv-ink);background:var(--jv-glass2);border:1px solid var(--jv-line);transition:.22s var(--jv-ease)}
+.jc-demo img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left;display:block;border-bottom:1px solid var(--jv-line);background:#0b0d16}
+.jc-demo b{font:600 12px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;padding:9px 10px 0}
+.jc-demo span{font:500 9.5px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--jv-dim);padding:3px 10px 0}
+.jc-demo em{font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal;color:var(--jv-a2);padding:9px 10px 0;display:flex;align-items:center;gap:5px;margin-top:auto}
+.jc-demo em svg{width:12px;height:12px}
+.jc-demo:hover{border-color:var(--jv-a1);transform:translateY(-2px)}
+
+/* stat tiles */
+.jc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jc-stats>div{padding:11px 12px;border-radius:14px;background:var(--jv-glass2);border:1px solid var(--jv-line)}
+.jc-stats b{display:block;font:700 19px/1.1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+  background:linear-gradient(110deg,var(--jv-a1),var(--jv-a2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.jc-stats span{display:block;font:400 10.5px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;color:var(--jv-dim);margin-top:4px}
+
+/* action buttons */
+.jc-btns{display:flex;flex-wrap:wrap;gap:7px}
+.jc-btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;padding:9px 13px;min-height:38px;border-radius:20px;
+  font:500 11.5px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+  color:var(--jv-ink);background:var(--jv-glass2);border:1px solid var(--jv-line2);transition:.2s var(--jv-ease)}
+.jc-btn svg{width:14px;height:14px}
+.jc-btn:hover{border-color:var(--jv-a1)}
+.jc-btn.pri{color:#04121f;border-color:transparent;background:linear-gradient(140deg,var(--jv-a2),var(--jv-a1));font-weight:600}
+.jc-btn:active{transform:scale(.96)}
+
+/* phones: the assistant is a bottom sheet, above the action bar */
+@media(max-width:679px){
+  .chat-panel{left:0!important;right:0!important;bottom:0!important;width:100%!important;max-width:100%!important;z-index:320!important;
+    height:min(80vh,640px)!important;height:min(80dvh,640px)!important;max-height:none!important;
+    border-radius:22px 22px 0 0!important;border-bottom:0!important;transform:translateY(102%)!important;opacity:1!important}
+  .chat-panel.open{transform:none!important}
+  .chat-panel:not(.open){box-shadow:none!important}
+  .chat-top{padding-top:18px!important}
+  .chat-top::before{content:'';position:absolute;left:50%;top:7px;width:38px;height:4px;margin-left:-19px;border-radius:4px;background:var(--jv-line2)}
+  .chat-input{padding-bottom:calc(12px + env(safe-area-inset-bottom))!important}
+  html.chat-open .chat-fab,html.chat-open .to-top{opacity:0;pointer-events:none}
+  html.chat-open .mbar{transform:translateY(120%)!important}
+  html.chat-open .jv-toast{display:none}
+}
+@media(prefers-reduced-motion:reduce){.jc-wrap{animation:none}}

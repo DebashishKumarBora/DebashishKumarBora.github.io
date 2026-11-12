@@ -3,7 +3,7 @@
    English · हिन्दी · অসমীয়া
    Concept and build by Debashish Kumar Bora.
 
-   Wraps the existing DataBot rather than replacing it:
+   Sits on top of the chat shell in index.html:
      - speaks every reply, in the selected language
      - listens for a wake word and for tap-to-talk
      - runs real actions on the page (open demos, filter, navigate, book)
@@ -43,7 +43,7 @@
           email:['email','mail'], work:['work','project','dashboard'],
           stop:['stop','quiet','silence','pause']},
       s:{
-        identity:'I am {N}, the assistant on this site. I can <b>open any live dashboard</b>, give you a <b>guided tour</b>, filter the work, answer questions about his experience, and take you to <b>booking</b>. Try saying "open the leasing dashboard".',
+        identity:'I am {N}, the assistant on this site. Tap a card, type a question, or tell me what to open. Try "open the leasing dashboard".',
         opening:'Opening the <b>{x}</b> live demo now.',
         tour:['Quick tour. These are the numbers behind the work: over three million pounds a year in managed ad spend, and one hundred and twenty one million impressions surfaced.',
               'This is AdCommand, the flagship. A Google Ads command center running sixteen accounts with a Claude analyst built in.',
@@ -785,8 +785,9 @@
       if(state==='thinking') setState(mem.muted?'idle':'speaking');
     };
   }
-  function botTell(html){
-    if(typeof window.botSay==='function') window.botSay(html); else speak(html);
+  function botTell(html,topic){
+    /* topic lets the page attach a matching card (demos, numbers, booking) */
+    if(typeof window.botSay==='function') window.botSay(html,undefined,topic?{topic:topic}:undefined); else speak(html);
     /* if voice is off there is no speech-end event, so open the window now */
     if(mem.muted) openFollowWindow();
   }
@@ -795,6 +796,7 @@
   var origRespond=window.respond;
   if(typeof origRespond==='function'){
     window.respond=function(q){
+      if(window.DKB&&window.DKB.egg&&window.DKB.egg(q)) return;   // page level easter eggs
       if(runAction(q)) return;            // tier 0: site commands
       resolve(q);                         // tier 1 to 4
     };
@@ -892,11 +894,16 @@
       var avail=await window.LanguageModel.availability();
       if(avail!=='available'){ nanoState='absent'; return null; }
       if(!nanoSession){
-        nanoSession=await window.LanguageModel.create({initialPrompts:[{role:'system',
+        var nanoOpts={initialPrompts:[{role:'system',
           content:'You are Jarvis, the assistant on Debashish Kumar Bora\'s portfolio site. '+
                   'Answer only from these facts, in two sentences maximum, warm and plain spoken. '+
                   'If the answer is not in the facts, say you do not have that detail and suggest booking a call. '+
-                  'Never invent numbers. FACTS: '+FACTS}]});
+                  'Never invent numbers. FACTS: '+FACTS}]};
+        /* newer Chrome builds want the languages declared, older ones reject the keys */
+        try{
+          nanoSession=await window.LanguageModel.create({initialPrompts:nanoOpts.initialPrompts,
+            expectedInputs:[{type:'text',languages:['en']}],expectedOutputs:[{type:'text',languages:['en']}]});
+        }catch(e1){ nanoSession=await window.LanguageModel.create(nanoOpts); }
       }
       var out=await Promise.race([
         nanoSession.prompt('Reply in '+langName()+'. Question: '+q),
@@ -926,7 +933,7 @@
         return;
       }
       CONV.topic=hit.topic; CONV.lastQ=q; CONV.lastA=hit.answer; CONV.turns++;
-      botTell(hit.answer);
+      botTell(hit.answer,hit.topic);
       if(mem.muted) openFollowWindow();          /* no speech end event to wait for */
       return;
     }
@@ -1025,7 +1032,7 @@
     if(/(looker|\u0932\u0941\u0915\u0930|\u09B2\u09C1\u0995\u09BE\u09F0)/.test(x)){chip('looker');botTell(t('looker'));return true;}
     if(/(all work|show all|\u0938\u092C \u0915\u0941\u091B|\u09B8\u0995\u09B2\u09CB)/.test(x)){chip('all');botTell(t('all'));return true;}
 
-    if(has(x,kws('work'))&&has(x,kws('open').concat(['go','scroll','where']))){go('#work');botTell(t('work'));return true;}
+    if(has(x,kws('work'))&&has(x,kws('open').concat(['go','scroll','where']))){go('#work');botTell(t('work'),'work');return true;}
     /* only navigate when the visitor actually asked to move, otherwise the
        brain should answer the question instead of scrolling the page */
     var navVerb=/(go to|take me|scroll|jump to|show me the|open the|section)/.test(x);
@@ -1035,7 +1042,7 @@
 
     /* "why should i hire him" is a question, not a booking request */
     var isWhy=/(why|what makes|how come|\u0915\u094D\u092F\u094B\u0902|\u0995\u09BF\u09AF\u09BC)/.test(x);
-    if(has(x,kws('book'))&&!isWhy){go('#contact');botTell(t('booking'));return true;}
+    if(has(x,kws('book'))&&!isWhy){go('#contact');botTell(t('booking'),'contact');return true;}
     if(has(x,kws('email'))){copy(E);botTell(t('email'));return true;}
 
     if(/(dark mode|light mode|theme|\u0925\u0940\u092E|\u09A5\u09C0\u09AE)/.test(x)){
@@ -1046,7 +1053,7 @@
       window.scrollTo({top:0,behavior:RM?'auto':'smooth'});botTell(t('top'));return true;}
 
     if(/(who are you|what can you do|help|\u0915\u094C\u0928 \u0939\u094B|\u0915\u094D\u092F\u093E \u0915\u0930 \u0938\u0915|\u0995\u09BF \u0995\u09F0\u09BF\u09AC \u09AA\u09BE\u09F0)/.test(x)){
-      botTell(t('identity'));return true;}
+      botTell(t('identity'),'welcome');return true;}
 
     /* language by voice or text, in any language */
     if(/(english|\u0905\u0902\u0917\u094D\u0930\u0947\u091C\u093C\u0940|\u0987\u0982\u09F0\u09BE\u099C\u09C0)/.test(x)){setLang('en');return true;}
@@ -1144,9 +1151,11 @@
     if(e.target.closest&&(e.target.closest('.thumb[data-live]')||e.target.closest('.links a.live'))) openedAny=true;
   });
 
-  var exitDone=false;
+  var exitDone=false, T0=Date.now();
   document.addEventListener('mouseout',function(e){
     if(exitDone||e.relatedTarget||e.clientY>12||window.innerWidth<900) return;
+    /* only for someone who has actually read the page, never over the hero */
+    if(Date.now()-T0<25000||(window.scrollY||0)<900) return;
     exitDone=true;
     nudge(t('exit'),t('yBook'),function(){go('#contact');},'exit');
   });

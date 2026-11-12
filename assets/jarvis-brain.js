@@ -118,6 +118,8 @@ window.JARVIS_BRAIN = (function(){
     contact:{en:['contact','email','reach','call','book','meeting','schedule','whatsapp','linkedin','connect'],
              hi:['संपर्क','ईमेल','कॉल','मीटिंग','बुक','sampark','email','call','meeting','book'],
              as:['যোগাযোগ','ইমেইল','কল','মিটিং','বুক','jogajog','email','call','meeting','book']},
+    about:{en:['what does he do','what does deb do','what does debashish do','who is he','who is deb','who is debashish','about him','about deb','about debashish','tell me about him','introduce him','his story','his bio','what is he']},
+    edu:{en:['where did he study','did he study','his education','his degree','education','degree','mba','studied','study','college','university','qualification','qualifications','certification','certifications','certified','certificate','credentials']},
     self:{en:['you','yourself','jarvis','who are you','what can you do','your name','bot','assistant','help'],
           hi:['तुम','आप','जार्विस','कौन हो','क्या कर सकते','मदद','tum','aap','jarvis','kaun ho','madad'],
           as:['তুমি','আপুনি','জাৰ্ভিছ','কোন','কি কৰিব পাৰা','সহায়','tumi','apuni','jarvis','kun','xohai']}
@@ -162,6 +164,9 @@ window.JARVIS_BRAIN = (function(){
              'English for work, plus Hindi and Assamese. Switch my language any time with the button in this header.'],
       contact:['Email <b>'+E+'</b>, or book a call at the bottom of the page. I copied the email if you want it.',
                'The calendar link is at the bottom of the page, and the email is <b>'+E+'</b>.'],
+      about:['Deb is a data and automation analyst who started in marketing. He builds live dashboards with an AI layer, in Looker Studio, Power BI and Google Apps Script, so a team sees what to do next and nobody builds the weekly report by hand. Four plus years, for US and UK clients.',
+             'Short version: he ran the ad budgets first, then learned to build the reporting himself. Now he does both, and automates the dull parts so the numbers update on their own.'],
+      edu:['He holds an MBA from IIT (ISM) Dhanbad and a degree from Kaziranga University, with certifications in Google Data Analytics, Microsoft Power BI and Advanced Excel.'],
       self:['I am Jarvis, the assistant on this site. I can open any live dashboard, give you a narrated tour, filter the work, answer questions about his experience, and take you to booking. I speak English, Hindi and Assamese.',
             'Jarvis. I run this page for you: say what you want to see and I will open it, in whichever of the three languages you prefer.'],
       greet:['Hello. Ask me anything about his work, or say "give me a tour".','Hi there. Want the tour, or shall I open a dashboard?'],
