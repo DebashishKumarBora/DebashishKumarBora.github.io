@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Debashish Kumar Bora · Data & Automation Analyst</title>
-<meta name="description" content="Debashish Kumar Bora · Data & Automation Analyst. I build live, AI-powered dashboards in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
+<meta name="description" content="Debashish Kumar Bora · Data & Automation Analyst. I build live, AI-powered dashboards and AI agents in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
 <meta name="author" content="Debashish Kumar Bora" />
 <meta name="keywords" content="Debashish Kumar Bora, Data Analyst, Automation Analyst, Looker Studio, Power BI, Google Apps Script, BigQuery, dashboards, marketing analytics, BI developer, data analyst India" />
 <meta name="robots" content="index, follow" />
@@ -21,7 +21,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Debashish Kumar Bora" />
 <meta property="og:title" content="Debashish Kumar Bora · Data & Automation Analyst" />
-<meta property="og:description" content="I build live, AI-powered dashboards in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
+<meta property="og:description" content="I build live, AI-powered dashboards and AI agents in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
 <meta property="og:url" content="https://debashishkumarbora.github.io/" />
 <meta property="og:image" content="https://debashishkumarbora.github.io/images/og-cover.png" />
 <meta property="og:image:width" content="1200" />
@@ -967,6 +967,13 @@ body.dm-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 .br-d{display:none}
 @media(min-width:1024px){.br-d{display:inline}.hero h1{max-width:20ch}}
 
+/* ---- AI agents sub section ---- */
+.sub-head{max-width:720px;margin:6px 0 22px}
+.sub-head h3{font-family:var(--display);font-weight:800;font-size:clamp(1.35rem,3.6vw,2rem);line-height:1.15;letter-spacing:-.02em;margin:8px 0 8px}
+.sub-head p{color:var(--muted);font-size:.95rem;line-height:1.55;max-width:62ch}
+.agent-grid{margin-bottom:12px}
+@media(min-width:1024px){.agent-grid{grid-template-columns:repeat(3,1fr)}}
+
 /* ---- interactive console ---- */
 .con-ctl{display:flex;align-items:center;gap:6px;margin:2px 0 12px;flex-wrap:wrap}
 .seg{font-family:var(--mono);font-size:.68rem;padding:7px 12px;min-height:32px;border-radius:20px;cursor:pointer;
@@ -1155,7 +1162,7 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
       </div>
     </div>
     <div class="hero-body">
-      <p class="lede">I build live, AI-powered dashboards in Looker Studio, Power BI and Google Apps Script. They update on their own and tell your team what to do next, not just what already happened. For <b>4+ years</b> I've been turning other people's messy marketing data into something <b>US &amp; UK clients</b> can actually use.</p>
+      <p class="lede">I build live, AI-powered dashboards and AI agents for marketing teams, in Looker Studio, Power BI, Google Apps Script and Claude. They update on their own and tell your team what to do next, not just what already happened. For <b>4+ years</b> I've been turning other people's messy marketing data into something <b>US &amp; UK clients</b> can actually use.</p>
       <div class="hero-cta">
         <a href="#contact" data-book class="btn btn-primary">Book a Call →</a>
         <a href="#work" class="btn btn-ghost">See the Dashboards</a>
@@ -1311,48 +1318,21 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
 <section class="wrap" id="work">
   <div class="sec-head reveal">
     <span class="eyebrow">Proof, not promises</span>
-    <h2>Dashboards built to be used, not just admired.</h2>
-    <p>Real builds across marketing, finance and ops. Real data, real results. No lorem ipsum, no stock screenshots.</p>
+    <h2>AI agents and dashboards built to be used, not just admired.</h2>
+    <p>Real builds for marketing and ads teams, in daily use. Every live demo below runs in your browser on sample data with fictional names.</p>
   </div>
 
-  <!-- FLAGSHIP -->
-  <div class="flagship reveal">
-    <div class="flag-bg"></div>
-    <div class="flag-inner">
-      <div class="flag-text">
-        <span class="flag-badge"><span class="dot"></span>FLAGSHIP PROJECT</span>
-        <h3>AdCommand</h3>
-        <p class="flag-tag">An AI-powered command center that runs Google Ads across <b>16 accounts</b>, with a live Claude AI analyst built right in.</p>
-      </div>
-      <div class="flag-carousel" id="flagCarousel">
-        <div class="fc-window">
-          <div class="fc-track" id="fcTrack"></div>
-          <button class="fc-nav prev" id="fcPrev" aria-label="Previous">‹</button>
-          <button class="fc-nav next" id="fcNext" aria-label="Next">›</button>
-        </div>
-        <div class="fc-bar">
-          <div class="fc-dots" id="fcDots"></div>
-          <span class="fc-count" id="fcCount"></span>
-          <button class="fc-play" id="fcPlay" title="Pause / play">❚❚</button>
-        </div>
-      </div>
-      <div class="flag-aside">
-        <p class="flag-note">A full web app, not a report. Built on the live Google Ads API.</p>
-        <div class="flag-chips">
-          <span>Live Google Ads API</span><span>Claude AI Insights</span><span>AI Chat &amp; Voice</span><span>Geo-Visualization</span><span>Budget Intelligence</span>
-        </div>
-        <div class="flag-actions">
-          <a class="btn btn-primary" href="https://debashishkumarbora.github.io/ads-command-center" target="_blank" rel="noopener">Open the live demo ↗</a>
-          <a class="btn btn-ghost" href="mailto:debashishbora30@gmail.com?subject=AdCommand%20walkthrough%20request">Request a walkthrough →</a>
-          <span class="flag-private">Anonymized live demo. The real build runs on live Google Ads data.</span>
-        </div>
-      </div>
-    </div>
+  <!-- AI AGENTS -->
+  <div class="sub-head reveal" id="agents">
+    <span class="eyebrow">AI agents for marketing teams</span>
+    <h3>Tools that do the work, not just show it.</h3>
+    <p>Ask a question in plain English, get a review that writes itself, send every client their own report. Built with Google Apps Script and Claude.</p>
   </div>
+  <div class="work-grid agent-grid" id="agentGrid"></div>
   <div class="lb" id="lb"><button class="lb-x" id="lbX">✕</button><img id="lbImg" src="" alt=""><div class="lb-cap" id="lbCap"></div></div>
 
   <div class="sec-head reveal" style="margin-top:60px;margin-bottom:30px">
-    <span class="eyebrow">More work</span>
+    <span class="eyebrow">Dashboards</span>
     <h2 style="font-size:clamp(1.4rem,4.2vw,2.4rem)">Dashboards by tool.</h2>
   </div>
   <div class="filters reveal" id="filters">
@@ -1704,12 +1684,12 @@ buildLine();
 
 /* ============ SKILLS (proof, not percentages) ============ */
 const skills=[
-  ['Dashboards and data visualization','Seven builds on this page, six of them live','See the work','go:#work'],
+  ['Dashboards and data visualization','Eleven builds on this page, nine of them live','See the work','go:#work'],
   ['Google Ads and GA4','£3M+ a year in managed budget, 100+ ad accounts','See the clients','go:#clients'],
-  ['Google Apps Script web apps','Five live apps running in your browser','Show live apps','f:app'],
+  ['Google Apps Script web apps','Nine live apps running in your browser','Show live apps','go:#agents'],
   ['Looker Studio','Client Campaign Performance, GA4 Traffic Analytics','Show Looker builds','f:looker'],
   ['SQL and Snowflake','Leasing Dashboard, built on raw Snowflake tables','Open the demo','demo:lease'],
-  ['AI analysts and automation','AdCommand, with a Claude analyst built in','Open AdCommand','demo:ads'],
+  ['AI agents and automation','Ads Intelligence, a Claude-style analyst over 16 ad accounts','Open the agent','demo:adsintel'],
   ['Power BI, DAX and Power Query','Microsoft certified','See credentials','go:#certs'],
   ['Data modeling and cleaning','The step behind every number on this page','How I work','go:#process']
 ];
@@ -1718,6 +1698,26 @@ barsEl.innerHTML=skills.map(function(s){return '<div class="proof-row"><div clas
 
 /* ============ PROJECTS ============ */
 const projects=[
+  {k:'adsintel',t:'Ads Intelligence',shots:['shots/intel-1.webp','shots/intel-2.webp','shots/intel-3.webp','shots/intel-4.webp','shots/intel-5.webp','shots/intel-6.webp'],tool:'Apps Script + Claude',tag:['agent'],file:'shots/intel-1.webp',
+   live:'https://debashishkumarbora.github.io/demos/ads-intelligence/',repo:null,
+   p:'A team running 16 Google Ads accounts paid for reporting tools and still worked out what to fix by hand.',
+   b:'A Claude-style chat over every account, plus nine tools (ad copy, sitelinks, recaps, why did it change, search term themes, a heatmap, negatives, budget pacing, landing page checks), daily alerts and a 24 check audit. Read only, with Fair Housing guardrails.',
+   r:'Plain English questions answered with tables, charts and a fix list, with every number traced to the query behind it.'},
+  {k:'perf',t:'Performance Review',shots:['shots/perf-1.webp','shots/perf-2.webp','shots/perf-3.webp','shots/perf-4.webp','shots/perf-5.webp','shots/perf-6.webp'],tool:'Apps Script + Claude',tag:['agent'],file:'shots/perf-1.webp',
+   live:'https://debashishkumarbora.github.io/demos/performance-review/',repo:null,
+   p:'A year over year Google Ads review across 16 communities meant days of exports, pivots and slides.',
+   b:'A review that builds itself for any period and comparison: at a glance, spend, results, what went well, limited results, recommendations, every community side by side, a context log and a next year ideas board.',
+   r:'One click Present mode turns it into slides, exportable as PDF, with written findings that never point blame at a person.'},
+  {k:'clients',t:'Client Reports',shots:['shots/client-1.webp','shots/client-2.webp','shots/client-3.webp','shots/client-4.webp','shots/client-5.webp','shots/client-6.webp'],tool:'Apps Script',tag:['agent'],file:'shots/client-1.webp',
+   live:'https://debashishkumarbora.github.io/demos/client-reports/',repo:null,
+   p:'Property clients wanted their own Google Ads results without seeing other clients or internal notes.',
+   b:'One link with a different password per client, showing only that client: highlights, a swipeable recap, top campaign, best day, devices, live ads and top searches, with a PDF cover page.',
+   r:'Client ready reports with no manual prep, where every comparison reads as true good news and dips are flagged to the team privately.'},
+  {k:'ads',t:'AdCommand',shots:['shots/ads-1.webp','shots/ads-2.webp','shots/ads-3.webp','shots/ads-4.webp','shots/ads-5.webp','shots/ads-6.webp'],tool:'Google Ads API + Claude',tag:['app'],file:'shots/ads-1.webp',
+   live:'https://debashishkumarbora.github.io/ads-command-center',repo:'https://github.com/DebashishKumarBora/ads-command-center',
+   p:'Sixteen Google Ads accounts lived in sixteen browser tabs, with no single place to see what was working.',
+   b:'A Google Ads command center on the live API: accounts, analytics, a geo view, search terms, keywords, ads, budget pacing and a Claude analyst with chat and voice.',
+   r:'The whole portfolio in one web app, with the AI analyst flagging what to fix first.'},
   {k:'hub',t:'Marketing Intelligence Hub',shots:['shots/hub-1.webp','shots/hub-2.webp','shots/hub-3.webp','shots/hub-4.webp','shots/hub-5.webp','shots/hub-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/hub-1.webp',
    live:'https://debashishkumarbora.github.io/property-marketing-intelligence-hub',repo:'https://github.com/DebashishKumarBora/property-marketing-intelligence-hub',
    p:'A marketing lead had spend, leads, occupancy and reviews scattered across six different tools.',
@@ -1764,8 +1764,7 @@ function svgWrap(inner){return `<svg class="mini" viewBox="0 0 480 180" preserve
 function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 const grid=document.getElementById('workGrid');
 const charts=['line','bar','area','donut'];
-function renderProjects(f='all'){
-  grid.innerHTML=projects.filter(p=>f==='all'||p.tag.includes(f)).map((p,i)=>`
+function cardHtml(p,i){return `
     <div class="proj reveal" data-tags="${p.tag.join(' ')}">
       <div class="thumb${p.shots?' has-reel':''}" ${p.shots?`data-reel="${p.shots.join(',')}"`:''} ${p.live?`data-live="${p.live}" data-name="${p.t}"`:''}>
         <span class="tool-tag">${p.tool}</span>
@@ -1787,13 +1786,17 @@ function renderProjects(f='all'){
         </div>
         <div class="links">
           ${p.live?`<a class="live" href="${p.live}" target="_blank" rel="noopener">Open live demo ↗</a>`:`<a class="live" href="#contact">Discuss this →</a>`}
-          <a href="${p.repo||'https://github.com/DebashishKumarBora'}" target="_blank" rel="noopener">Code ↗</a>
+          ${p.repo?`<a href="${p.repo}" target="_blank" rel="noopener">Code ↗</a>`:''}
           <button type="button" class="story-btn" aria-expanded="false">The story <i>+</i></button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;}
+function renderProjects(f='all'){
+  grid.innerHTML=projects.filter(p=>!p.tag.includes('agent')&&(f==='all'||p.tag.includes(f))).map(cardHtml).join('');
   grid.querySelectorAll('.reveal').forEach(el=>{io.observe(el);});
 }
+const agentGrid=document.getElementById('agentGrid');
+if(agentGrid){agentGrid.innerHTML=projects.filter(p=>p.tag.includes('agent')).map((p,i)=>cardHtml(p,i+1)).join('');agentGrid.querySelectorAll('.reveal').forEach(el=>{io.observe(el);});}
 renderProjects();
 document.getElementById('filters').addEventListener('click',e=>{
   if(!e.target.classList.contains('chip'))return;
@@ -1807,8 +1810,7 @@ document.getElementById('filters').addEventListener('click',e=>{
    conversation, the rich cards and the site actions, and still works
    on its own if those files fail to load. */
 var EMAIL='debashishbora30@gmail.com';
-var DEMOS=[{k:'ads',t:'AdCommand',tool:'Google Ads API + Claude',img:'images/shots/ads-1.webp',live:'https://debashishkumarbora.github.io/ads-command-center'}]
-  .concat(projects.filter(function(p){return p.live&&p.k;}).map(function(p){return {k:p.k,t:p.t,tool:p.tool,img:'images/'+p.shots[0],live:p.live};}));
+var DEMOS=projects.filter(function(p){return p.live&&p.k;}).map(function(p){return {k:p.k,t:p.t,tool:p.tool,img:'images/'+p.shots[0],live:p.live,agent:p.tag.indexOf('agent')>-1};});
 var STATS=[['£3M+','Google Ads budget a year'],['100+','Ad accounts managed'],['8+','Brands delivered for'],['4+','Years, US and UK clients']];
 var ICON={
   play:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M10 8.5v5l4.5-2.5z"/><path d="M8 21h8"/></svg>',
@@ -1869,12 +1871,12 @@ function jcButtons(list){
 function attach(topic){
   if(!topic)return '';
   if(topic==='welcome'){
-    var tiles=[['play','Open a live dashboard','Six run right here','demos'],['tour','Take the guided tour','Narrated, about a minute','tour'],
+    var tiles=[['play','Open a live demo',DEMOS.length+' run right here','demos'],['tour','Take the guided tour','Narrated, about a minute','tour'],
                ['stat','See the numbers','Budget, accounts, brands','ask:See his results'],['cal','Book a call','Thirty minute intro','book']];
     return '<div class="jc jc-tiles">'+tiles.map(function(t){
       return '<button type="button" class="jc-tile" data-act="'+t[3]+'">'+ICON[t[0]]+'<b>'+t[1]+'</b><span>'+t[2]+'</span></button>';}).join('')+'</div>';
   }
-  if(/^(work|demo|ads|hub|ga4|lease|gbp|gsc|ai|data)$/.test(topic)){
+  if(/^(work|demo|ads|hub|ga4|lease|gbp|gsc|ai|data|adsintel|perf|clients|agents)$/.test(topic)){
     var list=DEMOS.slice().sort(function(a,b){return (b.k===topic)-(a.k===topic);});
     return '<div class="jc jc-demos">'+list.map(function(d){
       return '<button type="button" class="jc-demo" data-act="demo:'+d.k+'"><img src="'+d.img+'" alt="" loading="lazy"><b>'+d.t+'</b><span>'+d.tool+'</span><em>Open live '+ICON.arrow+'</em></button>';}).join('')+'</div>';
@@ -1932,7 +1934,7 @@ function respond(q){
   var x=' '+String(q).toLowerCase()+' ';
   if(/what does (he|deb|debashish) do|who is (he|deb|debashish)|about (him|deb)/.test(x)){ botSay("Deb is a data and automation analyst who started in marketing. He builds live dashboards with an AI layer, so a team sees what to do next and nobody builds the weekly report by hand.",QUICK,{topic:'about'}); return; }
   if(/result|number|proof|budget|roi|experience|client/.test(x)){ botSay("The short version: over <b>£3M a year</b> in Google Ads budget across two UK travel brands, <b>100+ ad accounts</b> and <b>8+ brands</b> in <b>4+ years</b>.",QUICK,{topic:'results'}); return; }
-  if(/work|dashboard|project|demo|portfolio|built|adcommand|flagship/.test(x)){ botSay("Six dashboards on this page run live in your browser, with <b>AdCommand</b> as the flagship. Pick one.",QUICK,{topic:'work'}); return; }
+  if(/work|dashboard|project|demo|portfolio|built|adcommand|agent|superdash/.test(x)){ botSay("Nine builds on this page run live in your browser: three <b>AI agents</b> and six dashboards. Pick one.",QUICK,{topic:'work'}); return; }
   if(/hire|contact|book|call|price|cost|rate|available|email|whatsapp/.test(x)){ botSay("The quickest route is a thirty minute intro call. Scope and pricing depend on the build, so he quotes after hearing what you need.",QUICK,{topic:'contact'}); return; }
   if(/tool|stack|skill|tech/.test(x)){ botSay("Looker Studio, Power BI, Google Apps Script, Snowflake, BigQuery, GA4, the Google Ads API, and Claude for the AI layers.",QUICK,{topic:'tools'}); return; }
   botSay("That one is outside what I can answer with confidence, and I would rather not guess. Here is what I can do for you right now.",QUICK,{topic:'welcome'});
@@ -2449,7 +2451,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   if(btn&&mac){var kb=btn.querySelector('kbd');if(kb)kb.textContent='⌘ K';}
   var ITEMS=[];
   (window.DKB.demos||[]).forEach(function(d){ITEMS.push({g:'Live demos',t:'Open '+d.t,h:d.tool,a:'demo:'+d.k,k:d.t+' '+d.tool+' demo dashboard open'});});
-  [['Work','#work','dashboards projects portfolio'],['How I work','#process','process steps'],['Before and after','#transform','slider spreadsheet'],
+  [['AI agents','#agents','agents ads intelligence superdash performance review client reports'],['Work','#work','dashboards projects portfolio'],['How I work','#process','process steps'],['Before and after','#transform','slider spreadsheet'],
    ['Clients','#clients','brands'],['Skills','#skills','stack tools'],['About','#about','background bio experience'],
    ['Credentials','#certs','certifications certificates'],['Reporting cost estimator','#roi','calculator roi savings'],['Contact','#contact','email hire']]
    .forEach(function(s){ITEMS.push({g:'Jump to',t:s[0],h:'Section',a:'go:'+s[1],k:s[0]+' '+s[2]});});
