@@ -1208,6 +1208,85 @@ section{padding:44px 0}
 .roi-note{margin:12px 0 16px}
 .ba-after{object-position:top left}
 
+/* ---- data lab: a messy export in, a dashboard and plain English out ---- */
+.lab-card{border:1px solid var(--border);border-radius:var(--r-lg);background:linear-gradient(180deg,var(--surface),var(--bg2));padding:14px;box-shadow:var(--card-shadow);position:relative;transition:border-color .25s,box-shadow .25s}
+.lab-card.drop{border-color:var(--cyan);box-shadow:0 0 0 3px color-mix(in srgb,var(--cyan) 25%,transparent)}
+.lab-src{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.lab-src::-webkit-scrollbar{display:none}
+.lab-src .seg{white-space:nowrap;flex-shrink:0;min-height:38px;font-size:.7rem}
+.lab-src .seg.up{border-style:dashed}
+.lab-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.lab-in,.lab-out{min-width:0}
+.lab-card h5{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:500;margin:0 0 8px}
+.lab-raw{overflow:auto;max-height:230px;border:1px solid var(--border);border-radius:12px;background:var(--bg2);margin-bottom:14px}
+.lab-raw table{border-collapse:collapse;font-family:var(--mono);font-size:.64rem;white-space:nowrap;min-width:100%}
+.lab-raw td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--muted)}
+.lab-raw tr.h td{color:var(--text);font-weight:700;background:var(--surface2);position:sticky;top:0;z-index:1}
+.lab-raw tr.t td{color:var(--faint);font-style:italic}
+.lab-raw tr.b td{background:color-mix(in srgb,#f5b041 8%,transparent)}
+.lab-raw tr.d td{background:color-mix(in srgb,var(--magenta) 10%,transparent);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--magenta) 60%,transparent)}
+.lab-raw td.fx{color:#f5b041;background:color-mix(in srgb,#f5b041 10%,transparent)}
+.lab-raw td.na{color:var(--magenta);background:color-mix(in srgb,var(--magenta) 12%,transparent)}
+.lab-raw td i{color:var(--faint);font-style:normal}
+.lab-key{display:flex;flex-wrap:wrap;gap:10px;margin:-6px 0 14px;font-family:var(--mono);font-size:.6rem;color:var(--faint)}
+.lab-key span{display:inline-flex;align-items:center;gap:5px}
+.lab-key i{width:10px;height:10px;border-radius:3px;display:block}
+.lab-key .k-fx{background:color-mix(in srgb,#f5b041 55%,transparent)}
+.lab-key .k-na{background:color-mix(in srgb,var(--magenta) 60%,transparent)}
+.lab-key .k-d{background:color-mix(in srgb,var(--magenta) 22%,transparent);border:1px solid color-mix(in srgb,var(--magenta) 50%,transparent)}
+.lab-key .k-b{background:color-mix(in srgb,#f5b041 18%,transparent)}
+.lab-steps{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.lab-steps li{position:relative;padding-left:25px;font-size:.82rem;line-height:1.45;color:var(--muted)}
+.lab-steps li::before{content:"\2713";position:absolute;left:0;top:1px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;font-size:.6rem;font-weight:700;color:#04121f;background:var(--emerald)}
+.lab-steps b{color:var(--text);font-weight:600}
+.lab-anim .lab-steps li{animation:labIn .45s var(--ease) both;animation-delay:var(--d)}
+@keyframes labIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.lab-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.lab-kpis div{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:11px 12px;min-width:0}
+.lab-kpis span{display:block;font-size:.68rem;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lab-kpis b{display:block;font-family:var(--display);font-size:1.3rem;font-weight:700;margin-top:4px;line-height:1.1;white-space:nowrap}
+.lab-metrics{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:8px}
+.lab-metrics::-webkit-scrollbar{display:none}
+.lab-metrics .seg{flex-shrink:0;white-space:nowrap}
+.lab-trend{position:relative;margin-bottom:14px}
+.lab-plot{position:relative;height:150px;touch-action:pan-y;cursor:crosshair}
+.lab-plot svg{width:100%;height:100%;display:block}
+.lab-ymax{font-family:var(--mono);font-size:.6rem;color:var(--faint);margin-bottom:2px}
+.lab-x{position:relative;height:16px;font-family:var(--mono);font-size:.6rem;color:var(--faint)}
+.lab-x span{position:absolute;top:3px;transform:translateX(-50%);white-space:nowrap}
+.lab-x span:first-child{transform:none}
+.lab-cur{position:absolute;top:0;bottom:0;width:1px;background:var(--border2);opacity:0;pointer-events:none}
+.lab-tip{position:absolute;top:4px;transform:translateX(10px);padding:7px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--border2);font-family:var(--mono);font-size:.64rem;color:var(--muted);opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.lab-tip.flip{transform:translateX(calc(-100% - 10px))}
+.lab-tip b{display:block;color:var(--text);font-size:.8rem;margin-top:2px}
+.lab-none{font-size:.82rem;color:var(--muted);padding:14px 0}
+.lab-bars{margin-bottom:14px}
+.lab-bar{display:grid;grid-template-columns:minmax(0,9.5em) 1fr auto;align-items:center;gap:10px;margin-bottom:7px;font-size:.78rem}
+.lab-bar span{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lab-bar i{height:8px;border-radius:6px;background:var(--surface2);overflow:hidden}
+.lab-bar em{display:block;height:100%;border-radius:6px;background:var(--grad)}
+.lab-bar b{font-family:var(--mono);font-size:.7rem;color:var(--text);font-weight:600}
+.lab-anim .lab-bar em{animation:labGrow .8s var(--ease) both}
+@keyframes labGrow{from{width:0}}
+.lab-ins{border-top:1px solid var(--border);padding-top:12px}
+.lab-ins ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.lab-ins li{position:relative;padding-left:16px;font-size:.88rem;line-height:1.5;color:var(--muted)}
+.lab-ins li::before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;border-radius:50%;background:var(--grad)}
+.lab-ins b{color:var(--text);font-weight:600}
+.lab-out.err .lab-ins li{color:var(--text)}
+.lab-foot{display:flex;flex-direction:column;gap:10px;align-items:stretch;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.lab-foot span{font-size:.78rem;color:var(--faint)}
+.lab-foot .btn{justify-content:center;text-align:center}
+@media(min-width:900px){
+  .lab-card{padding:22px}
+  .lab-grid{grid-template-columns:.85fr 1.15fr;gap:24px}
+  .lab-kpis{grid-template-columns:repeat(4,1fr)}
+  .lab-raw{max-height:262px}
+  .lab-plot{height:170px}
+  .lab-foot{flex-direction:row;align-items:center;justify-content:space-between}
+}
+@media(prefers-reduced-motion:reduce){.lab-anim .lab-steps li,.lab-anim .lab-bar em{animation:none}}
+
 /* ---- trusted by: a slim moving line of names, the cards come later ---- */
 #trusted{padding-top:22px;padding-bottom:0}
 @media(min-width:1024px){#trusted{padding-top:30px}}
@@ -1498,35 +1577,40 @@ section{padding:44px 0}
   </div>
 </section>
 
-<!-- ESTIMATOR -->
-<section class="wrap" id="roi">
+<!-- DATA LAB -->
+<section class="wrap" id="lab">
   <div class="sec-head reveal">
-    <span class="eyebrow">Do the maths</span>
-    <h2>What is manual reporting costing you?</h2>
-    <p>Move the sliders. Nothing you enter leaves this page.</p>
+    <span class="eyebrow">Try it yourself</span>
+    <h2>Hand it a messy export. Get answers in seconds.</h2>
+    <p>Pick a sample, or drop in your own CSV. It gets cleaned, charted and read right here in your browser. Nothing is uploaded.</p>
   </div>
-  <div class="roi reveal">
-    <div class="roi-in">
-      <label class="roi-row"><span class="roi-l">Reports built by hand each week<b id="roiRv">5</b></span>
-        <input type="range" id="roiR" min="1" max="30" step="1" value="5"></label>
-      <label class="roi-row"><span class="roi-l">Hours each one takes<b id="roiHv">3</b></span>
-        <input type="range" id="roiH" min="0.5" max="10" step="0.5" value="3"></label>
-      <label class="roi-row"><span class="roi-l">Hourly cost of the person building them<b id="roiCv">£40</b></span>
-        <input type="range" id="roiC" min="10" max="200" step="5" value="40"></label>
-      <div class="roi-cur" role="group" aria-label="Currency">
-        <button type="button" class="seg on" data-cur="£">GBP £</button>
-        <button type="button" class="seg" data-cur="$">USD $</button>
+  <div class="lab-card reveal">
+    <div class="lab-src" role="group" aria-label="Choose the data">
+      <button type="button" class="seg on" data-s="ads">Google Ads export</button>
+      <button type="button" class="seg" data-s="ga4">Website traffic (GA4)</button>
+      <button type="button" class="seg" data-s="lease">Leasing funnel</button>
+      <button type="button" class="seg up" id="labUp">⬆ Your own CSV</button>
+      <input type="file" id="labFile" accept=".csv,.tsv,.txt,text/csv" hidden>
+    </div>
+    <div class="lab-grid">
+      <div class="lab-in">
+        <h5>The raw export</h5>
+        <div class="lab-raw" id="labRaw"></div>
+        <div class="lab-key" aria-hidden="true"><span><i class="k-fx"></i>Needs fixing</span><span><i class="k-na"></i>Missing</span><span><i class="k-d"></i>Duplicate</span><span><i class="k-b"></i>Blank row</span></div>
+        <h5>What got cleaned</h5>
+        <ol class="lab-steps" id="labSteps"></ol>
+      </div>
+      <div class="lab-out" id="labOut">
+        <div class="lab-kpis" id="labKpis"></div>
+        <div class="lab-metrics" id="labMetrics" role="group" aria-label="Metric to chart"></div>
+        <div class="lab-trend" id="labTrend"></div>
+        <div class="lab-bars" id="labBars"></div>
+        <div class="lab-ins"><h5>What it says</h5><ul id="labIns"></ul></div>
       </div>
     </div>
-    <div class="roi-out">
-      <span class="roi-k">Time spent on manual reporting</span>
-      <div class="roi-big grad-text"><span id="roiHours">720</span> hours a year</div>
-      <div class="roi-two">
-        <div><b id="roiCost">£28,800</b><span>in salary cost a year</span></div>
-        <div><b id="roiWeeks">18</b><span>working weeks a year</span></div>
-      </div>
-      <p class="roi-note">Based on 48 working weeks. Bring these numbers to the call.</p>
-      <a href="#contact" data-book class="btn btn-primary">Book a Call With These Numbers →</a>
+    <div class="lab-foot">
+      <span>Your file never leaves this page. You can also drop a CSV anywhere on this card.</span>
+      <a href="#contact" data-book class="btn btn-primary">Want This on Your Live Data? Book a Call →</a>
     </div>
   </div>
 </section>
@@ -2479,7 +2563,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   (window.DKB.demos||[]).forEach(function(d){ITEMS.push({g:'Live demos',t:'Open '+d.t,h:d.tool,a:'demo:'+d.k,k:d.t+' '+d.tool+' demo dashboard open'});});
   [['Work','#work','dashboards projects portfolio agents'],['How I work','#process','process steps services'],['Before and after','#transform','slider spreadsheet'],
    ['Clients','#clients','brands'],['Skills','#skills','stack tools'],['About','#about','background bio experience'],
-   ['Credentials','#certs','certifications certificates'],['Reporting cost estimator','#roi','calculator roi savings'],['Contact','#contact','email hire']]
+   ['Credentials','#certs','certifications certificates'],['Data lab','#lab','try upload csv messy data clean chart insights'],['Contact','#contact','email hire']]
    .forEach(function(s){ITEMS.push({g:'Jump to',t:s[0],h:'Section',a:'go:'+s[1],k:s[0]+' '+s[2]});});
   [['Book a call','Calendly','book','schedule meeting hire'],['Message on WhatsApp','Opens WhatsApp','wa','chat message'],
    ['Copy email address','Clipboard','email','mail contact'],['Take the guided tour','Narrated','tour','walkthrough'],
@@ -2525,6 +2609,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 })();
 
 </script>
+<script src="assets/lab.js" defer></script>
 <script src="assets/jarvis-brain.js" defer></script>
 <script src="assets/jarvis.js" defer></script>
 </body>
