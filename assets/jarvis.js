@@ -1064,9 +1064,10 @@
   var tourTimers=[];
   function tour(){
     tourTimers.forEach(clearTimeout);tourTimers=[];
-    var sel=['#proof','#agents','#workGrid','#contact'], lines=L().s.tour||LANGS.en.s.tour;
+    var sel=['#proof','#work','#work','#contact'], pick=['','agent','app','all'], lines=L().s.tour||LANGS.en.s.tour;
     sel.forEach(function(s,i){
       tourTimers.push(setTimeout(function(){
+        if(pick[i]) chip(pick[i]);
         var e=document.querySelector(s);
         if(e) e.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});
         botTell(lines[i]);

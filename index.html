@@ -1098,6 +1098,118 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
 @media(prefers-reduced-motion:reduce){.kp.open{animation:none}}
 
 </style>
+<style>
+/* =====================================================================
+   V4 LAYER  ·  client first. The work sits right under the intro, every
+   section says less, and the screenshots carry the page.
+   ===================================================================== */
+section{padding:44px 0}
+@media(min-width:1024px){section{padding:72px 0}}
+.hero{padding-bottom:6px}
+#proof{padding-top:14px;padding-bottom:0}
+#clients{padding-top:22px;padding-bottom:0}
+#work{padding-top:52px}
+@media(min-width:1024px){#proof{padding-top:34px}#clients{padding-top:30px}#work{padding-top:84px}}
+
+/* ---- hero: one short line under the headline ---- */
+.hero .lede{font-size:clamp(1.06rem,4.3vw,1.2rem);max-width:40ch;line-height:1.55}
+@media(min-width:1024px){.hero .lede{font-size:1.24rem}}
+
+/* ---- proof: slim number row ---- */
+.proof .stat{padding:16px 16px 14px}
+.proof .stat .cap{font-size:.76rem}
+@media(min-width:1024px){.proof .stat{padding:22px 22px 18px}.proof .stat .cap{font-size:.84rem}}
+
+/* ---- client logo wall ---- */
+.lw-k{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);text-align:center;margin:0 0 14px}
+.logo-wall{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lw{display:flex;align-items:center;gap:9px;min-width:0;padding:9px 12px 9px 9px;border:1px solid var(--border);border-radius:40px;
+  background:var(--surface);color:var(--muted);font-size:.8rem;font-weight:600;transition:.3s var(--ease)}
+.lw img,.lw i{width:22px;height:22px;border-radius:6px;flex-shrink:0;object-fit:contain;background:#fff}
+.lw i{display:grid;place-items:center;font-style:normal;font-size:.7rem;font-weight:800;color:#fff;background:var(--grad)}
+.lw span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lw:hover{color:var(--text);border-color:var(--border2);transform:translateY(-2px)}
+@media(min-width:760px){
+  .logo-wall{grid-template-columns:repeat(4,1fr);gap:10px;max-width:920px;margin:0 auto}
+  .lw{font-size:.86rem;padding:10px 16px 10px 10px;justify-content:center}
+}
+
+/* ---- work: picture first, one line, two buttons ---- */
+.filters{margin-bottom:18px}
+@media(min-width:1024px){.work-grid{grid-template-columns:repeat(3,1fr);gap:22px}.filters{margin-bottom:26px}}
+.proj .body{padding:16px 16px 16px}
+.proj h3{font-size:1.06rem;margin-bottom:6px;line-height:1.25}
+.proj .one{margin:0;flex:1;color:var(--muted);font-size:.9rem;line-height:1.5;min-height:3em}
+.work-grid{align-items:start}
+.proj .pbr{display:none}
+.proj.open .pbr{display:flex;flex-direction:column;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);flex:none}
+.proj.open .pbr .row{display:flex;flex-direction:column;gap:2px;font-size:.8rem;line-height:1.45}
+.proj.open .pbr .k{display:block}
+.proj .pbr .v.result{font-size:.8rem}
+.proj .pbr .code{align-self:flex-start;font-family:var(--mono);font-size:.72rem;color:var(--cyan)}
+.proj .pbr .code:hover{text-decoration:underline}
+.proj .links{margin-top:14px;flex-wrap:nowrap}
+.proj .links a.live{flex:1 1 60%}
+.proj .story-btn{flex:0 1 auto;padding:10px 16px}
+@media(min-width:1024px){.proj .body{padding:18px 18px 18px}.proj h3{font-size:1.14rem}.proj .one{font-size:.92rem}}
+.more-wrap{display:flex;justify-content:center;margin-top:22px}
+.more-wrap[hidden]{display:none}
+.more-wrap .btn{min-width:220px}
+.work-note{margin-top:18px}
+.work-note a{color:var(--muted);transition:.25s}
+.work-note a:hover{color:var(--cyan)}
+
+/* ---- services: one line each, then the four steps ---- */
+.svc-grid{grid-template-columns:1fr;gap:10px}
+.svc-grid .svc:last-child{grid-column:auto}
+.svc{padding:18px 16px}
+.svc p{font-size:.9rem;line-height:1.55}
+@media(max-width:759px){
+  .svc{display:grid;grid-template-columns:42px 1fr;column-gap:14px;align-items:start}
+  .svc .ic{grid-row:span 2;margin:0}
+  .svc h3{margin:2px 0 4px}
+}
+@media(min-width:760px){.svc-grid{grid-template-columns:repeat(3,1fr);gap:18px}.svc{padding:24px 22px}}
+.steps{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.steps li{display:flex;align-items:center;gap:10px;padding:12px 13px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);
+  font-size:.84rem;line-height:1.3;color:var(--text)}
+.steps b{font-family:var(--mono);font-size:.78rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+@media(min-width:760px){
+  .steps{grid-template-columns:repeat(4,1fr);gap:0;margin-top:18px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);overflow:hidden}
+  .steps li{border:0;border-left:1px solid var(--border);border-radius:0;padding:16px 18px;font-size:.9rem}
+  .steps li:first-child{border-left:0}
+}
+
+/* ---- about: story, facts, then experience, tools and credentials in boxes ---- */
+.about-text p{max-width:58ch}
+.about-more{display:grid;grid-template-columns:1fr;gap:12px;margin-top:26px}
+.am-side{display:grid;gap:12px;align-content:start}
+.am-box{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);padding:18px 16px}
+.am-box h4{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);font-weight:500;margin:0 0 12px}
+.xp{list-style:none;margin:0;padding:0}
+.xp li{display:grid;grid-template-columns:1fr auto;column-gap:12px;padding:10px 0;border-top:1px solid var(--border)}
+.xp li:first-child{border-top:0;padding-top:0}
+.xp li:last-child{padding-bottom:0}
+.xp b{font-size:.9rem;font-weight:600;line-height:1.3;color:var(--text)}
+.xp span{grid-column:1;font-size:.8rem;color:var(--muted);margin-top:2px}
+.xp em{grid-column:2;grid-row:1 / span 2;align-self:center;font-style:normal;font-family:var(--mono);font-size:.66rem;color:var(--faint);white-space:nowrap}
+.certs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:10px}
+.certs li{display:grid;grid-template-columns:28px 1fr;column-gap:10px;align-items:center}
+.certs i{grid-row:span 2;font-style:normal;font-size:1.2rem;line-height:1}
+.certs b{font-size:.84rem;font-weight:600;line-height:1.3}
+.certs span{font-family:var(--mono);font-size:.66rem;color:var(--faint)}
+@media(min-width:520px){.certs{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){
+  .about-more{grid-template-columns:1.05fr 1fr;gap:18px;margin-top:44px}
+  .am-box{padding:22px 22px}
+}
+
+/* ---- estimator and contact: a little tighter ---- */
+.roi-note{margin:12px 0 16px}
+.ba-after{object-position:top left}
+.ba-tag{background:rgba(8,10,18,.86);color:#fff;font-size:.62rem}
+.ba-tag-r{color:var(--emerald)}
+</style>
 <link rel="stylesheet" href="assets/jarvis.css" />
 </head>
 <body>
@@ -1111,9 +1223,7 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
     <a href="#top" class="logo"><span class="mark">DKB</span> Debashish Bora</a>
     <div class="nav-links" id="navlinks">
       <a href="#work">Work</a>
-      <a href="#clients">Clients</a>
       <a href="#services">Services</a>
-      <a href="#skills">Skills</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
       <a href="#contact" data-book class="btn btn-primary nav-menu-cta">Book a Call →</a>
@@ -1148,11 +1258,9 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
           <div class="aip-scan"></div>
         </div>
         <span class="aip-badge"><span class="dot"></span>LIVE · AI</span>
-        <span class="aip-chip c1"><i></i>AI Chatbots</span>
+        <span class="aip-chip c1"><i></i>AI Agents</span>
         <span class="aip-chip c2"><i></i>Apps Script</span>
-        <span class="aip-chip c3"><i></i>Smart Recos</span>
         <span class="aip-chip c4"><i></i>Power BI</span>
-        <span class="aip-chip c5"><i></i>Azure</span>
         <span class="aip-chip c6"><i></i>Looker Studio</span>
         <span class="aip-chip c7"><i></i>Claude AI</span>
         <div class="aip-card">
@@ -1162,186 +1270,57 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
       </div>
     </div>
     <div class="hero-body">
-      <p class="lede">I build live, AI-powered dashboards and AI agents for marketing teams, in Looker Studio, Power BI, Google Apps Script and Claude. They update on their own and tell your team what to do next, not just what already happened. For <b>4+ years</b> I've been turning other people's messy marketing data into something <b>US &amp; UK clients</b> can actually use.</p>
+      <p class="lede">I build <b>AI agents</b> and <b>live dashboards</b> for marketing teams. 4+ years with US &amp; UK brands.</p>
       <div class="hero-cta">
-        <a href="#contact" data-book class="btn btn-primary">Book a Call →</a>
-        <a href="#work" class="btn btn-ghost">See the Dashboards</a>
-      </div>
-      <div class="cap-row">
-        <span class="cap"><i></i>AI Chatbots</span>
-        <span class="cap"><i></i>AI Recommendations</span>
-        <span class="cap"><i></i>Apps Script Automation</span>
-        <span class="cap"><i></i>Azure &amp; Cloud</span>
-        <span class="cap"><i></i>Live API Pipelines</span>
-      </div>
-      <div class="tool-strip"><b>BUILT WITH</b><span class="sep">·</span>Looker Studio<span class="sep">·</span>Power BI<span class="sep">·</span>Google Apps Script<span class="sep">·</span>Azure<span class="sep">·</span>Claude AI<span class="sep">·</span>GA4<span class="sep">·</span>BigQuery</div>
-    </div>
-  </div>
-
-  <!-- LIVE CONSOLE SIGNATURE -->
-  <div class="console reveal" id="console">
-    <div class="console-bar">
-      <span class="dots"><i></i><i></i><i></i></span>
-      <span class="file mono">revenue_overview.dashboard</span>
-      <span class="live"><span class="dot"></span>LIVE · auto-refresh</span>
-    </div>
-    <div class="console-body">
-      <div class="chart-wrap">
-        <div class="chart-head">
-          <span class="t">Revenue overview · sample data</span>
-          <span class="n grad-text" id="revHead"></span>
-        </div>
-        <div class="con-ctl" role="group" aria-label="Date range">
-          <button type="button" class="seg on" data-r="12">12M</button>
-          <button type="button" class="seg" data-r="6">6M</button>
-          <button type="button" class="seg" data-r="3">3M</button>
-          <span class="con-hint">Try it. Hover the chart, switch the range, toggle a channel.</span>
-        </div>
-        <div class="chart-plot">
-          <div class="y-axis"><span>£200k</span><span>£150k</span><span>£100k</span><span>£50k</span><span>£0</span></div>
-          <div class="ch-area" id="chArea">
-            <svg class="line" id="lineChart" viewBox="0 0 520 170" preserveAspectRatio="none"></svg>
-            <div class="ch-hover" id="chHover"><i></i><div class="ch-tip" id="chTip"></div></div>
-          </div>
-        </div>
-        <div class="x-axis" id="chX"></div>
-        <div class="spark-legend" id="chLegend">
-          <button type="button" class="lg on" data-s="total"><i style="background:var(--emerald)"></i>Total revenue</button>
-          <button type="button" class="lg on" data-s="paid"><i style="background:var(--indigo)"></i>Paid</button>
-          <button type="button" class="lg on" data-s="organic"><i style="background:var(--cyan)"></i>Organic</button>
-        </div>
-        <div class="con-ai"><span class="con-ai-k">Auto insight</span><span id="conInsight"></span></div>
-      </div>
-      <div>
-        <div class="kpi-row">
-          <div class="kpi"><div class="label">Impressions</div><div class="val" data-count="121" data-suffix="M">0</div><div class="delta">▲ paid + organic</div></div>
-          <div class="kpi"><div class="label">Conversions</div><div class="val" data-count="86" data-suffix="K">0</div><div class="delta">▲ tracked in GA4</div></div>
-          <div class="kpi"><div class="label">Cost / conv.</div><div class="val" data-count="11" data-prefix="£" data-suffix="">£0</div><div class="delta">▼ optimized down</div></div>
-          <div class="kpi"><div class="label">Manual reporting</div><div class="val" data-count="0" data-text="0 hrs">0</div><div class="delta">▼ fully automated</div></div>
-        </div>
-        <div style="font-family:var(--mono);font-size:.74rem;color:var(--muted);border:1px dashed var(--border2);border-radius:12px;padding:14px;line-height:1.7">
-          <span style="color:var(--emerald)">●</span> Connected: Google Ads · GA4 · Meta · StackAdapt<br>
-          <span style="color:var(--cyan)">●</span> Pipeline: API → clean → model → visualize<br>
-          <span style="color:var(--amber)">●</span> Refresh: scheduled · zero manual work
-        </div>
+        <a href="#work" class="btn btn-primary">See My Work ↓</a>
+        <a href="#contact" data-book class="btn btn-ghost">Book a Call</a>
       </div>
     </div>
   </div>
 </section>
 
 <!-- PROOF -->
-<section class="wrap" id="proof" style="padding-top:30px">
+<section class="wrap" id="proof">
   <div class="proof">
-    <div class="stat reveal"><div class="big grad-text" data-count="3" data-prefix="£" data-suffix="M+">£0M+</div><div class="cap">Annual Google Ads budget &middot; ~&#8377;32 Cr</div></div>
+    <div class="stat reveal"><div class="big grad-text" data-count="3" data-prefix="£" data-suffix="M+">£0M+</div><div class="cap">Google Ads budget a year</div></div>
     <div class="stat reveal"><div class="big grad-text" data-count="100" data-suffix="+">0+</div><div class="cap">Ad accounts managed</div></div>
-    <div class="stat reveal"><div class="big grad-text" data-count="8" data-suffix="+">0+</div><div class="cap">Brands delivered for</div></div>
-    <div class="stat reveal"><div class="big grad-text" data-count="4" data-suffix="+">0+</div><div class="cap">Years for US &amp; UK clients</div></div>
+    <div class="stat reveal"><div class="big grad-text" data-count="11" data-suffix="">0</div><div class="cap">Builds on this page</div></div>
+    <div class="stat reveal"><div class="big grad-text" data-count="4" data-suffix="+">0+</div><div class="cap">Years, US &amp; UK clients</div></div>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section class="wrap" id="services">
-  <div class="sec-head reveal">
-    <span class="eyebrow">What I actually do</span>
-    <h2>Three problems I solve really well.</h2>
-    <p>Every project starts with a real business headache, not a shiny tool nobody asked for. This is where I earn my keep.</p>
-  </div>
-  <div class="svc-grid">
-    <div class="svc reveal">
-      <div class="ic">📊</div>
-      <h3>Live marketing dashboards</h3>
-      <p>Auto-updating, branded dashboards your team will actually open. One place for every number that matters.</p>
-      <ul>
-        <li>Looker Studio &amp; Power BI builds from scratch</li>
-        <li>Google Ads · GA4 · Meta · CRM · Sheets blended</li>
-        <li>Drill-downs, filters, YoY / MoM comparisons</li>
-      </ul>
-      <span class="more">Start a Dashboard →</span>
-    </div>
-    <div class="svc reveal">
-      <div class="ic">⚙️</div>
-      <h3>Reporting automation</h3>
-      <p>Kill the soul-crushing weekly report. I wire your data through APIs so the numbers update themselves while you do literally anything else.</p>
-      <ul>
-        <li>API &amp; data-pipeline integration</li>
-        <li>Scheduled refresh, zero copy-paste</li>
-        <li>AI-assisted insight summaries</li>
-      </ul>
-      <span class="more">Automate Reporting →</span>
-    </div>
-    <div class="svc reveal">
-      <div class="ic">🎯</div>
-      <h3>Google Ads &amp; analytics</h3>
-      <p>Sharper campaigns and tracking you can trust, so your budget stops funding clicks that go nowhere.</p>
-      <ul>
-        <li>Campaign optimization &amp; A/B testing</li>
-        <li>GA4 setup &amp; conversion tracking</li>
-        <li>Opportunity &amp; wasted-spend analysis</li>
-      </ul>
-      <span class="more">Improve Campaigns →</span>
-    </div>
-  </div>
-</section>
-
-<!-- HOW I WORK (process) -->
-<section class="wrap" id="process">
-  <div class="sec-head reveal">
-    <span class="eyebrow">How I work</span>
-    <h2>From scattered data to something that runs itself.</h2>
-    <p>A simple, predictable way of working, whether it's a one-off build or a longer-term role.</p>
-  </div>
-  <div class="proc-grid">
-    <div class="proc-step reveal">
-      <span class="proc-num">01</span>
-      <h3>Understand the goal</h3>
-      <p>A quick conversation to pin down the real business question, the data that exists, and what a good decision actually looks like.</p>
-    </div>
-    <div class="proc-step reveal">
-      <span class="proc-num">02</span>
-      <h3>Connect &amp; clean</h3>
-      <p>Wire up the sources (Google Ads, GA4, CRM, sheets), then clean and model them so the numbers on top are actually trustworthy.</p>
-    </div>
-    <div class="proc-step reveal">
-      <span class="proc-num">03</span>
-      <h3>Build the dashboard</h3>
-      <p>A branded, interactive view with an AI layer: plain-English answers and clear next-step recommendations, not just charts.</p>
-    </div>
-    <div class="proc-step reveal">
-      <span class="proc-num">04</span>
-      <h3>Automate &amp; iterate</h3>
-      <p>Refine it with real feedback, then automate the refresh so it updates itself. The manual weekly report quietly disappears.</p>
-    </div>
+<!-- CLIENTS -->
+<section class="wrap" id="clients">
+  <p class="lw-k reveal">Brands I've delivered for</p>
+  <div class="logo-wall reveal">
+    <a class="lw" href="https://www.southalltravel.co.uk/" target="_blank" rel="noopener" title="Southall Travel · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=southalltravel.co.uk&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'S'}))"><span>Southall Travel</span></a>
+    <a class="lw" href="https://www.awayholidays.co.uk/" target="_blank" rel="noopener" title="Away Holidays · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=awayholidays.co.uk&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'A'}))"><span>Away Holidays</span></a>
+    <a class="lw" href="https://www.advantage.com/" target="_blank" rel="noopener" title="Advantage Rent A Car · Car rental, USA"><img src="https://www.google.com/s2/favicons?domain=advantage.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'A'}))"><span>Advantage Rent A Car</span></a>
+    <a class="lw" href="https://www.sailmgmt.com/" target="_blank" rel="noopener" title="Sail · Property management, USA"><img src="https://www.google.com/s2/favicons?domain=sailmgmt.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'S'}))"><span>Sail</span></a>
+    <a class="lw" href="https://qxglobalgroup.com/" target="_blank" rel="noopener" title="QX Global Group · BPM, global"><img src="https://www.google.com/s2/favicons?domain=qxglobalgroup.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'Q'}))"><span>QX Global Group</span></a>
+    <a class="lw" href="https://www.flysharp.com/" target="_blank" rel="noopener" title="FlySharp · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=flysharp.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'F'}))"><span>FlySharp</span></a>
+    <a class="lw" href="https://www.traveltrolley.co.uk/" target="_blank" rel="noopener" title="Travel Trolley · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=traveltrolley.co.uk&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'T'}))"><span>Travel Trolley</span></a>
+    <a class="lw" href="https://www.programming.com/" target="_blank" rel="noopener" title="Programming.com · Technology"><img src="https://www.google.com/s2/favicons?domain=programming.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'P'}))"><span>Programming.com</span></a>
   </div>
 </section>
 
 <!-- WORK -->
 <section class="wrap" id="work">
   <div class="sec-head reveal">
-    <span class="eyebrow">Proof, not promises</span>
-    <h2>AI agents and dashboards built to be used, not just admired.</h2>
-    <p>Real builds for marketing and ads teams, in daily use. Every live demo below runs in your browser on sample data with fictional names.</p>
-  </div>
-
-  <!-- AI AGENTS -->
-  <div class="sub-head reveal" id="agents">
-    <span class="eyebrow">AI agents for marketing teams</span>
-    <h3>Tools that do the work, not just show it.</h3>
-    <p>Ask a question in plain English, get a review that writes itself, send every client their own report. Built with Google Apps Script and Claude.</p>
-  </div>
-  <div class="work-grid agent-grid" id="agentGrid"></div>
-  <div class="lb" id="lb"><button class="lb-x" id="lbX">✕</button><img id="lbImg" src="" alt=""><div class="lb-cap" id="lbCap"></div></div>
-
-  <div class="sec-head reveal" style="margin-top:60px;margin-bottom:30px">
-    <span class="eyebrow">Dashboards</span>
-    <h2 style="font-size:clamp(1.4rem,4.2vw,2.4rem)">Dashboards by tool.</h2>
+    <span class="eyebrow">Selected work</span>
+    <h2>See it working.</h2>
+    <p>Tap any screenshot to open the live demo. It runs right here, on sample data.</p>
   </div>
   <div class="filters reveal" id="filters">
     <button class="chip active" data-f="all">All</button>
-    <button class="chip" data-f="app">Live Apps</button>
+    <button class="chip" data-f="agent">AI agents</button>
+    <button class="chip" data-f="app">Dashboards</button>
     <button class="chip" data-f="looker">Looker Studio</button>
   </div>
   <div class="work-grid" id="workGrid"></div>
-  <p class="work-note">More on <a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener" style="color:var(--cyan)">GitHub ↗</a>. Yes, the numbers are real, and the live demos are one click away.</p>
+  <div class="more-wrap" id="moreWrap"><button type="button" class="btn btn-ghost" id="moreWork">Show all projects</button></div>
+  <div class="lb" id="lb"><button class="lb-x" id="lbX">✕</button><img id="lbImg" src="" alt=""><div class="lb-cap" id="lbCap"></div></div>
+  <p class="work-note"><a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener">All the code is on GitHub ↗</a></p>
 </section>
 
 <!-- BEFORE / AFTER (transformation) -->
@@ -1349,145 +1328,96 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
   <div class="sec-head reveal">
     <span class="eyebrow">Before &amp; after</span>
     <h2>Messy spreadsheet in. Clear decisions out.</h2>
-    <p>Drag the slider. Same numbers, two very different Monday mornings.</p>
+    <p>Drag the slider.</p>
   </div>
   <div class="ba reveal" id="ba" style="--pos:50%">
     <div class="ba-frame">
-      <img class="ba-after" src="images/shots/ads-6.webp" alt="A clean, interactive budget and revenue dashboard with a built-in AI analyst and recommendations" loading="lazy" />
+      <img class="ba-after" src="images/shots/perf-1.webp" alt="A clean performance review that states the result in one sentence, with the numbers behind it" loading="lazy" />
       <img class="ba-before" src="images/budget-messy.png" alt="A messy, error-filled budget and revenue spreadsheet before automation" loading="lazy" />
-      <span class="ba-tag ba-tag-l">Before · the spreadsheet</span>
-      <span class="ba-tag ba-tag-r">After · the dashboard</span>
+      <span class="ba-tag ba-tag-l">Before</span>
+      <span class="ba-tag ba-tag-r">After</span>
       <div class="ba-divider"><span class="ba-handle">‹&nbsp;›</span></div>
       <input type="range" min="0" max="100" value="50" class="ba-range" id="baRange" aria-label="Drag to compare the messy spreadsheet with the finished dashboard" />
     </div>
   </div>
 </section>
 
-<!-- CLIENTS -->
-<section class="wrap" id="clients">
+<!-- SERVICES + HOW I WORK -->
+<section class="wrap" id="services">
   <div class="sec-head reveal">
-    <span class="eyebrow">Clients</span>
-    <h2>Brands I've delivered for.</h2>
-    <p>From UK travel leaders to US property and global BPM. That includes <b>£3M+ per year</b> (~&#8377;32 crore) in Google Ads budget on the top travel accounts alone, plus <b>100+ ad accounts</b> across 4+ years.</p>
+    <span class="eyebrow">How I can help</span>
+    <h2>Three problems I solve really well.</h2>
   </div>
-  <div class="clients-grid">
-    <a class="client reveal" href="https://www.southalltravel.co.uk/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=southalltravel.co.uk&sz=128" alt="Southall Travel" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">S</span>
-        <div class="cl-id"><div class="nm">Southall Travel</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">One of the UK's largest travel agencies, paid search at scale.</div>
-      <span class="badge2">£1.5M+/yr · ~&#8377;16 Cr</span><span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://www.awayholidays.co.uk/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=awayholidays.co.uk&sz=128" alt="Away Holidays" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">A</span>
-        <div class="cl-id"><div class="nm">Away Holidays</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">UK holidays specialist, performance &amp; paid media.</div>
-      <span class="badge2">£1.6M+/yr · ~&#8377;17 Cr</span><span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://www.advantage.com/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=advantage.com&sz=128" alt="Advantage Rent A Car" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">A</span>
-        <div class="cl-id"><div class="nm">Advantage Rent A Car</div><div class="sector">Car Rental · USA</div></div></div>
-      <div class="desc">Major US car-rental brand, paid search &amp; analytics.</div>
-      <span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://www.sailmgmt.com/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=sailmgmt.com&sz=128" alt="Sail" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">S</span>
-        <div class="cl-id"><div class="nm">Sail</div><div class="sector">Property Mgmt · USA</div></div></div>
-      <div class="desc">US multi-family property marketing, Google Ads &amp; data, the team behind the AdCommand build.</div>
-      <span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://qxglobalgroup.com/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=qxglobalgroup.com&sz=128" alt="QX Global Group" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">Q</span>
-        <div class="cl-id"><div class="nm">QX Global Group</div><div class="sector">BPM · Global</div></div></div>
-      <div class="desc">Global business process management, current marketing &amp; data role.</div>
-      <span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://www.flysharp.com/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=flysharp.com&sz=128" alt="FlySharp" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">F</span>
-        <div class="cl-id"><div class="nm">FlySharp</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">UK flights &amp; holidays, campaign management.</div>
-      <span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://www.traveltrolley.co.uk/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=traveltrolley.co.uk&sz=128" alt="Travel Trolley" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">T</span>
-        <div class="cl-id"><div class="nm">Travel Trolley</div><div class="sector">Travel · UK</div></div></div>
-      <div class="desc">UK travel agency, analytics &amp; paid media.</div>
-      <span class="visit">Visit site ↗</span>
-    </a>
-    <a class="client reveal" href="https://www.programming.com/" target="_blank" rel="noopener">
-      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=programming.com&sz=128" alt="Programming.com" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">P</span>
-        <div class="cl-id"><div class="nm">Programming.com</div><div class="sector">Technology</div></div></div>
-      <div class="desc">Software &amp; technology services.</div>
-      <span class="visit">Visit site ↗</span>
-    </a>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section class="wrap" id="skills">
-  <div class="sec-head reveal">
-    <span class="eyebrow">Capabilities</span>
-    <h2>The stack behind the work.</h2>
-    <p>The tools I reach for daily. Not the ones I added to my CV in 2019 and never opened again.</p>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-cat skill-bars reveal">
-      <h4>Where you can see each one working</h4>
-      <div class="proofs" id="bars"></div>
+  <div class="svc-grid">
+    <div class="svc reveal">
+      <div class="ic">📊</div>
+      <h3>Live marketing dashboards</h3>
+      <p>Auto-updating dashboards your team will actually open, in Looker Studio, Power BI or Apps Script.</p>
     </div>
-    <div class="skill-clouds">
-      <div class="skill-cat reveal">
-        <h4>BI &amp; visualization</h4>
-        <div class="stack-cloud"><span>Power BI</span><span>DAX</span><span>Power Query</span><span>Looker Studio</span><span>Looker</span><span>Tableau</span></div>
-      </div>
-      <div class="skill-cat reveal">
-        <h4>Data &amp; querying</h4>
-        <div class="stack-cloud"><span>SQL</span><span>MySQL</span><span>BigQuery</span><span>Data Modeling</span><span>Data Cleaning</span><span>Validation</span></div>
-      </div>
-      <div class="skill-cat reveal">
-        <h4>Marketing &amp; automation</h4>
-        <div class="stack-cloud"><span>GA4</span><span>Google Ads</span><span>Meta Ads</span><span>StackAdapt</span><span>SEM</span><span>AI-driven Analytics</span><span>Automated Dashboards</span></div>
-      </div>
+    <div class="svc reveal">
+      <div class="ic">🤖</div>
+      <h3>AI agents &amp; automation</h3>
+      <p>Ask your data questions in plain English, and let the weekly report build itself.</p>
+    </div>
+    <div class="svc reveal">
+      <div class="ic">🎯</div>
+      <h3>Google Ads &amp; analytics</h3>
+      <p>Sharper campaigns and tracking you can trust, so budget stops funding clicks that go nowhere.</p>
     </div>
   </div>
+  <ol class="steps reveal" id="process" aria-label="How I work">
+    <li><b>01</b><span>Understand the goal</span></li>
+    <li><b>02</b><span>Connect &amp; clean the data</span></li>
+    <li><b>03</b><span>Build the dashboard or agent</span></li>
+    <li><b>04</b><span>Automate &amp; improve</span></li>
+  </ol>
 </section>
 
 <!-- ABOUT -->
 <section class="wrap" id="about">
   <div class="about-grid">
     <div class="about-photo reveal" id="aboutPhoto">
-      <img src="images/profile.jpg" alt="Debashish Kumar Bora" onerror="this.parentElement.classList.add('img-failed')">
+      <img src="images/profile.jpg" alt="Debashish Kumar Bora" loading="lazy" onerror="this.parentElement.classList.add('img-failed')">
       <div class="ph"><div class="ring">🧑‍💻</div>Drop a photo at<br><b>images/profile.jpg</b></div>
     </div>
     <div class="about-text reveal">
       <span class="eyebrow" style="display:block;margin-bottom:12px">About</span>
       <h2>Marketing guy. Data brain.</h2>
-      <p>I started out in marketing, running the campaigns and spending the actual budget. Then I got tired of waiting two days for a report that was already out of date, so I taught myself to build my own. Turns out I liked the data part even more than the ads.</p>
-      <p>So now I live in the overlap. I've spent the money and built the dashboards that explain where it went, which means I actually know which numbers move revenue and which ones just look busy on a slide. Then I automate the dull bits, because nobody should be hand-updating a spreadsheet at 11pm. Me least of all.</p>
+      <p>I started out running campaigns and spending the actual budget. Tired of waiting two days for reports that were already out of date, I taught myself to build my own. Now I build the dashboards and AI tools that show where the money went, then automate the dull bits.</p>
       <div class="facts">
         <div class="fact"><div class="k">Based in</div><div class="v">Guwahati, India 🇮🇳</div></div>
         <div class="fact"><div class="k">Now</div><div class="v">Sr. Marketing Exec · QX Global</div></div>
         <div class="fact"><div class="k">Education</div><div class="v">MBA · IIT Dhanbad</div></div>
         <div class="fact"><div class="k">Works with</div><div class="v">US · UK · Global clients</div></div>
       </div>
-      <div class="timeline">
-        <div class="tl"><div class="when">MAR 2026 → PRESENT</div><div class="role">Senior Marketing Executive</div><div class="co">QX Global</div></div>
-        <div class="tl"><div class="when">APR 2025 → MAR 2026</div><div class="role">Senior Digital Marketing Executive</div><div class="co">Southall Travel</div></div>
-        <div class="tl"><div class="when">AUG 2024 → FEB 2025</div><div class="role">Digital Marketing Analyst</div><div class="co">Programming.com · US clients</div></div>
-        <div class="tl"><div class="when">JUN 2023 → JUL 2024</div><div class="role">Digital Data Analyst</div><div class="co">Investosure Consultancy</div></div>
-        <div class="tl"><div class="when">2019 → 2021</div><div class="role">Freelance Digital Analyst</div><div class="co">Self-employed</div></div>
-      </div>
     </div>
   </div>
-</section>
-
-<!-- CERTS -->
-<section class="wrap" id="certs" style="padding-top:0">
-  <div class="sec-head reveal"><span class="eyebrow">Certified</span><h2>Credentials.</h2><p>The formal stuff, for anyone who wants proof I didn't just learn it all from YouTube.</p></div>
-  <div class="cert-grid">
-    <div class="cert reveal"><div class="ic">📈</div><div class="n">Google Data Analytics Professional</div><div class="by">Google</div></div>
-    <div class="cert reveal"><div class="ic">📊</div><div class="n">Power BI Certification</div><div class="by">Microsoft</div></div>
-    <div class="cert reveal"><div class="ic">🧮</div><div class="n">Advanced Excel Practitioner</div><div class="by">Certified</div></div>
-    <div class="cert reveal"><div class="ic">🎓</div><div class="n">Data Analytics Certification</div><div class="by">Henry Harvin</div></div>
+  <div class="about-more">
+    <div class="am-box reveal">
+      <h4>Experience</h4>
+      <ul class="xp">
+        <li><b>Senior Marketing Executive</b><span>QX Global</span><em>2026 → now</em></li>
+        <li><b>Senior Digital Marketing Executive</b><span>Southall Travel</span><em>2025 → 2026</em></li>
+        <li><b>Digital Marketing Analyst</b><span>Programming.com</span><em>2024 → 2025</em></li>
+        <li><b>Digital Data Analyst</b><span>Investosure Consultancy</span><em>2023 → 2024</em></li>
+        <li><b>Freelance Digital Analyst</b><span>Self-employed</span><em>2019 → 2021</em></li>
+      </ul>
+    </div>
+    <div class="am-side">
+      <div class="am-box reveal" id="skills">
+        <h4>Tools I use daily</h4>
+        <div class="stack-cloud"><span>Looker Studio</span><span>Power BI</span><span>DAX</span><span>Apps Script</span><span>Claude AI</span><span>SQL</span><span>BigQuery</span><span>Snowflake</span><span>GA4</span><span>Google Ads</span><span>Meta Ads</span><span>Azure</span><span>Tableau</span></div>
+      </div>
+      <div class="am-box reveal" id="certs">
+        <h4>Certified</h4>
+        <ul class="certs">
+          <li><i>📈</i><b>Google Data Analytics Professional</b><span>Google</span></li>
+          <li><i>📊</i><b>Power BI Certification</b><span>Microsoft</span></li>
+          <li><i>🧮</i><b>Advanced Excel Practitioner</b><span>Certified</span></li>
+          <li><i>🎓</i><b>Data Analytics Certification</b><span>Henry Harvin</span></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1496,7 +1426,7 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
   <div class="sec-head reveal">
     <span class="eyebrow">Do the maths</span>
     <h2>What is manual reporting costing you?</h2>
-    <p>Move the sliders to match your team. The inputs are yours and the arithmetic is simple. Nothing you enter leaves this page.</p>
+    <p>Move the sliders. Nothing you enter leaves this page.</p>
   </div>
   <div class="roi reveal">
     <div class="roi-in">
@@ -1518,7 +1448,7 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
         <div><b id="roiCost">£28,800</b><span>in salary cost a year</span></div>
         <div><b id="roiWeeks">18</b><span>working weeks a year</span></div>
       </div>
-      <p class="roi-note">Based on 48 working weeks. Automation rarely removes every hour, so bring these numbers to the call and we can work out what is realistic for your setup.</p>
+      <p class="roi-note">Based on 48 working weeks. Bring these numbers to the call.</p>
       <a href="#contact" data-book class="btn btn-primary">Book a Call With These Numbers →</a>
     </div>
   </div>
@@ -1530,7 +1460,7 @@ kbd{font-family:var(--mono);font-size:.62rem;padding:3px 6px;border-radius:6px;b
     <div class="contact-inner">
       <span class="eyebrow" style="display:block;margin-bottom:16px">Let's build</span>
       <h2>Still building that report by hand?</h2>
-      <p>Tell me about your reporting nightmare. I'll show you what a live, self-updating dashboard could do for it. No obligation, no sales-y nonsense.</p>
+      <p>Tell me what your team reports by hand today. I'll show you what a live version could look like.</p>
       <div class="contact-actions">
         <a href="mailto:debashishbora30@gmail.com?subject=Dashboard%20project%20enquiry" data-book class="btn btn-primary">📅 Book a Call</a>
         <a href="https://wa.me/917002820482?text=Hi%20Deb,%20I'd%20like%20to%20discuss%20a%20dashboard%20project" target="_blank" rel="noopener" class="btn btn-ghost">💬 WhatsApp</a>
@@ -1682,73 +1612,59 @@ function buildLine(){
 })();
 buildLine();
 
-/* ============ SKILLS (proof, not percentages) ============ */
-const skills=[
-  ['Dashboards and data visualization','Eleven builds on this page, nine of them live','See the work','go:#work'],
-  ['Google Ads and GA4','£3M+ a year in managed budget, 100+ ad accounts','See the clients','go:#clients'],
-  ['Google Apps Script web apps','Nine live apps running in your browser','Show live apps','go:#agents'],
-  ['Looker Studio','Client Campaign Performance, GA4 Traffic Analytics','Show Looker builds','f:looker'],
-  ['SQL and Snowflake','Leasing Dashboard, built on raw Snowflake tables','Open the demo','demo:lease'],
-  ['AI agents and automation','Ads Intelligence, a Claude-style analyst over 16 ad accounts','Open the agent','demo:adsintel'],
-  ['Power BI, DAX and Power Query','Microsoft certified','See credentials','go:#certs'],
-  ['Data modeling and cleaning','The step behind every number on this page','How I work','go:#process']
-];
-const barsEl=document.getElementById('bars');
-barsEl.innerHTML=skills.map(function(s){return '<div class="proof-row"><div class="pr-t"><b>'+s[0]+'</b><span>'+s[1]+'</span></div><button type="button" class="pr-b" data-act="'+s[3]+'">'+s[2]+' <i>→</i></button></div>';}).join('');
-
 /* ============ PROJECTS ============ */
 const projects=[
-  {k:'adsintel',t:'Ads Intelligence',shots:['shots/intel-1.webp','shots/intel-2.webp','shots/intel-3.webp','shots/intel-4.webp','shots/intel-5.webp','shots/intel-6.webp'],tool:'Apps Script + Claude',tag:['agent'],file:'shots/intel-1.webp',
+  {k:'adsintel',s:'Ask anything about 16 ad accounts in plain English. Get tables, charts and a fix list.',t:'Ads Intelligence',shots:['shots/intel-1.webp','shots/intel-2.webp','shots/intel-3.webp','shots/intel-4.webp','shots/intel-5.webp','shots/intel-6.webp'],tool:'Apps Script + Claude',tag:['agent'],file:'shots/intel-1.webp',
    live:'https://debashishkumarbora.github.io/demos/ads-intelligence/',repo:null,
    p:'A team running 16 Google Ads accounts paid for reporting tools and still worked out what to fix by hand.',
    b:'A Claude-style chat over every account, plus nine tools (ad copy, sitelinks, recaps, why did it change, search term themes, a heatmap, negatives, budget pacing, landing page checks), daily alerts and a 24 check audit. Read only, with Fair Housing guardrails.',
    r:'Plain English questions answered with tables, charts and a fix list, with every number traced to the query behind it.'},
-  {k:'perf',t:'Performance Review',shots:['shots/perf-1.webp','shots/perf-2.webp','shots/perf-3.webp','shots/perf-4.webp','shots/perf-5.webp','shots/perf-6.webp'],tool:'Apps Script + Claude',tag:['agent'],file:'shots/perf-1.webp',
+  {k:'perf',s:'A year over year ads review that writes itself, then turns into slides in one click.',t:'Performance Review',shots:['shots/perf-1.webp','shots/perf-2.webp','shots/perf-3.webp','shots/perf-4.webp','shots/perf-5.webp','shots/perf-6.webp'],tool:'Apps Script + Claude',tag:['agent'],file:'shots/perf-1.webp',
    live:'https://debashishkumarbora.github.io/demos/performance-review/',repo:null,
    p:'A year over year Google Ads review across 16 communities meant days of exports, pivots and slides.',
    b:'A review that builds itself for any period and comparison: at a glance, spend, results, what went well, limited results, recommendations, every community side by side, a context log and a next year ideas board.',
    r:'One click Present mode turns it into slides, exportable as PDF, with written findings that never point blame at a person.'},
-  {k:'clients',t:'Client Reports',shots:['shots/client-1.webp','shots/client-2.webp','shots/client-3.webp','shots/client-4.webp','shots/client-5.webp','shots/client-6.webp'],tool:'Apps Script',tag:['agent'],file:'shots/client-1.webp',
+  {k:'clients',s:'Every client gets a private link with only their own results and a swipeable recap.',t:'Client Reports',shots:['shots/client-1.webp','shots/client-2.webp','shots/client-3.webp','shots/client-4.webp','shots/client-5.webp','shots/client-6.webp'],tool:'Apps Script',tag:['agent'],file:'shots/client-1.webp',
    live:'https://debashishkumarbora.github.io/demos/client-reports/',repo:null,
    p:'Property clients wanted their own Google Ads results without seeing other clients or internal notes.',
    b:'One link with a different password per client, showing only that client: highlights, a swipeable recap, top campaign, best day, devices, live ads and top searches, with a PDF cover page.',
    r:'Client ready reports with no manual prep, where every comparison reads as true good news and dips are flagged to the team privately.'},
-  {k:'ads',t:'AdCommand',shots:['shots/ads-1.webp','shots/ads-2.webp','shots/ads-3.webp','shots/ads-4.webp','shots/ads-5.webp','shots/ads-6.webp'],tool:'Google Ads API + Claude',tag:['app'],file:'shots/ads-1.webp',
+  {k:'ads',s:'Sixteen Google Ads accounts in one web app, with a Claude analyst on top.',t:'AdCommand',shots:['shots/ads-1.webp','shots/ads-2.webp','shots/ads-3.webp','shots/ads-4.webp','shots/ads-5.webp','shots/ads-6.webp'],tool:'Google Ads API + Claude',tag:['app'],file:'shots/ads-1.webp',
    live:'https://debashishkumarbora.github.io/ads-command-center',repo:'https://github.com/DebashishKumarBora/ads-command-center',
    p:'Sixteen Google Ads accounts lived in sixteen browser tabs, with no single place to see what was working.',
    b:'A Google Ads command center on the live API: accounts, analytics, a geo view, search terms, keywords, ads, budget pacing and a Claude analyst with chat and voice.',
    r:'The whole portfolio in one web app, with the AI analyst flagging what to fix first.'},
-  {k:'hub',t:'Marketing Intelligence Hub',shots:['shots/hub-1.webp','shots/hub-2.webp','shots/hub-3.webp','shots/hub-4.webp','shots/hub-5.webp','shots/hub-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/hub-1.webp',
+  {k:'hub',s:'Ads, analytics, reviews, search and leasing data in one view, with an AI operator.',t:'Marketing Intelligence Hub',shots:['shots/hub-1.webp','shots/hub-2.webp','shots/hub-3.webp','shots/hub-4.webp','shots/hub-5.webp','shots/hub-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/hub-1.webp',
    live:'https://debashishkumarbora.github.io/property-marketing-intelligence-hub',repo:'https://github.com/DebashishKumarBora/property-marketing-intelligence-hub',
    p:'A marketing lead had spend, leads, occupancy and reviews scattered across six different tools.',
    b:'One control room unifying Google Ads, GA4, Business Profile, Search Console and leasing data, with an AI operator that answers questions in plain English.',
    r:'Every channel, community and alert in a single portfolio view, with wasted spend and occupancy strategy surfaced automatically.'},
-  {k:'ga4',t:'Analytics Dashboard (GA4)',shots:['shots/ga4-1.webp','shots/ga4-2.webp','shots/ga4-3.webp','shots/ga4-4.webp','shots/ga4-5.webp','shots/ga4-6.webp'],tool:'Apps Script + GA4',tag:['app'],file:'shots/ga4-1.webp',
-   live:'https://debashishkumarbora.github.io/ga4-analytics-dashboard',repo:'https://github.com/DebashishKumarBora/ga4-analytics-dashboard',
-   p:'The team could not tell which channels and which communities actually drove leads.',
-   b:'A GA4-powered dashboard covering sessions, acquisition, engagement, conversions and audience across 16 communities.',
-   r:'Cross-channel performance at a glance, with a conversion tracking break at one community caught by the AI analyst.'},
-  {k:'lease',t:'Leasing Dashboard',shots:['shots/lease-1.webp','shots/lease-2.webp','shots/lease-3.webp','shots/lease-4.webp','shots/lease-5.webp','shots/lease-6.webp'],tool:'Apps Script + Snowflake',tag:['app'],file:'shots/lease-1.webp',
+  {k:'lease',s:'Prospect to signed lease, live from Snowflake, with an AI analyst grading health.',t:'Leasing Dashboard',shots:['shots/lease-1.webp','shots/lease-2.webp','shots/lease-3.webp','shots/lease-4.webp','shots/lease-5.webp','shots/lease-6.webp'],tool:'Apps Script + Snowflake',tag:['app'],file:'shots/lease-1.webp',
    live:'https://debashishkumarbora.github.io/snowflake-leasing-dashboard',repo:'https://github.com/DebashishKumarBora/snowflake-leasing-dashboard',
    p:'Leasing performance lived in raw Snowflake tables that no one on the team could read.',
    b:'A live funnel from prospect to signed lease, plus occupancy, renewals, speed to lead and an availability board matched against demand.',
    r:'The whole leasing operation in one view, with an AI analyst grading health and returning a prioritized plan.'},
-  {k:'gbp',t:'Reviews Dashboard (Business Profile)',shots:['shots/gbp-1.webp','shots/gbp-2.webp','shots/gbp-3.webp','shots/gbp-4.webp','shots/gbp-5.webp','shots/gbp-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/gbp-1.webp',
+  {k:'ga4',s:'Which channels and communities actually drive leads, across 16 communities.',t:'Analytics Dashboard (GA4)',shots:['shots/ga4-1.webp','shots/ga4-2.webp','shots/ga4-3.webp','shots/ga4-4.webp','shots/ga4-5.webp','shots/ga4-6.webp'],tool:'Apps Script + GA4',tag:['app'],file:'shots/ga4-1.webp',
+   live:'https://debashishkumarbora.github.io/ga4-analytics-dashboard',repo:'https://github.com/DebashishKumarBora/ga4-analytics-dashboard',
+   p:'The team could not tell which channels and which communities actually drove leads.',
+   b:'A GA4-powered dashboard covering sessions, acquisition, engagement, conversions and audience across 16 communities.',
+   r:'Cross-channel performance at a glance, with a conversion tracking break at one community caught by the AI analyst.'},
+  {k:'gbp',s:'Rating, reviews and listing health across every Business Profile, with AI reply drafts.',t:'Reviews Dashboard (Business Profile)',shots:['shots/gbp-1.webp','shots/gbp-2.webp','shots/gbp-3.webp','shots/gbp-4.webp','shots/gbp-5.webp','shots/gbp-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/gbp-1.webp',
    live:'https://debashishkumarbora.github.io/gbp-reviews-dashboard',repo:'https://github.com/DebashishKumarBora/gbp-reviews-dashboard',
    p:'Dozens of Google Business Profiles with no single view of rating, reviews or profile health.',
    b:'A command center for listings audit, review management and performance, with an AI analyst that drafts replies and surfaces recurring themes.',
    r:'Rating, review velocity and health across every listing, with unanswered negatives caught fast.'},
-  {k:'gsc',t:'Search Console Dashboard',shots:['shots/gsc-1.webp','shots/gsc-2.webp','shots/gsc-3.webp','shots/gsc-4.webp','shots/gsc-5.webp'],tool:'Apps Script + Search Console',tag:['app'],file:'shots/gsc-1.webp',
+  {k:'gsc',s:'Clicks, rankings and the exact queries and pages behind organic search.',t:'Search Console Dashboard',shots:['shots/gsc-1.webp','shots/gsc-2.webp','shots/gsc-3.webp','shots/gsc-4.webp','shots/gsc-5.webp'],tool:'Apps Script + Search Console',tag:['app'],file:'shots/gsc-1.webp',
    live:'https://debashishkumarbora.github.io/search-console-dashboard',repo:'https://github.com/DebashishKumarBora/search-console-dashboard',
    p:'Organic search data sat inside Search Console, unread and unactioned.',
    b:'A clean dashboard for clicks, impressions, CTR and average position, with top queries, top pages and a device split.',
    r:'Organic performance and the exact queries and pages driving it, in one trend-led view.'},
-  {t:'Client Campaign Performance',tool:'Looker Studio',tag:['looker'],file:'client-campaign-performance.png',
+  {t:'Client Campaign Performance',s:'121M+ impressions, 2.1M clicks and 86K conversions, paid and organic in one view.',tool:'Looker Studio',tag:['looker'],file:'client-campaign-performance.png',
    live:null,repo:'https://github.com/DebashishKumarBora',
    p:'A travel client needed paid and organic performance in one place, across millions of impressions.',
    b:'Looker Studio dashboard blending Google Ads + Search Console: KPIs, Brand vs Generic keywords, match-type performance and location insights.',
    r:'Surfaced 121M+ impressions, 2.1M clicks & 86K conversions, with clear wins in low-CTR, cost-heavy queries.'},
-  {t:'GA4 Traffic Analytics',tool:'Looker Studio',tag:['looker'],file:'ga4-traffic-analytics.png',
+  {t:'GA4 Traffic Analytics',s:'157K sessions mapped by channel, device and the landing pages that convert.',tool:'Looker Studio',tag:['looker'],file:'ga4-traffic-analytics.png',
    live:null,repo:'https://github.com/DebashishKumarBora',
    p:'The team could not tell where quality traffic came from, or how engagement was trending.',
    b:'GA4-powered Looker Studio dashboard: channel performance (paid vs organic), device split, landing-page conversions and YoY/MoM views.',
@@ -1779,29 +1695,36 @@ function cardHtml(p,i){return `
       </div>
       <div class="body">
         <h3>${p.t}</h3>
+        <p class="one">${p.s}</p>
         <div class="pbr">
           <div class="row"><span class="k">Problem</span><span class="v">${p.p}</span></div>
           <div class="row"><span class="k">Built</span><span class="v">${p.b}</span></div>
           <div class="row"><span class="k">Result</span><span class="v result">${p.r}</span></div>
+          ${p.repo?`<a class="code" href="${p.repo}" target="_blank" rel="noopener">View the code ↗</a>`:''}
         </div>
         <div class="links">
-          ${p.live?`<a class="live" href="${p.live}" target="_blank" rel="noopener">Open live demo ↗</a>`:`<a class="live" href="#contact">Discuss this →</a>`}
-          ${p.repo?`<a href="${p.repo}" target="_blank" rel="noopener">Code ↗</a>`:''}
-          <button type="button" class="story-btn" aria-expanded="false">The story <i>+</i></button>
+          ${p.live?`<a class="live" href="${p.live}" target="_blank" rel="noopener">Live demo ↗</a>`:`<a class="live" href="#contact">Discuss this →</a>`}
+          <button type="button" class="story-btn" aria-expanded="false">Details <i>+</i></button>
         </div>
       </div>
     </div>`;}
-function renderProjects(f='all'){
-  grid.innerHTML=projects.filter(p=>!p.tag.includes('agent')&&(f==='all'||p.tag.includes(f))).map(cardHtml).join('');
+var curF='all',showAll=false,FIRST=6;
+function renderProjects(f){
+  if(f)curF=f;
+  var list=projects.filter(p=>curF==='all'||p.tag.includes(curF));
+  var cut=curF==='all'&&!showAll&&list.length>FIRST;
+  grid.innerHTML=(cut?list.slice(0,FIRST):list).map(cardHtml).join('');
   grid.querySelectorAll('.reveal').forEach(el=>{io.observe(el);});
+  var mw=document.getElementById('moreWrap'),mb=document.getElementById('moreWork');
+  if(mw)mw.hidden=!cut;
+  if(mb)mb.textContent='Show all '+list.length+' projects';
 }
-const agentGrid=document.getElementById('agentGrid');
-if(agentGrid){agentGrid.innerHTML=projects.filter(p=>p.tag.includes('agent')).map((p,i)=>cardHtml(p,i+1)).join('');agentGrid.querySelectorAll('.reveal').forEach(el=>{io.observe(el);});}
 renderProjects();
+document.getElementById('moreWork').addEventListener('click',()=>{showAll=true;renderProjects();});
 document.getElementById('filters').addEventListener('click',e=>{
-  if(!e.target.classList.contains('chip'))return;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  e.target.classList.add('active'); renderProjects(e.target.dataset.f);
+  var c=e.target.closest('.chip'); if(!c)return;
+  document.querySelectorAll('#filters .chip').forEach(x=>x.classList.remove('active'));
+  c.classList.add('active'); renderProjects(c.dataset.f);
 });
 
 /* ============ ASSISTANT SHELL ============
@@ -2219,7 +2142,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 
 <!-- ===== mobile sticky bar ===== -->
 <div class="mbar" id="mbar">
-  <a href="#work">See the Dashboards</a>
+  <a href="#work">See My Work</a>
   <a href="#contact" class="pri">Book a Call</a>
 </div>
 
@@ -2451,14 +2374,14 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   if(btn&&mac){var kb=btn.querySelector('kbd');if(kb)kb.textContent='⌘ K';}
   var ITEMS=[];
   (window.DKB.demos||[]).forEach(function(d){ITEMS.push({g:'Live demos',t:'Open '+d.t,h:d.tool,a:'demo:'+d.k,k:d.t+' '+d.tool+' demo dashboard open'});});
-  [['AI agents','#agents','agents ads intelligence superdash performance review client reports'],['Work','#work','dashboards projects portfolio'],['How I work','#process','process steps'],['Before and after','#transform','slider spreadsheet'],
+  [['Work','#work','dashboards projects portfolio agents'],['How I work','#process','process steps services'],['Before and after','#transform','slider spreadsheet'],
    ['Clients','#clients','brands'],['Skills','#skills','stack tools'],['About','#about','background bio experience'],
    ['Credentials','#certs','certifications certificates'],['Reporting cost estimator','#roi','calculator roi savings'],['Contact','#contact','email hire']]
    .forEach(function(s){ITEMS.push({g:'Jump to',t:s[0],h:'Section',a:'go:'+s[1],k:s[0]+' '+s[2]});});
   [['Book a call','Calendly','book','schedule meeting hire'],['Message on WhatsApp','Opens WhatsApp','wa','chat message'],
    ['Copy email address','Clipboard','email','mail contact'],['Take the guided tour','Narrated','tour','walkthrough'],
    ['Talk to the assistant','Chat and voice','chat','jarvis ai bot'],['Switch light or dark theme','Appearance','theme','mode'],
-   ['Show only live apps','Filter','f:app','apps script'],['Show only Looker Studio','Filter','f:looker','looker']]
+   ['Show only AI agents','Filter','f:agent','agents ads intelligence superdash performance review client reports'],['Show only dashboards','Filter','f:app','apps script live'],['Show only Looker Studio','Filter','f:looker','looker']]
    .forEach(function(s){ITEMS.push({g:'Actions',t:s[0],h:s[1],a:s[2],k:s[0]+' '+s[3]});});
   var shown=[],sel=0;
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}

@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Performance Review | Vertex demo</title>
+<style>
+:root{
+  --ink:#000000; --ink2:#2E2F30; --muted:#626466; --gray:#A8AAAB; --rule:#D6D7D8; --hair:#E8E9EA;
+  --shade:#F3F3F3; --shade2:#F8F8F8; --paper:#FFFFFF; --gold:#CDA176;
+  --serif:"Adobe Garamond Pro","EB Garamond",Garamond,Georgia,"Times New Roman",serif;
+  --sans:Calibri,Carlito,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff}
+body{color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-variant-numeric:lining-nums}
+h1,h2,h3,h4,th,b,strong{font-weight:400}
+h1,h2,h3,.tv,.bv,.mv,.lh,.rn,.fvals .v,.cword,.cover h1,.closing h1,.s-tile .tv,.s-big .bv,.s-recs .rn{font-feature-settings:"lnum" 1;font-variant-numeric:lining-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+.hide{display:none !important}
+.muted{color:var(--muted)}
+.tiny{font-size:12px;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.side{width:236px;flex:none;border-right:1px solid var(--hair);padding:30px 18px 22px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:#fff;z-index:6}
+.brand{padding:0 10px 26px}
+.brand .word{font-family:var(--serif);font-size:25px;letter-spacing:.46em;line-height:1}
+.brand .sub{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:block;padding:8px 12px;border-radius:6px;text-decoration:none;font-size:15px;color:var(--ink)}
+.nav a:hover{background:var(--shade2)}
+.nav a.on{background:var(--shade)}
+.nav .subnav{display:flex;flex-direction:column;margin:2px 0 8px}
+.nav .subnav a{padding:5px 12px 5px 26px;font-size:14px;color:var(--ink2)}
+.side-foot{margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--hair);font-size:13px;color:var(--ink2);word-break:break-all}
+.main{flex:1;min-width:0}
+.bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--hair);padding:14px 40px 14px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end}
+.field{display:flex;flex-direction:column;min-width:0}
+.field>label,.flabel{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;white-space:nowrap}
+.field .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+select,input[type=date],input[type=text],input[type=password],input[type=number],input[type=email],textarea{border:1px solid var(--rule);border-radius:6px;padding:7px 10px;background:#fff;min-height:38px;font-size:15px;max-width:100%}
+textarea{min-height:80px;width:100%;resize:vertical;line-height:1.45}
+select:focus,input:focus,textarea:focus,.btn:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.btn{border:1px solid var(--ink);background:#fff;border-radius:6px;padding:7px 14px;font-size:15px;cursor:pointer;min-height:38px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--shade2)}
+.btn.solid{background:var(--ink);color:#fff}
+.btn.solid:hover{background:#222}
+.btn.ghost{border-color:var(--rule)}
+.btn[disabled]{opacity:.45;cursor:default}
+.link{background:none;border:0;padding:0;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--gray);cursor:pointer}
+.bar-actions{margin-left:auto;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.menu{position:relative}
+.menu>summary{list-style:none}
+.menu>summary::-webkit-details-marker{display:none}
+.menu-list{position:absolute;right:0;top:44px;background:#fff;border:1px solid var(--rule);border-radius:8px;padding:6px;min-width:200px;z-index:20}
+.menu-list button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:15px}
+.menu-list button:hover{background:var(--shade)}
+.content{padding:26px 40px 90px;max-width:1720px}
+.rangeline{font-size:14px;color:var(--muted);padding-bottom:6px}
+.sep{margin:0 8px;color:var(--gray)}
+.banner{border:1px solid var(--rule);background:var(--shade2);border-radius:8px;padding:12px 16px;margin:12px 0;font-size:15px}
+.banner .t{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+
+/* ---------- type ---------- */
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+h1.hero{font-family:var(--serif);font-size:42px;line-height:1.14;margin:10px 0 14px;max-width:1180px;letter-spacing:-.005em}
+h2.sec{font-family:var(--serif);font-size:32px;line-height:1.2;margin:6px 0 8px}
+h3{font-family:var(--serif);font-size:22px;line-height:1.25;margin:4px 0 6px}
+.lede{font-size:18px;color:var(--ink2);max-width:1120px;margin:0 0 6px}
+.intro{font-size:17px;color:var(--ink2);max-width:1120px;margin:0 0 18px}
+.ai-sum{font-size:18px;color:var(--ink2);max-width:1120px;margin:6px 0 4px}
+.ai-note{font-size:12px;color:var(--muted);margin:4px 0 0}
+section.rep{padding:30px 0 42px;border-top:1px solid var(--rule);scroll-margin-top:96px}
+section.rep:first-of-type{border-top:0;padding-top:10px}
+.subhead{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:30px 0 12px}
+
+/* ---------- tiles and boxes ---------- */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 8px}
+@media (min-width:1400px){.content .tiles{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.tile{border:1px solid var(--hair);background:var(--shade2);border-radius:8px;padding:16px 18px 14px;min-width:0}
+.tile .tl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tile .tv{font-family:var(--serif);font-size:34px;line-height:1.1;margin:8px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .tc{font-size:13px;color:var(--muted);margin-bottom:6px}
+.tile .tt{font-size:12px;color:var(--muted);margin-top:6px}
+.chip{font-size:13px;color:var(--ink2);white-space:nowrap;display:inline-flex;align-items:center;position:relative}
+.chip .mk{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;flex:none}
+.chip.good .mk{background:var(--gold)}
+.chip.weak .mk{border:1.5px solid var(--muted);width:7px;height:7px}
+.chip.neutral .mk,.chip.na .mk{display:none}
+.chip.na{color:var(--muted)}
+.boxes{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+.boxes>.box{flex:1 1 220px}
+.box{background:var(--shade);border-radius:8px;padding:18px 20px;min-width:0}
+.box .bl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.box .bv{font-family:var(--serif);font-size:32px;line-height:1.1;margin:8px 0 4px}
+.box .bs{font-size:13px;color:var(--muted)}
+
+/* ---------- cards ---------- */
+.cards{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0;align-items:stretch}
+.cards>.card{flex:1 1 320px}
+.cards.three>.card{flex:1 1 260px}
+.card{border:1px solid var(--hair);border-radius:8px;padding:18px 20px 16px;background:#fff;min-width:0;display:flex;flex-direction:column}
+.card p{margin:6px 0;font-size:15px;color:var(--ink2)}
+.card.win{border-top:2px solid var(--ink)}
+.card.win.lead{border-top-color:var(--gold)}
+.card.limit{border-left:2px solid var(--gray)}
+.metric{margin:4px 0 2px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.metric .mv{font-family:var(--serif);font-size:30px;line-height:1.1}
+.metric .ml{font-size:13px;color:var(--muted)}
+.lh{font-family:var(--serif);font-size:20px;line-height:1.3;margin:2px 0 4px}
+.sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:12px 0 2px}
+ul.why{margin:4px 0 2px;padding-left:18px;font-size:15px;color:var(--ink2)}
+ul.why li{margin:3px 0}
+.next{font-size:15px}
+.impact{font-size:14px;color:var(--muted)}
+.note{background:var(--shade2);border-radius:6px;padding:8px 12px;margin-top:10px}
+.note p{margin:2px 0}
+.acts{margin-top:auto;padding-top:12px;display:flex;gap:16px;flex-wrap:wrap}
+.recs{list-style:none;margin:16px 0;padding:0;counter-reset:r}
+.recs li{display:grid;grid-template-columns:56px 1fr;gap:6px 14px;padding:18px 0;border-top:1px solid var(--hair)}
+.recs li:first-child{border-top:0}
+.recs .rn{font-family:var(--serif);font-size:38px;line-height:1}
+.recs h3{margin:0 0 4px}
+.recs p{margin:4px 0;color:var(--ink2);font-size:15px}
+.why-wrap{margin:22px 0 0;border-top:1px solid var(--hair);padding-top:18px}
+.why-panel{margin-top:14px;background:var(--shade2);border-radius:8px;padding:6px 24px 14px}
+.why-panel .recs li{grid-template-columns:52px 1fr}
+.why-panel .ev{margin:6px 0 2px;padding-left:18px;font-size:14px;color:var(--muted)}
+.why-panel .ev li{display:list-item;border:0;padding:1px 0}
+.why-panel .src{font-size:12px;color:var(--muted);padding:12px 0 2px}
+.why-panel .chips{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px}
+.empty{padding:22px;border:1px dashed var(--rule);border-radius:8px;color:var(--muted);font-size:15px}
+
+/* ---------- status strip ---------- */
+.strip{margin:22px 0 4px}
+.sbar{display:flex;height:14px;border-radius:4px;overflow:hidden;gap:2px;background:#fff}
+.sbar i{display:block;height:100%}
+.skey{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-size:14px;color:var(--ink2)}
+.skey button{background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-size:14px}
+.skey .sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.st-improved{background:#000}.st-steady{background:#A8AAAB}.st-new{background:#D6D7D8}.st-attention{background:#626466}.st-ended{background:#EDEDED}.st-idle{background:#F3F3F3}
+
+/* ---------- charts ---------- */
+.chart-card{border:1px solid var(--hair);border-radius:8px;padding:16px 18px 10px;margin:16px 0;min-width:0}
+.chart-head{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+.chart-head h3{margin:0;font-size:20px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink2);align-items:center}
+.legend .k{display:inline-flex;align-items:center;gap:6px}
+.legend .k i{width:12px;height:12px;border-radius:2px;display:inline-block}
+.legend .k i.ln{height:2px;width:16px;border-radius:1px}
+.k1{background:#000}.k2{background:#A8AAAB}
+.chart{width:100%;min-height:60px;position:relative}
+.chart svg{display:block;overflow:visible}
+.chart .grid{stroke:var(--hair);stroke-width:1}
+.chart .base{stroke:var(--rule);stroke-width:1}
+.chart .ax{font-family:var(--sans);font-size:12px;fill:var(--muted)}
+.chart .vl{font-family:var(--sans);font-size:12px;fill:var(--ink2)}
+.chart .b1{fill:#000}.chart .b2{fill:#A8AAAB}
+.chart .l1{stroke:#000;stroke-width:2;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.chart .l2{stroke:#A8AAAB;stroke-width:2;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.chart .d1{fill:#000;stroke:#fff;stroke-width:2}.chart .d2{fill:#A8AAAB;stroke:#fff;stroke-width:2}
+.chart .mkline{stroke:var(--ink);stroke-width:1}
+.chart .mktext{font-family:var(--sans);font-size:12px;fill:var(--ink2)}
+.chart .hit{fill:transparent;cursor:default}
+.chart .hit:hover{fill:rgba(0,0,0,.04)}
+.chart-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:4px}
+.tip{position:fixed;z-index:60;pointer-events:none;background:#fff;border:1px solid var(--rule);border-radius:6px;padding:8px 11px;font-size:13px;line-height:1.45;color:var(--ink);max-width:280px;display:none}
+.tip .th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.funnel{margin:10px 0}
+.fstage{display:grid;grid-template-columns:150px 1fr 190px;gap:8px 16px;align-items:center;padding:12px 0;border-top:1px solid var(--hair)}
+.fstage:first-child{border-top:0}
+.fstage .fn{font-family:var(--serif);font-size:20px;line-height:1.15}
+.fbars{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fbars i{display:block;height:12px;border-radius:0 4px 4px 0;min-width:2px}
+.fvals{text-align:right;font-variant-numeric:lining-nums tabular-nums}
+.fvals .v{font-family:var(--serif);font-size:24px;line-height:1.1}
+.fvals .c{font-size:13px;color:var(--muted)}
+.frate{font-size:13px;color:var(--muted);padding:2px 0 2px 166px}
+
+/* ---------- tables ---------- */
+.tw{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+table.t{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:lining-nums tabular-nums}
+.t th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--ink);text-align:right;white-space:nowrap;vertical-align:bottom}
+.t td{padding:10px;border-bottom:1px solid var(--hair);text-align:right;white-space:nowrap;vertical-align:top}
+.t .l{text-align:left}
+.t td.l{white-space:normal;min-width:160px}
+.t tr.click{cursor:pointer}
+.t tr.click:hover td{background:var(--shade2)}
+.t th[data-sort]{cursor:pointer}
+.t th[data-sort]:hover{color:var(--ink)}
+.t th.on{color:var(--ink)}
+.t .nm{font-size:15px}
+.t .meta{font-size:12px;color:var(--muted)}
+.t .chip{font-size:12px}
+.t tfoot td{border-top:1px solid var(--ink);border-bottom:0}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px}
+.pill{border:1px solid var(--rule);border-radius:999px;padding:5px 12px;background:#fff;cursor:pointer;font-size:14px}
+.pill.on{border-color:var(--ink);background:var(--ink);color:#fff}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:30;display:none}
+.scrim.on{display:block}
+.drawer-clip{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:31}
+.drawer{position:absolute;top:0;right:0;height:100%;pointer-events:auto;width:min(680px,100vw);background:#fff;border-left:1px solid var(--rule);z-index:31;transform:translateX(102%);transition:transform .2s ease;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer-in{flex:1;min-height:0;overflow-y:auto;padding:26px 28px 60px}
+.dhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.dhead h2{font-family:var(--serif);font-size:32px;margin:6px 0 0;line-height:1.15}
+
+/* ---------- next year board ---------- */
+.ideas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:18px 0}
+.mcard{border:1px solid var(--hair);border-radius:8px;padding:14px 18px 10px;min-width:0}
+.mcard.any{grid-column:1/-1;background:var(--shade2)}
+.mcard h3{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:0 0 2px}
+.mcard .cnt{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.idea{padding:10px 0;border-top:1px solid var(--hair)}
+.mcard .ideas>.idea:first-child{border-top:0}
+.idea .ttl{font-size:15px}
+.idea .idet{font-size:14px;color:var(--ink2);margin:3px 0}
+.idea .meta{font-size:12px;color:var(--muted);margin-top:3px}
+.cat{display:inline-block;background:var(--shade);border-radius:999px;padding:1px 9px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.mcard.any .cat{background:#fff}
+.mcard .none{font-size:13px;color:var(--gray);padding:8px 0 6px}
+
+/* ---------- settings and forms ---------- */
+.panel{border:1px solid var(--hair);border-radius:8px;padding:20px 22px;margin:16px 0}
+.panel h3{margin-top:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px 18px}
+.grid2 .field input,.grid2 .field select{width:100%}
+.grid2 .field input[type=checkbox]{width:auto;min-height:0}
+.check input{width:auto;min-height:0}
+.help{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.status-msg{font-size:14px;color:var(--ink2);margin-left:4px}
+.status-msg.err{color:var(--ink)}
+.formrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.check{display:inline-flex;align-items:center;gap:8px;font-size:15px}
+.err-panel{border:1px solid var(--ink);border-radius:8px;padding:18px 20px;margin:18px 0}
+.loading{padding:60px 0;color:var(--ink2)}
+.loading h2{font-family:var(--serif);font-size:30px;margin:0 0 8px}
+
+/* ---------- present ---------- */
+.present{position:fixed;inset:0;background:#1C1C1C;z-index:50;display:none;flex-direction:column}
+.present.on{display:flex}
+.stage-wrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage-box{position:relative}
+.stage{width:1280px;height:720px;transform-origin:0 0;position:absolute;left:0;top:0}
+.pctl{height:56px;display:flex;align-items:center;justify-content:center;gap:14px;color:#fff;font-size:14px}
+.pctl button{background:none;border:1px solid #6E7072;color:#fff;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:14px}
+.pctl button:hover{border-color:#fff}
+
+/* ---------- slides ---------- */
+.slide{width:1280px;height:720px;background:#fff;color:#000;position:relative;overflow:hidden;padding:58px 80px 0;font-family:var(--sans);display:flex;flex-direction:column}
+.slide .eyebrow{font-size:14px}
+.slide h2{font-family:var(--serif);font-size:44px;line-height:1.12;margin:8px 0 0;max-width:1100px}
+.shead{flex:none}
+.sbody{flex:1;min-height:0;padding:26px 0 12px;overflow:hidden}
+.sfoot{flex:none;height:54px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);letter-spacing:.04em}
+.slide.dark{background:#000;color:#fff;padding:70px 90px}
+.slide.dark .eyebrow{color:#A8AAAB}
+.cover .cword{font-family:var(--serif);font-size:40px;letter-spacing:.5em}
+.cover .crule{width:64px;height:1px;background:var(--gold);margin:34px 0 34px}
+.cover h1{font-family:var(--serif);font-size:72px;line-height:1.05;margin:14px 0 18px;max-width:980px}
+.cover .csub{font-size:24px;color:#D6D7D8;margin:0}
+.cover .cby{position:absolute;left:90px;bottom:88px;font-size:20px;line-height:1.5}
+.cover .cby span{color:#A8AAAB;font-size:16px}
+.slide .ctag{position:absolute;right:90px;bottom:88px;font-family:var(--serif);font-size:20px;color:#D6D7D8}
+.closing h1{font-family:var(--serif);font-size:84px;margin:150px 0 14px}
+.closing p{font-size:24px;color:#D6D7D8;margin:0}
+.s-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.s-tile{background:var(--shade);border-radius:8px;padding:20px 24px 18px}
+.s-tile .tl{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.s-tile .tv{font-family:var(--serif);font-size:46px;line-height:1.08;margin:10px 0 4px}
+.s-tile .tc{font-size:15px;color:var(--muted)}
+.s-tile .chip{font-size:15px;margin-top:4px}
+.s-lede{font-size:22px;color:var(--ink2);margin:0 0 22px;max-width:1080px}
+.s-cols{display:grid;grid-template-columns:330px 1fr;gap:40px;height:100%}
+.s-big .bl{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.s-big .bv{font-family:var(--serif);font-size:62px;line-height:1.05;margin:8px 0 6px}
+.s-big .bs{font-size:17px;color:var(--ink2);margin-bottom:22px}
+.s-cards{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:18px;height:100%}
+.s-card{border:1px solid var(--hair);border-top:2px solid var(--ink);border-radius:8px;padding:20px 24px;overflow:hidden;min-height:0}
+.s-card.lead{border-top-color:var(--gold)}
+.s-card .eyebrow{font-size:12px}
+.s-card h3{font-size:26px;margin:6px 0 4px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.s-card .mv{font-family:var(--serif);font-size:34px}
+.s-card p{font-size:17px;color:var(--ink2);margin:8px 0 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.s-card p.w{font-size:15px;color:var(--muted);-webkit-line-clamp:2}
+.s-lim{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;height:100%}
+.s-lim .s-card{border-top:1px solid var(--hair);border-left:2px solid var(--gray)}
+.s-lim .s-card h3{font-size:24px}
+.s-lim .lh{font-size:19px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.s-lim .sub{font-size:12px;margin-top:12px}
+.s-lim p{-webkit-line-clamp:4;font-size:16px}
+.s-recs{list-style:none;margin:0;padding:0}
+.s-recs li{display:grid;grid-template-columns:60px 1fr;gap:4px 12px;padding:14px 0;border-top:1px solid var(--hair)}
+.s-recs li:first-child{border-top:0;padding-top:0}
+.s-recs .rn{font-family:var(--serif);font-size:36px;line-height:1}
+.s-recs h3{font-size:23px;margin:0 0 2px}
+.s-recs p{font-size:16px;color:var(--ink2);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.slide table.t{font-size:14.5px}
+.slide .t td{padding:4px 10px;line-height:1.3}
+.slide .t .chip{font-size:13px}
+.slide .t th{padding:6px 10px}
+.slide .chart .ax{font-size:14px}
+.slide .chart .vl,.slide .chart .mktext{font-size:14px}
+.slide .legend{font-size:15px}
+.s-ctx{list-style:none;margin:0;padding:0}
+.s-ctx li{display:grid;grid-template-columns:150px 230px 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--hair);font-size:17px}
+.s-ctx li:first-child{border-top:0}
+
+#printArea{display:none}
+
+/* ---------- small screens ---------- */
+@media (max-width:900px){
+  .app{flex-direction:column}
+  .side{position:static;width:auto;height:auto;flex-direction:row;align-items:center;gap:12px;padding:12px 16px;border-right:0;border-bottom:1px solid var(--hair);overflow:hidden}
+  .brand{padding:0;flex:none}
+  .brand .word{font-size:20px}
+  .brand .sub{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:2px;min-width:0;flex:1}
+  .nav .subnav{display:none}
+  .nav a{white-space:nowrap;padding:7px 10px}
+  .side-foot{display:none}
+  .bar{position:static;padding:12px 16px}
+  .bar-actions{margin-left:0}
+  .content{padding:18px 16px 70px}
+  h1.hero{font-size:31px}
+  h2.sec{font-size:27px}
+  .tile .tv{font-size:28px}
+  .fstage{grid-template-columns:1fr;gap:6px}
+  .fvals{text-align:left}
+  .frate{padding-left:0}
+  .recs li{grid-template-columns:40px 1fr}
+  .recs .rn{font-size:30px}
+  .drawer-in{padding:20px 16px 60px}
+  .cards,.cards.three{grid-template-columns:1fr}
+}
+@media (max-width:420px){
+  .tiles{grid-template-columns:1fr 1fr}
+  .tile{padding:12px 12px 10px}
+  .tile .tv{font-size:24px}
+  .field{width:100%}
+  .field select,.field input{width:100%}
+  .field .row input[type=date]{flex:1;min-width:0}
+}
+
+/* ---------- print ---------- */
+@page{size:letter;margin:0.5in}
+@page slidepage{size:1280px 720px;margin:0}
+@media print{
+  html,body{background:#fff}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tip,.scrim,.drawer-clip,.present{display:none !important}
+  body.p-slides .app{display:none !important}
+  body.p-slides #printArea{display:block}
+  body.p-slides #printArea .pslide{page:slidepage;break-after:page;page-break-after:always;width:1280px;height:720px;overflow:hidden}
+  body.p-slides #printArea .pslide:last-child{break-after:auto;page-break-after:auto}
+  body.p-report .side,body.p-report .bar,body.p-report .noprint{display:none !important}
+  body.p-report .app{display:block}
+  body.p-report .content{padding:0;max-width:none}
+  body.p-report section.rep{break-before:page;page-break-before:always}
+  body.p-report section.rep:first-of-type{break-before:auto;page-break-before:auto}
+  body.p-report .card,body.p-report .chart-card,body.p-report .tile,body.p-report .recs li,body.p-report .box{break-inside:avoid;page-break-inside:avoid}
+  body.p-report .tblwrap.hide{display:none !important}
+}
+</style>
+<style>#navSettings{display:none!important}</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="side" id="side">
+    <div class="brand"><div class="word">VERTEX</div><div class="sub">Performance Review</div></div>
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#" data-view="report" data-sec="s-glance" id="navReport" class="on">Report</a>
+      <div class="subnav">
+        <a href="#" data-view="report" data-sec="s-glance">At a Glance</a>
+        <a href="#" data-view="report" data-sec="s-spend">Ad Spend</a>
+        <a href="#" data-view="report" data-sec="s-results">Results</a>
+        <a href="#" data-view="report" data-sec="s-wins">What Went Well</a>
+        <a href="#" data-view="report" data-sec="s-limits">Limited Results</a>
+        <a href="#" data-view="report" data-sec="s-recs">Recommendations</a>
+      </div>
+      <a href="#" data-view="communities" id="navCommunities">Communities</a>
+      <a href="#" data-view="context" id="navContext">Context</a>
+      <a href="#" data-view="ideas" id="navIdeas">Next Year</a>
+      <a href="#" data-view="settings" id="navSettings" class="hide">Settings</a>
+    </nav>
+    <div class="side-foot"><div id="who"></div><div class="tiny">Read only &middot; Google Ads</div></div>
+  </aside>
+  <main class="main">
+    <header class="bar" id="bar">
+      <div class="field"><label for="fPreset">Period</label><select id="fPreset" aria-label="Period"></select></div>
+      <div class="field hide" id="curCustom"><label for="fStart">From</label><div class="row"><input type="date" id="fStart" aria-label="Start date"><span class="muted">to</span><input type="date" id="fEnd" aria-label="End date"></div></div>
+      <div class="field"><label for="fCompare">Compare to</label><select id="fCompare" aria-label="Compare to"><option value="yoy">Same period last year</option><option value="prev">Previous period</option><option value="custom">Custom range</option></select></div>
+      <div class="field hide" id="cmpCustom"><label for="fCmpStart">Comparison</label><div class="row"><input type="date" id="fCmpStart" aria-label="Comparison start"><span class="muted">to</span><input type="date" id="fCmpEnd" aria-label="Comparison end"></div></div>
+      <div class="field"><label for="fTier">Communities</label><select id="fTier" aria-label="Tier"><option value="all">All tiers</option><option value="1">Tier 1</option><option value="2">Tier 2</option><option value="3">Tier 3</option></select></div>
+      <div class="field hide" id="applyWrap"><label>&nbsp;</label><button class="btn solid" id="bApply" type="button">Apply</button></div>
+      <div class="bar-actions">
+        <button class="btn ghost" id="bDefault" type="button" data-act="setDefault">Set as default</button>
+        <button class="btn solid" id="bPresent" type="button">Present</button>
+        <details class="menu" id="exportMenu"><summary class="btn ghost">Export</summary>
+          <div class="menu-list">
+            <button type="button" data-act="pdfSlides">Slides as PDF</button>
+            <button type="button" data-act="pdfReport">Full report as PDF</button>
+            <button type="button" data-act="csv">Communities as CSV</button>
+            <button type="button" data-act="refresh">Refresh data from Google Ads</button>
+          </div>
+        </details>
+      </div>
+    </header>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="drawer-clip"><aside class="drawer" id="drawer" aria-hidden="true" aria-label="Community detail"><div class="drawer-in" id="drawerIn"></div></aside></div>
+<div class="present" id="present" aria-hidden="true">
+  <div class="stage-wrap" id="stageWrap"><div class="stage-box" id="stageBox"><div class="stage" id="stage"></div></div></div>
+  <div class="pctl"><button type="button" id="pPrev">Previous</button><span id="pCount"></span><button type="button" id="pNext">Next</button><button type="button" id="pExit">Exit</button></div>
+</div>
+<div id="printArea"></div>
+<div class="tip" id="tip" role="status"></div>
+<script src="../kit/kit.js"></script>
+<script src="mock.js"></script>
+<script>
+/* Vertex Google Ads Performance Review \u00B7 client */
+var S = {
+  boot: null, rep: null, ai: null, aiState: 'idle', aiErr: '', view: 'report', params: null,
+  req: 0, aiReq: 0, sort: { k: 'spend', d: -1 }, statusFilter: 'all', search: '',
+  settings: null, context: null, ideas: null, audit: null, auditState: 'idle', auditReq: 0, open: {}, slides: [], slideIx: 0, charts: [], drawerId: null,
+  loading: false, err: '', stale: false, presets: []
+};
+var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var DIR = { spend: 0, impr: 1, clicks: 1, conv: 1, ctr: 1, cvr: 1, cpc: -1, cpa: -1, cpv: -1, per1k: 1 };
+var SEP = '<span class="sep" aria-hidden="true">&middot;</span>';
+
+/* ---------------- basics ---------------- */
+function $(id) { return document.getElementById(id); }
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function copyObj(o) { return JSON.parse(JSON.stringify(o)); }
+function call(fn, args, done, fail) {
+  var r = google.script.run
+    .withSuccessHandler(done)
+    .withFailureHandler(function (e) {
+      var m = e && e.message ? e.message : String(e);
+      if (fail) fail(m); else flash(m);
+    });
+  r[fn].apply(r, args || []);
+}
+function setContent(h) { $('content').innerHTML = h; }
+function setText(id, t) { var el = $(id); if (el) el.textContent = t || ''; }
+function flash(msg) {
+  var el = $('flash');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'flash';
+    el.className = 'banner noprint';
+    $('content').insertBefore(el, $('content').firstChild);
+  }
+  el.innerHTML = '<span class="t">Note</span>' + esc(msg) + ' <button class="link" data-act="closeFlash">Dismiss</button>';
+}
+
+/* ---------------- formatting ---------------- */
+function isNum(v) { return v !== null && v !== undefined && isFinite(v); }
+function commas(n) { var s = String(Math.round(Math.abs(n))); return (n < 0 ? '-' : '') + s.replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function trim1(v) { return v.toFixed(1).replace(/\.0$/, ''); }
+function money(n) { if (!isNum(n)) return 'n/a'; if (Math.abs(n) < 0.005) return '$0'; return Math.abs(n) < 100 ? '$' + n.toFixed(2) : '$' + commas(n); }
+function moneySigned(n) { if (!isNum(n)) return 'n/a'; return (n > 0.005 ? '+' : (n < -0.005 ? '-' : '')) + money(Math.abs(n)); }
+function moneyK(n) {
+  if (!isNum(n)) return '';
+  var a = Math.abs(n);
+  if (a >= 1e6) return '$' + trim1(n / 1e6) + 'M';
+  if (a >= 1e4) return '$' + Math.round(n / 1e3) + 'K';
+  if (a >= 1e3) return '$' + trim1(n / 1e3) + 'K';
+  if (a > 0 && a < 10) return '$' + trim1(n);
+  return '$' + Math.round(n);
+}
+function num(n) { if (!isNum(n)) return 'n/a'; if (Math.abs(n) < 10 && Math.abs(n - Math.round(n)) > 0.05) return n.toFixed(1); return commas(n); }
+function numK(n) {
+  if (!isNum(n)) return '';
+  var a = Math.abs(n);
+  if (a >= 1e6) return trim1(n / 1e6) + 'M';
+  if (a >= 1e4) return Math.round(n / 1e3) + 'K';
+  if (a >= 1e3) return trim1(n / 1e3) + 'K';
+  return trim1(n);
+}
+function pct(f) {
+  if (!isNum(f)) return 'n/a';
+  var v = Math.abs(f) * 100;
+  if (v < 10) return (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '') + '%';
+  return commas(v) + '%';
+}
+function rate(f) { if (!isNum(f)) return 'n/a'; var v = f * 100; return (v < 10 ? v.toFixed(2) : v.toFixed(1)) + '%'; }
+function share(f) { if (!isNum(f)) return 'n/a'; return Math.round(f * 100) + '%'; }
+function upDown(f) { if (!isNum(f)) return 'no comparison'; if (Math.abs(f) < 0.005) return 'flat'; return (f > 0 ? 'up ' : 'down ') + pct(f); }
+function fmtBy(k, v) {
+  if (k === 'spend' || k === 'cpa' || k === 'cpc') return money(v);
+  if (k === 'ctr' || k === 'cvr') return rate(v);
+  if (k === 'cpv') return isNum(v) ? (v < 10 ? v.toFixed(2) : commas(v)) : 'n/a';
+  return num(v);
+}
+function favOf(k, chg) {
+  var d = DIR[k];
+  if (!d || !isNum(chg)) return null;
+  if (chg * d > 0.0005) return true;
+  if (chg * d < -0.0005) return false;
+  return null;
+}
+function chip(chg, fav) {
+  if (!isNum(chg)) return '<span class="chip na">No comparison</span>';
+  var flat = Math.abs(chg) < 0.0005;
+  var arrow = flat ? '' : (chg > 0 ? '\u25B2 ' : '\u25BC ');
+  var cls = fav === true ? 'good' : (fav === false ? 'weak' : 'neutral');
+  var title = fav === true ? 'Better than the comparison period' : (fav === false ? 'Weaker than the comparison period' : 'Change from the comparison period');
+  return '<span class="chip ' + cls + '" title="' + title + '"><i class="mk" aria-hidden="true"></i>' + (flat ? 'Flat' : arrow + pct(chg)) + '<span class="sr"> ' + title + '</span></span>';
+}
+
+/* ---------------- dates ---------------- */
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function dP(s) { var p = s.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
+function dS(d) { return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate()); }
+function dAdd(s, n) { var d = dP(s); d.setUTCDate(d.getUTCDate() + n); return dS(d); }
+function validD(s) { return /^\d{4}-\d{2}-\d{2}$/.test(String(s || '')) && dS(dP(s)) === s; }
+function shiftYear(s, n) { var p = s.split('-'), y = +p[0] + n, m = +p[1], d = +p[2]; if (m === 2 && d === 29) d = 28; return dS(new Date(Date.UTC(y, m - 1, d))); }
+function presets(b) {
+  var y = b.yesterday, Y = +y.slice(0, 4), M = +y.slice(5, 7), list = [];
+  list.push({ k: 'l12', label: 'Last 12 months', start: dAdd(y, -364), end: y });
+  list.push({ k: 'ytd', label: 'Year to date', start: Y + '-01-01', end: y });
+  list.push({ k: 'l30', label: 'Last 30 days', start: dAdd(y, -29), end: y });
+  list.push({ k: 'l90', label: 'Last 90 days', start: dAdd(y, -89), end: y });
+  var lmEnd = dAdd(y.slice(0, 7) + '-01', -1);
+  list.push({ k: 'lm', label: 'Last full month (' + MONTH[+lmEnd.slice(5, 7) - 1] + ')', start: lmEnd.slice(0, 7) + '-01', end: lmEnd });
+  var q = Math.floor((M - 1) / 3), qEnd = q * 3, qY = Y;
+  if (qEnd === 0) { qEnd = 12; qY = Y - 1; }
+  list.push({ k: 'lq', label: 'Last full quarter (Q' + (qEnd / 3) + ' ' + qY + ')', start: qY + '-' + pad2(qEnd - 2) + '-01', end: dS(new Date(Date.UTC(qY, qEnd, 0))) });
+  list.push({ k: 'py', label: 'Full year ' + (Y - 1), start: (Y - 1) + '-01-01', end: (Y - 1) + '-12-31' });
+  list.push({ k: 'custom', label: 'Custom range' });
+  return list;
+}
+function findPreset(k) { for (var i = 0; i < S.presets.length; i++) if (S.presets[i].k === k) return S.presets[i]; return null; }
+
+/* ---------------- start up ---------------- */
+function init() {
+  bindUi();
+  setContent('<div class="loading"><h2>Opening the review</h2><p>Checking access and settings.</p></div>');
+  call('apiBootstrap', [], onBoot, function (m) { $('bar').classList.add('hide'); setContent(errPanel('This report could not open', m, false)); });
+}
+function onBoot(b) {
+  S.boot = b;
+  $('who').textContent = b.user || '';
+  $('navSettings').classList.toggle('hide', !b.admin);
+  buildPresets();
+  readLocation(function (q) {
+    q = q || {};
+    if (!q.preset && !q.start && b.def) applyQuery(b.def);
+    else applyQuery(q);
+    syncDefaultBtn();
+    if (!b.connected || !b.accounts) {
+      if (b.admin) { S.view = 'settings'; render(); return; }
+      $('bar').classList.add('hide');
+      setContent(errPanel('Not set up yet', 'The report is not connected to Google Ads yet. Ask an admin to finish setup.', false));
+      return;
+    }
+    load(false);
+  });
+}
+function buildPresets() {
+  var b = S.boot, keep = $('fPreset').value;
+  S.presets = presets(b);
+  $('fPreset').innerHTML = S.presets.map(function (p) { return '<option value="' + p.k + '">' + esc(p.label) + '</option>'; }).join('');
+  ['fStart', 'fEnd', 'fCmpStart', 'fCmpEnd'].forEach(function (id) { $(id).max = b.today; });
+  buildScope();
+  setPreset(keep && findPreset(keep) ? keep : 'l12');
+}
+function sameAsDefault(p) {
+  var d = S.boot && S.boot.def;
+  if (!d) return p.preset === 'l12' && p.compare === 'yoy' && p.tier === 'all';
+  if (d.preset !== p.preset || d.compare !== p.compare || d.tier !== p.tier) return false;
+  if (p.preset === 'custom' && (d.start !== p.start || d.end !== p.end)) return false;
+  if (p.compare === 'custom' && (d.cmpStart !== p.cmpStart || d.cmpEnd !== p.cmpEnd)) return false;
+  return true;
+}
+function syncDefaultBtn() {
+  var b = $('bDefault'); if (!b) return;
+  var same = sameAsDefault(params());
+  b.disabled = same;
+  b.textContent = same ? 'Your default view' : 'Set as default';
+  b.title = same ? 'This view opens first every time' : 'Open the report with this period, comparison and scope every time';
+}
+function saveDefault() {
+  var p = params(), bad = checkParams(p);
+  if (bad) { flash(bad); return; }
+  $('bDefault').textContent = 'Saving...';
+  call('apiSaveDefault', [p], function (r) { S.boot.def = r.def; syncDefaultBtn(); }, function (m) { syncDefaultBtn(); flash(m); });
+}
+function tierName(n) {
+  var tn = (S.boot && S.boot.tierNames) || (S.rep && S.rep.meta.tierNames) || [];
+  return tn[n - 1] || ('Tier ' + n);
+}
+function buildScope() {
+  var sel = $('fTier'), keep = sel.value;
+  var h = '<optgroup label="Tiers"><option value="all">All communities</option>' + [1, 2, 3].map(function (n) { return '<option value="' + n + '">' + esc(tierName(n)) + '</option>'; }).join('') + '</optgroup>';
+  if (S.boot.communities && S.boot.communities.length) {
+    h += '<optgroup label="One community">' + S.boot.communities.map(function (c) { return '<option value="a' + esc(c.id) + '">' + esc(c.name) + '</option>'; }).join('') + '</optgroup>';
+  }
+  sel.innerHTML = h;
+  if (keep && sel.querySelector('option[value="' + keep + '"]')) sel.value = keep;
+}
+function readLocation(cb) {
+  var done = false;
+  function fin(q) { if (!done) { done = true; cb(q); } }
+  try { google.script.url.getLocation(function (loc) { fin((loc && loc.parameter) || {}); }); } catch (e) { fin({}); }
+}
+function applyQuery(q) {
+  if (q.compare === 'yoy' || q.compare === 'prev' || q.compare === 'custom') $('fCompare').value = q.compare;
+  if (/^(all|[123]|a\d{6,})$/.test(q.tier || '') && $('fTier').querySelector('option[value="' + q.tier + '"]')) $('fTier').value = q.tier;
+  if (q.preset && findPreset(q.preset) && q.preset !== 'custom') setPreset(q.preset);
+  else if (validD(q.start) && validD(q.end)) { setPreset('custom'); $('fStart').value = q.start; $('fEnd').value = q.end; }
+  if (validD(q.cmpStart) && validD(q.cmpEnd)) { $('fCmpStart').value = q.cmpStart; $('fCmpEnd').value = q.cmpEnd; }
+  syncCustom();
+}
+function writeLocation(p) {
+  var q = { preset: p.preset, compare: p.compare, tier: p.tier };
+  if (p.preset === 'custom') { q.start = p.start; q.end = p.end; }
+  if (p.compare === 'custom') { q.cmpStart = p.cmpStart; q.cmpEnd = p.cmpEnd; }
+  try { google.script.history.replace(null, q, ''); } catch (e) {}
+}
+function setPreset(k) {
+  $('fPreset').value = k;
+  var p = findPreset(k);
+  if (p && p.start) { $('fStart').value = p.start; $('fEnd').value = p.end; }
+  syncCustom();
+}
+function syncCustom() {
+  $('curCustom').classList.toggle('hide', $('fPreset').value !== 'custom');
+  var cc = $('fCompare').value === 'custom';
+  $('cmpCustom').classList.toggle('hide', !cc);
+  if (cc && !$('fCmpStart').value) {
+    var st = $('fStart').value, en = $('fEnd').value;
+    if (validD(st) && validD(en)) { $('fCmpStart').value = shiftYear(st, -1); $('fCmpEnd').value = shiftYear(en, -1); }
+  }
+}
+function showApply() { $('applyWrap').classList.remove('hide'); }
+function params() {
+  var k = $('fPreset').value, p = { preset: k, compare: $('fCompare').value, tier: $('fTier').value };
+  if (k === 'custom') { p.start = $('fStart').value; p.end = $('fEnd').value; }
+  else { var pr = findPreset(k); p.start = pr.start; p.end = pr.end; }
+  if (p.compare === 'custom') { p.cmpStart = $('fCmpStart').value; p.cmpEnd = $('fCmpEnd').value; }
+  return p;
+}
+function checkParams(p) {
+  if (!validD(p.start) || !validD(p.end)) return 'Pick a start and end date.';
+  if (p.start > p.end) return 'The start date is after the end date.';
+  if (p.compare === 'custom') {
+    if (!validD(p.cmpStart) || !validD(p.cmpEnd)) return 'Pick a start and end date for the comparison.';
+    if (p.cmpStart > p.cmpEnd) return 'The comparison start date is after its end date.';
+  }
+  return '';
+}
+
+/* ---------------- loading ---------------- */
+function load(refresh) {
+  var p = params(), bad = checkParams(p);
+  if (bad) { flash(bad); return; }
+  S.params = p;
+  $('applyWrap').classList.add('hide');
+  syncDefaultBtn();
+  writeLocation(p);
+  var id = ++S.req;
+  S.loading = true; S.err = ''; S.ai = null; S.aiState = 'idle'; S.aiReq++; S.audit = null; S.auditState = 'idle'; S.auditReq++; S.open = {};
+  if (S.view !== 'communities') S.view = 'report';
+  closeDrawer(true);
+  render();
+  var q = copyObj(p); q.refresh = !!refresh;
+  call('apiGetReport', [q], function (rep) {
+    if (id !== S.req) return;
+    S.loading = false; S.rep = rep; S.stale = false;
+    render();
+    loadAi(!!refresh);
+  }, function (m) {
+    if (id !== S.req) return;
+    S.loading = false; S.err = m; render();
+  });
+}
+function loadAi(refresh) {
+  if (!S.boot || !S.boot.ai || !S.rep) return;
+  var id = ++S.aiReq;
+  S.aiState = 'loading'; applyAi();
+  var q = copyObj(S.params); q.refresh = !!refresh;
+  call('apiAiSummary', [q], function (a) {
+    if (id !== S.aiReq) return;
+    S.ai = a && a.ok ? a : null; S.aiState = a && a.ok ? 'done' : 'off'; applyAi();
+  }, function (m) {
+    if (id !== S.aiReq) return;
+    S.aiState = 'error'; S.aiErr = m; applyAi();
+  });
+}
+function aiOn() { return S.aiState === 'done' && S.ai ? S.ai : null; }
+function applyAi() {
+  var R = S.rep; if (!R) return;
+  var a = aiOn();
+  setText('aiHeadline', a && a.headline ? a.headline : R.headline);
+  setText('aiSummary', a && a.summary ? a.summary : '');
+  setText('aiSpend', a && a.spend ? a.spend : R.copy.spend);
+  setText('aiWins', a && a.wins ? a.wins : R.copy.wins);
+  setText('aiLimits', a && a.limits ? a.limits : R.copy.limits);
+  setText('aiRecs', a && a.recs ? a.recs : R.copy.recs);
+  var n = $('aiNote'); if (n) n.innerHTML = aiNoteHtml();
+}
+function aiNoteHtml() {
+  if (!S.boot || !S.boot.ai) return '';
+  if (S.aiState === 'loading') return 'Claude is writing a summary from these numbers.';
+  if (S.aiState === 'error') return 'The AI summary is unavailable right now (' + esc(S.aiErr) + '). The numbers and findings are not affected.';
+  if (S.aiState === 'done' && S.ai) {
+    var d = S.ai.dropped || 0;
+    return 'Summary written by Claude from these numbers, with every number checked against the data' +
+      (d ? '. ' + d + (d === 1 ? ' sentence that did not match was' : ' sentences that did not match were') + ' left out.' : '.') +
+      ' <button class="link noprint" data-act="aiRedo">Rewrite</button>';
+  }
+  return '';
+}
+function loadingHtml() {
+  var n = S.boot ? S.boot.accounts : 0;
+  return '<div class="loading"><h2>Building the review</h2><p>Reading ' + (n ? n + ' communities' : 'the portfolio') +
+    ' from Google Ads for both periods. A new range can take up to a minute the first time. After that it is cached for six hours.</p></div>';
+}
+function errPanel(title, msg, settingsBtn) {
+  return '<div class="err-panel"><div class="eyebrow">Something needs attention</div><h3>' + esc(title) + '</h3><p>' + esc(msg) + '</p>' +
+    (settingsBtn ? '<button class="btn" type="button" data-view="settings">Open Settings</button>' : '') + '</div>';
+}
+
+/* ---------------- views ---------------- */
+function setNav() {
+  var map = { report: 'navReport', communities: 'navCommunities', context: 'navContext', ideas: 'navIdeas', settings: 'navSettings' };
+  ['navReport', 'navCommunities', 'navContext', 'navIdeas', 'navSettings'].forEach(function (id) { $(id).classList.toggle('on', map[S.view] === id); });
+}
+function showView(v, sec) {
+  if (v === 'settings' && !(S.boot && S.boot.admin)) return;
+  if ((v === 'report' || v === 'communities') && (S.stale || (!S.rep && !S.loading)) && S.boot && S.boot.connected && S.boot.accounts) { S.view = v; load(false); return; }
+  var changed = S.view !== v;
+  S.view = v;
+  closeDrawer(true);
+  if (changed || v === 'settings' || v === 'context' || v === 'ideas') render(); else setNav();
+  if (sec) { var el = $(sec); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); }
+  else if (changed) window.scrollTo(0, 0);
+}
+function render() {
+  hideTip();
+  S.charts = [];
+  setNav();
+  $('bar').classList.toggle('hide', !(S.view === 'report' || S.view === 'communities'));
+  if (S.view === 'settings') return renderSettings();
+  if (S.view === 'context') return renderContext();
+  if (S.view === 'ideas') return renderIdeas();
+  if (S.loading) { setContent(loadingHtml()); return; }
+  if (S.err) { setContent(errPanel('The report could not load', S.err, S.boot && S.boot.admin)); return; }
+  if (!S.rep) { setContent(''); return; }
+  if (S.view === 'communities') return renderCommunities();
+  renderReport();
+}
+
+/* ---------------- report ---------------- */
+function rangeLine(R) {
+  return '<div class="rangeline">' + esc(R.range.curLabel) + ' compared with ' + esc(R.range.cmpLabel) + SEP +
+    R.meta.communityCount + (R.meta.communityCount === 1 ? ' community' : ' communities') +
+    (R.meta.tier !== 'all' ? SEP + esc(R.meta.tierLabel) : '') + SEP + 'Updated ' + esc(R.meta.generated) + '</div>';
+}
+function fmtId(id) { return String(id || '').replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3'); }
+function bannersHtml(R) {
+  var h = '';
+  if (R.meta.failed && R.meta.failed.length) {
+    h += '<div class="banner"><span class="t">Not included</span>' + R.meta.failed.length + (R.meta.failed.length === 1 ? ' account' : ' accounts') +
+      ' could not load and ' + (R.meta.failed.length === 1 ? 'is' : 'are') + ' left out of every total: ' +
+      esc(R.meta.failed.map(function (f) { return f.name + ', ' + fmtId(f.id) + ' (' + f.error + ')'; }).join('; ')) + '. If this is an old or duplicate account, untick it in Settings.' + '</div>';
+  }
+  if (R.meta.warnings && R.meta.warnings.length) {
+    h += '<div class="banner"><span class="t">Partial detail</span>' + esc(R.meta.warnings.slice(0, 3).join(' ')) + '</div>';
+  }
+  return h;
+}
+function renderReport() {
+  var R = S.rep;
+  setContent(rangeLine(R) + bannersHtml(R) + secGlance(R) + secSpend(R) + secResults(R) + secWins(R) + secLimits(R) + secRecs(R) +
+    '<p class="tiny">Conversions can take a few days to be counted, so the most recent days may still rise. Months marked with an asterisk are partial. Data is read from Google Ads; nothing in this report changes the accounts.</p>');
+  drawReportCharts(R);
+  applyAi();
+}
+function tileHtml(t, cmpName) {
+  return '<div class="tile"><div class="tl">' + esc(t.label) + '</div><div class="tv" title="' + esc(t.curText) + '">' + esc(t.curText) + '</div>' +
+    '<div class="tc">' + esc(cmpName) + ' ' + esc(t.cmpText) + '</div>' + chip(t.chg, t.fav) +
+    (t.targetText ? '<div class="tt">' + esc(t.targetText) + '</div>' : '') + '</div>';
+}
+function secGlance(R) {
+  var h = '<section class="rep" id="s-glance"><div class="eyebrow">At a Glance</div>' +
+    '<h1 class="hero" id="aiHeadline">' + esc(R.headline) + '</h1>' +
+    '<p class="lede">' + esc(R.copy.lede) + '</p><p class="ai-sum" id="aiSummary"></p><p class="ai-note" id="aiNote"></p>';
+  h += '<div class="tiles">' + R.tiles.map(function (t) { return tileHtml(t, R.range.cmpName); }).join('') + '</div>';
+  if (R.glance && R.glance.length) {
+    h += '<div class="subhead">Highlights</div><div class="cards three">' + R.glance.map(function (w, i) { return winCard(w, i === 0); }).join('') + '</div>';
+  }
+  h += statusStrip(R) + '</section>';
+  return h;
+}
+function statusStrip(R) {
+  var st = R.status, order = [['improved', 'Improved'], ['steady', 'Steady'], ['new', 'New this period'], ['attention', 'Needs attention'], ['ended', 'Not running now']];
+  var total = 0; order.forEach(function (o) { total += st[o[0]] || 0; });
+  if (!total) return '';
+  var bar = '', key = '';
+  order.forEach(function (o) {
+    var n = st[o[0]] || 0;
+    if (!n) return;
+    bar += '<i class="st-' + o[0] + '" style="width:' + (n / total * 100).toFixed(2) + '%" data-tip="' + esc(o[1] + '\n' + n + (n === 1 ? ' community' : ' communities')) + '"></i>';
+    key += '<button type="button" data-status="' + o[0] + '"><span class="sw st-' + o[0] + '"></span>' + n + ' ' + esc(o[1].toLowerCase()) + '</button>';
+  });
+  return '<div class="strip"><div class="subhead">Communities compared with the comparison period</div><div class="sbar" role="img" aria-label="Community status">' + bar + '</div><div class="skey">' + key + '</div></div>';
+}
+function winCard(w, lead) {
+  return '<article class="card win' + (lead ? ' lead' : '') + '"><div class="eyebrow">' + esc(w.scope) + '</div><h3>' + esc(w.title) + '</h3>' +
+    '<div class="metric"><span class="mv">' + esc(w.metric) + '</span><span class="ml">' + esc(w.metricLabel) + '</span></div>' +
+    '<p>' + esc(w.detail) + '</p>' +
+    (w.why && w.why.length ? '<ul class="why">' + w.why.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+    (w.acct ? '<div class="acts noprint"><button class="link" type="button" data-open="' + esc(w.acct) + '">Open community</button></div>' : '') + '</article>';
+}
+function box(label, value, sub, chipHtml) {
+  return '<div class="box"><div class="bl">' + esc(label) + '</div><div class="bv">' + esc(value) + '</div><div class="bs">' + (sub || '') + '</div>' + (chipHtml ? '<div>' + chipHtml + '</div>' : '') + '</div>';
+}
+function legend2(R, line) {
+  var cls = line ? ' ln' : '';
+  return '<div class="legend"><span class="k"><i class="k1' + cls + '"></i>' + esc(R.range.curName) + '</span><span class="k"><i class="k2' + cls + '"></i>' + esc(R.range.cmpName) + '</span></div>';
+}
+function chartCard(id, title, legend, table, foot) {
+  return '<div class="chart-card"><div class="chart-head"><h3>' + esc(title) + '</h3>' + legend + '</div><div class="chart" id="' + id + '"></div>' +
+    '<div class="chart-foot"><span>' + (foot || '') + '</span><button class="link noprint" type="button" data-tbl="' + id + '">Show as table</button></div>' +
+    '<div class="tblwrap hide" id="tbl-' + id + '">' + table + '</div></div>';
+}
+function hasPartial(R) { return R.months.some(function (m) { return (m.cur && m.cur.partial) || (m.cmp && m.cmp.partial); }); }
+function monthsTable(R, key) {
+  var f = function (v) { return fmtBy(key, v); };
+  var h = '<div class="tw"><table class="t"><thead><tr><th class="l">' + esc(R.range.curName) + '</th><th></th><th class="l">' + esc(R.range.cmpName) + '</th><th></th><th>Change</th></tr></thead><tbody>';
+  R.months.forEach(function (m) {
+    var a = m.cur, b = m.cmp, ch = a && b && isNum(a[key]) && isNum(b[key]) && b[key] !== 0 ? (a[key] - b[key]) / Math.abs(b[key]) : null;
+    h += '<tr><td class="l">' + (a ? esc(MONTH[+a.m.slice(5, 7) - 1] + ' ' + a.m.slice(0, 4)) + (a.partial ? '*' : '') : '') + '</td><td>' + (a ? f(a[key]) : '') + '</td>' +
+      '<td class="l">' + (b ? esc(MONTH[+b.m.slice(5, 7) - 1] + ' ' + b.m.slice(0, 4)) + (b.partial ? '*' : '') : '') + '</td><td>' + (b ? f(b[key]) : '') + '</td><td>' + chip(ch, favOf(key, ch)) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function mixRows(R) { return R.mix.filter(function (m) { return m.cur.spend >= 1 || m.cmp.spend >= 1; }).slice(0, 7); }
+function mixTable(R) {
+  var h = '<div class="tw"><table class="t"><thead><tr><th class="l">Campaign type</th><th>Spend ' + esc(R.range.curName) + '</th><th>Share</th><th>Spend ' + esc(R.range.cmpName) + '</th><th>Share</th><th>Conversions</th><th>Cost per conversion</th><th>' + esc(R.range.cmpName) + '</th></tr></thead><tbody>';
+  mixRows(R).forEach(function (m) {
+    h += '<tr><td class="l">' + esc(m.label) + '</td><td>' + money(m.cur.spend) + '</td><td>' + share(m.curShare) + '</td><td>' + money(m.cmp.spend) + '</td><td>' + share(m.cmpShare) + '</td><td>' + num(m.cur.conv) + '</td><td>' + money(m.cur.cpa) + '</td><td>' + money(m.cmp.cpa) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function tierTable(R) {
+  var cn = esc(R.range.cmpName), cu = esc(R.range.curName);
+  var h = '<div class="tw"><table class="t"><thead><tr><th class="l">Tier</th><th>Spend ' + cu + '</th><th>Spend ' + cn + '</th><th>Change</th><th>Conversions</th><th>Change</th><th>Cost per conversion</th><th>Change</th></tr></thead><tbody>';
+  R.tiers.forEach(function (t) {
+    if (!t.count) return;
+    h += '<tr><td class="l"><span class="nm">' + esc(tierName(t.tier)) + '</span><div class="meta">' + esc(t.names.join(', ')) + '</div></td><td>' + money(t.cur.spend) + '</td><td>' + money(t.cmp.spend) + '</td><td>' + chip(t.chg.spend, null) + '</td>' +
+      '<td>' + num(t.cur.conv) + '</td><td>' + chip(t.chg.conv, favOf('conv', t.chg.conv)) + '</td><td>' + money(t.cur.cpa) + '</td><td>' + chip(t.chg.cpa, favOf('cpa', t.chg.cpa)) + '</td></tr>';
+  });
+  return h + '</tbody></table></div><p class="help">Tiers group communities by current spend: the top, middle and lower third. An admin can rename the tiers and pin any community to a tier in Settings.' + (R.meta.tier !== 'all' ? ' Tier totals always cover the full portfolio.' : '') + '</p>';
+}
+function secSpend(R) {
+  var c = R.totals.cur, p = R.totals.cmp, ch = R.totals.chg, cn = esc(R.range.cmpName);
+  var h = '<section class="rep" id="s-spend"><div class="eyebrow">Ad Spend</div><h2 class="sec">How ad spend compared</h2><p class="intro" id="aiSpend"></p>';
+  h += '<div class="boxes">' +
+    box('Total ad spend', money(c.spend), cn + ' ' + money(p.spend), chip(ch.spend, null)) +
+    box('Change in spend', moneySigned(c.spend - p.spend), isNum(ch.spend) ? (c.spend >= p.spend ? 'More than' : 'Less than') + ' the comparison period' : '', '') +
+    box('Conversions per $1,000', isNum(c.per1k) ? c.per1k.toFixed(1) : 'n/a', cn + ' ' + (isNum(p.per1k) ? p.per1k.toFixed(1) : 'n/a'), chip(ch.per1k, favOf('per1k', ch.per1k))) +
+    box('Average cost per click', money(c.cpc), cn + ' ' + money(p.cpc), chip(ch.cpc, favOf('cpc', ch.cpc))) + '</div>';
+  h += chartCard('chSpend', 'Spend by month', legend2(R), monthsTable(R, 'spend'), hasPartial(R) ? '* Partial month' : '');
+  if (mixRows(R).length) h += chartCard('chMix', 'Spend by campaign type', legend2(R), mixTable(R), '');
+  h += '<div class="subhead">Spend by tier</div>' + tierTable(R) + '</section>';
+  return h;
+}
+function funnelHtml(R) {
+  var c = R.totals.cur, p = R.totals.cmp, ch = R.totals.chg, cn = esc(R.range.cmpName);
+  var st = [['See', 'Impressions', 'impr'], ['Think', 'Clicks', 'clicks'], ['Do', 'Conversions', 'conv']];
+  var h = '<div class="funnel">';
+  st.forEach(function (s, i) {
+    var a = c[s[2]] || 0, b = p[s[2]] || 0, mx = Math.max(a, b, 1);
+    h += '<div class="fstage"><div><div class="eyebrow">' + s[0] + '</div><div class="fn">' + s[1] + '</div></div>' +
+      '<div class="fbars" aria-hidden="true"><i class="k1" style="width:' + (a / mx * 100).toFixed(1) + '%"></i><i class="k2" style="width:' + (b / mx * 100).toFixed(1) + '%"></i></div>' +
+      '<div class="fvals"><div class="v">' + num(a) + '</div><div class="c">' + cn + ' ' + num(b) + ' &nbsp; ' + chip(ch[s[2]], favOf(s[2], ch[s[2]])) + '</div></div></div>';
+    if (i === 0) h += '<div class="frate">Click-through rate ' + rate(c.ctr) + ' (' + cn + ' ' + rate(p.ctr) + ')</div>';
+    if (i === 1) h += '<div class="frate">Conversion rate ' + rate(c.cvr) + ' (' + cn + ' ' + rate(p.cvr) + ')</div>';
+  });
+  return h + '</div>';
+}
+function deviceTable(R) {
+  if (!R.device || !R.device.length) return '';
+  var cn = esc(R.range.cmpName), cu = esc(R.range.curName);
+  var h = '<div class="subhead">By device</div><div class="tw"><table class="t"><thead><tr><th class="l">Device</th><th>Share of conversions ' + cu + '</th><th>' + cn + '</th><th>Conversions</th><th>Conversion rate ' + cu + '</th><th>' + cn + '</th><th>Spend</th></tr></thead><tbody>';
+  R.device.forEach(function (d) {
+    var cc = isNum(d.cur.cvr) && isNum(d.cmp.cvr) && d.cmp.cvr ? (d.cur.cvr - d.cmp.cvr) / d.cmp.cvr : null;
+    h += '<tr><td class="l">' + esc(d.label) + '</td><td>' + share(d.curShare) + '</td><td>' + share(d.cmpShare) + '</td><td>' + num(d.cur.conv) + '</td><td>' + rate(d.cur.cvr) + ' ' + chip(cc, favOf('cvr', cc)) + '</td><td>' + rate(d.cmp.cvr) + '</td><td>' + money(d.cur.spend) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function moversRows(R) {
+  if (!R.movers) return [];
+  return R.movers.up.concat(R.movers.down).map(function (m) { return { label: m.name, delta: m.delta, cur: m.cur, cmp: m.cmp, acct: m.acct }; });
+}
+function moversTable(R) {
+  var cn = esc(R.range.cmpName), cu = esc(R.range.curName);
+  var h = '<div class="tw"><table class="t"><thead><tr><th class="l">Community</th><th>Conversions ' + cu + '</th><th>' + cn + '</th><th>Change</th></tr></thead><tbody>';
+  moversRows(R).forEach(function (m) {
+    h += '<tr><td class="l">' + esc(m.label) + '</td><td>' + num(m.cur) + '</td><td>' + num(m.cmp) + '</td><td>' + (m.delta > 0 ? '+' : '-') + num(Math.abs(m.delta)) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+function moversLegend() {
+  return '<div class="legend"><span class="k"><i class="k1"></i>Gained</span><span class="k"><i class="k2"></i>Declined</span></div>';
+}
+function quarterTable(R) {
+  if (!R.quarters) return '';
+  var cn = esc(R.range.cmpName), cu = esc(R.range.curName), anyPartial = false;
+  var h = '<div class="subhead">By quarter</div><div class="tw"><table class="t"><thead><tr><th class="l">Quarter</th><th>Spend ' + cu + '</th><th>' + cn + '</th><th>Change</th><th>Conversions</th><th>' + cn + '</th><th>Change</th><th>Cost per conv.</th><th>' + cn + '</th><th>Change</th></tr></thead><tbody>';
+  R.quarters.forEach(function (q) {
+    if (q.partial) anyPartial = true;
+    h += '<tr><td class="l">' + esc(q.label) + (q.partial ? '*' : '') + '</td><td>' + money(q.cur.spend) + '</td><td>' + money(q.cmp.spend) + '</td><td>' + chip(q.chg.spend, null) + '</td>' +
+      '<td>' + num(q.cur.conv) + '</td><td>' + num(q.cmp.conv) + '</td><td>' + chip(q.chg.conv, favOf('conv', q.chg.conv)) + '</td>' +
+      '<td>' + money(q.cur.cpa) + '</td><td>' + money(q.cmp.cpa) + '</td><td>' + chip(q.chg.cpa, favOf('cpa', q.chg.cpa)) + '</td></tr>';
+  });
+  return h + '</tbody></table></div>' + (anyPartial ? '<p class="help">* Partial quarter: not every month of it falls inside the selected ranges.</p>' : '');
+}
+function isLine(R) {
+  var c = R.totals.cur, p = R.totals.cmp;
+  if (!isNum(c.is)) return '';
+  var h = 'Search impression share ' + share(c.is) + ', with ' + share(c.isB) + ' of eligible impressions missed on budget and ' + share(c.isR) + ' on ad rank';
+  if (isNum(p.is)) h += ' (' + esc(R.range.cmpName) + ': ' + share(p.is) + ', ' + share(p.isB) + ', ' + share(p.isR) + ')';
+  return '<p class="help">' + h + ', weighted by spend.</p>';
+}
+function secResults(R) {
+  var h = '<section class="rep" id="s-results"><div class="eyebrow">Results</div><h2 class="sec">What the spend produced</h2>' +
+    '<p class="intro">From first look to lead: impressions people saw, clicks they made and the conversions that followed.</p>' + funnelHtml(R);
+  h += chartCard('chConv', 'Conversions by month', legend2(R), monthsTable(R, 'conv'), hasPartial(R) ? '* Partial month' : '');
+  h += chartCard('chCpa', 'Cost per conversion by month', legend2(R, true), monthsTable(R, 'cpa'), 'Lower is better.' + (hasPartial(R) ? ' * Partial month' : ''));
+  if (R.movers) h += chartCard('chMovers', 'Biggest movers in conversions', moversLegend(), moversTable(R), 'Change in conversions against ' + esc(R.range.cmpName) + '.');
+  h += quarterTable(R) + isLine(R) + deviceTable(R) + '</section>';
+  return h;
+}
+function secWins(R) {
+  var h = '<section class="rep" id="s-wins"><div class="eyebrow">What Went Well</div><h2 class="sec">Where the portfolio performed strongly</h2><p class="intro" id="aiWins"></p>';
+  h += R.wins.length ? '<div class="cards">' + R.wins.map(function (w, i) { return winCard(w, i === 0); }).join('') + '</div>' : '<div class="empty">' + esc(R.copy.wins) + '</div>';
+  return h + whyBlock('wins') + '</section>';
+}
+function noteFor(R, id) { var c = commById(id); return c ? c.note : null; }
+function limitCard(l, R) {
+  var note = l.acct ? noteFor(R, l.acct) : null;
+  var h = '<article class="card limit"><div class="eyebrow">' + esc(l.scope) + '</div><h3>' + esc(l.title) + '</h3><div class="lh">' + esc(l.headline) + '</div><p>' + esc(l.detail) + '</p>';
+  if (l.why && l.why.length) h += '<div class="sub">What drove it</div><ul class="why">' + l.why.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+  h += '<div class="sub">Next step</div><p class="next">' + esc(l.next) + '</p>';
+  if (l.impactText) h += '<p class="impact">' + esc(l.impactText) + '</p>';
+  if (note) h += '<div class="note"><div class="sub">Context</div><p>' + esc(note.text) + '</p></div>';
+  if (l.acct) h += '<div class="acts noprint"><button class="link" type="button" data-open="' + esc(l.acct) + '">Open community</button>' + (R.meta.isAdmin ? '<button class="link" type="button" data-note="' + esc(l.acct) + '">' + (note ? 'Edit context' : 'Add context') + '</button>' : '') + '</div>';
+  return h + '</article>';
+}
+function zeroTable(R) {
+  if (!R.zeroCamps || !R.zeroCamps.length) return '';
+  var h = '<details class="chart-card"><summary class="link" style="list-style:none">All ' + R.zeroCamps.length + ' campaigns with spend and no conversions</summary><div class="tw"><table class="t"><thead><tr><th class="l">Campaign</th><th class="l">Community</th><th class="l">Type</th><th>Spend</th><th>Clicks</th><th>Conversions ' + esc(R.range.cmpName) + '</th></tr></thead><tbody>';
+  R.zeroCamps.forEach(function (z) { h += '<tr><td class="l">' + esc(z.name) + '</td><td class="l">' + esc(z.community) + '</td><td class="l">' + esc(z.typeLabel) + '</td><td>' + money(z.spend) + '</td><td>' + num(z.clicks) + '</td><td>' + num(z.cmpConv) + '</td></tr>'; });
+  return h + '</tbody></table></div></details>';
+}
+function secLimits(R) {
+  var h = '<section class="rep" id="s-limits"><div class="eyebrow">Limited Results</div><h2 class="sec">Where spend did not produce the results we expected</h2><p class="intro" id="aiLimits"></p>';
+  h += R.limits.length ? '<div class="cards">' + R.limits.map(function (l) { return limitCard(l, R); }).join('') + '</div>' + zeroTable(R) : '<div class="empty">' + esc(R.copy.limits) + '</div>';
+  return h + whyBlock('limits') + '</section>';
+}
+var WHY = { wins: 'Why it went well: the top 5 reasons', limits: 'What drove the limited results: the top 5 reasons' };
+function whyBlock(kind) {
+  var on = !!S.open[kind];
+  return '<div class="why-wrap"><button class="btn ghost" type="button" data-act="why" data-kind="' + kind + '" id="whyBtn-' + kind + '">' + (on ? 'Hide the reasons' : esc(WHY[kind])) + '</button>' +
+    '<div class="why-panel' + (on ? '' : ' hide') + '" id="why-' + kind + '">' + (on ? whyHtml(kind) : '') + '</div></div>';
+}
+function reasonList(kind) {
+  var R = S.rep;
+  if (S.audit && S.audit[kind]) return S.audit[kind];
+  return ((R && R.reasons && R.reasons[kind]) || []).slice(0, 5);
+}
+function whyHtml(kind) {
+  var list = reasonList(kind), aiUsed = S.audit && S.audit.ai;
+  var src = '';
+  if (S.auditState === 'loading') src = 'Claude is auditing the data. These are the reasons found so far.';
+  else if (aiUsed) src = 'Audited and written by Claude from the report\u2019s own data, with every number checked.' + (kind === 'limits' ? ' Each reason describes what the numbers show.' : ' Each reason links a change in the period to the results that followed.');
+  else src = 'Found in the data.' + (S.audit && S.audit.error ? ' The Claude audit is unavailable right now.' : '');
+  if (!list.length) return '<p class="src">' + (kind === 'wins' ? 'No clear reasons stood out in this range.' : 'No clear drivers stood out in this range.') + '</p>';
+  var h = '<ol class="recs">' + list.map(function (x, i) {
+    var chips = (x.accts || []).slice(0, 6).map(function (id) { var c = commById(id); return c ? '<button class="link" type="button" data-open="' + esc(id) + '">' + esc(c.name) + '</button>' : ''; }).join('');
+    return '<li><div class="rn">' + (i + 1) + '</div><div><h3>' + esc(x.title) + '</h3><p>' + esc(x.detail) + '</p>' +
+      (x.evidence && x.evidence.length ? '<div class="sub">Evidence</div><ul class="ev">' + x.evidence.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>' : '') +
+      (x.impactText ? '<p class="impact">' + esc(x.impactText) + '</p>' : '') + (chips ? '<div class="chips noprint">' + chips + '</div>' : '') + '</div></li>';
+  }).join('') + '</ol>';
+  return h + '<p class="src">' + src + (aiUsed && S.auditState !== 'loading' ? ' <button class="link noprint" type="button" data-act="auditRedo">Audit again</button>' : '') + '</p>';
+}
+function toggleWhy(kind) {
+  S.open[kind] = !S.open[kind];
+  var p = $('why-' + kind), b = $('whyBtn-' + kind);
+  if (!p) return;
+  p.classList.toggle('hide', !S.open[kind]);
+  b.textContent = S.open[kind] ? 'Hide the reasons' : WHY[kind];
+  if (S.open[kind]) { p.innerHTML = whyHtml(kind); if (S.auditState === 'idle') loadAudit(false); }
+}
+function redrawWhy() { ['wins', 'limits'].forEach(function (k) { var p = $('why-' + k); if (p && S.open[k]) p.innerHTML = whyHtml(k); }); }
+function loadAudit(refresh) {
+  if (!S.rep) return;
+  if (!S.boot.ai) { S.auditState = 'done'; redrawWhy(); return; }
+  var id = ++S.auditReq;
+  S.auditState = 'loading'; redrawWhy();
+  var q = copyObj(S.params); q.refresh = !!refresh;
+  call('apiAuditReasons', [q], function (a) {
+    if (id !== S.auditReq) return;
+    S.audit = a; S.auditState = 'done'; redrawWhy();
+  }, function (m) {
+    if (id !== S.auditReq) return;
+    S.audit = { ai: false, error: m }; S.auditState = 'done'; redrawWhy();
+  });
+}
+function secRecs(R) {
+  var h = '<section class="rep" id="s-recs"><div class="eyebrow">Recommendations</div><h2 class="sec">Where we can improve next year</h2><p class="intro" id="aiRecs"></p><ol class="recs">';
+  R.recs.forEach(function (r, i) {
+    h += '<li><div class="rn">' + (i + 1) + '</div><div><h3>' + esc(r.title) + '</h3><p>' + esc(r.detail) + '</p>' + (r.impactText ? '<p class="impact">' + esc(r.impactText) + '</p>' : '') + '</div></li>';
+  });
+  h += '</ol>';
+  if (R.events && R.events.length) {
+    h += '<div class="subhead">Context for these periods</div><div class="tw"><table class="t"><thead><tr><th class="l">Date</th><th class="l">Community</th><th class="l">What changed</th></tr></thead><tbody>' +
+      R.events.map(function (e) { return '<tr><td class="l">' + esc(e.dateLabel) + '</td><td class="l">' + esc(e.community) + '</td><td class="l">' + esc(e.text) + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  }
+  return h + '</section>';
+}
+
+/* ---------------- charts ---------------- */
+function r1(v) { return Math.round(v * 10) / 10; }
+function niceStep(v) {
+  if (!(v > 0)) return 1;
+  var e = Math.pow(10, Math.floor(Math.log(v) / Math.LN10)), f = v / e;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * e;
+}
+function scaleOf(vals) {
+  var mx = 0;
+  vals.forEach(function (v) { if (isNum(v) && v > mx) mx = v; });
+  var step = niceStep(mx / 4);
+  return { max: step * 4, step: step };
+}
+function barPath(x, y, w, h) {
+  var r = Math.min(4, w / 2, h);
+  return 'M' + r1(x) + ',' + r1(y + h) + 'V' + r1(y + r) + 'Q' + r1(x) + ',' + r1(y) + ' ' + r1(x + r) + ',' + r1(y) +
+    'H' + r1(x + w - r) + 'Q' + r1(x + w) + ',' + r1(y) + ' ' + r1(x + w) + ',' + r1(y + r) + 'V' + r1(y + h) + 'Z';
+}
+function hbarPath(x, y, w, h) {
+  var r = Math.min(4, h / 2, w);
+  return 'M' + r1(x) + ',' + r1(y) + 'H' + r1(x + w - r) + 'Q' + r1(x + w) + ',' + r1(y) + ' ' + r1(x + w) + ',' + r1(y + r) +
+    'V' + r1(y + h - r) + 'Q' + r1(x + w) + ',' + r1(y + h) + ' ' + r1(x + w - r) + ',' + r1(y + h) + 'H' + r1(x) + 'Z';
+}
+function axisAndMarker(o, c, w, h, pl, pr, pt, ph, sc, band, n) {
+  for (var i = 0; i <= 4; i++) {
+    var v = sc.step * i, y = pt + ph - ph * v / sc.max;
+    o.push('<line x1="' + pl + '" x2="' + (w - pr) + '" y1="' + r1(y) + '" y2="' + r1(y) + '" class="' + (i ? 'grid' : 'base') + '"/>');
+    o.push('<text x="' + (pl - 8) + '" y="' + r1(y + 4) + '" class="ax" text-anchor="end">' + esc(c.tick(v)) + '</text>');
+  }
+  var step = Math.max(1, Math.ceil(n / Math.max(1, Math.floor((w - pl - pr) / 46))));
+  for (i = 0; i < n; i++) {
+    if (i % step === 0) o.push('<text x="' + r1(pl + i * band + band / 2) + '" y="' + (h - 9) + '" class="ax" text-anchor="middle">' + esc(c.labels[i]) + '</text>');
+  }
+  if (c.marker > 0 && c.marker < n) {
+    var mx = pl + c.marker * band, right = mx > w - 170;
+    o.push('<line class="mkline" x1="' + r1(mx) + '" x2="' + r1(mx) + '" y1="' + (pt - 12) + '" y2="' + (pt + ph) + '"/>');
+    o.push('<text class="mktext" x="' + r1(right ? mx - 6 : mx + 6) + '" y="' + (pt - 16) + '" text-anchor="' + (right ? 'end' : 'start') + '">' + esc(c.markerText || '') + '</text>');
+  }
+}
+function colSvg(w, c) {
+  var n = c.labels.length;
+  if (!n) return '<div class="empty">No monthly data in this range.</div>';
+  var h = c.h || 260, pl = 56, pr = 10, pt = 34, pb = 30, pw = w - pl - pr, ph = h - pt - pb, band = pw / n;
+  var two = !!c.b, sc = scaleOf(c.a.concat(c.b || []));
+  var bw = Math.max(2, Math.min(24, two ? (band - 10) / 2 : band - 10));
+  var o = ['<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(c.title || 'Chart') + '">'];
+  axisAndMarker(o, c, w, h, pl, pr, pt, ph, sc, band, n);
+  var peak = -1, pv = -1;
+  c.a.forEach(function (v, k) { if (isNum(v) && v > pv) { pv = v; peak = k; } });
+  function bar(x, v, cls) { var bh = Math.max(1, ph * v / sc.max), y = pt + ph - bh; return '<path class="' + cls + '" d="' + barPath(x, y, bw, bh) + '"/>'; }
+  for (var i = 0; i < n; i++) {
+    var gx = pl + i * band, x0 = gx + (band - (two ? 2 * bw + 2 : bw)) / 2;
+    if (two && isNum(c.b[i]) && c.b[i] > 0) o.push(bar(x0, c.b[i], 'b2'));
+    if (isNum(c.a[i]) && c.a[i] > 0) o.push(bar(two ? x0 + bw + 2 : x0, c.a[i], 'b1'));
+  }
+  if (peak >= 0 && pv > 0 && c.peakText) {
+    var px = pl + peak * band + (band - (two ? 2 * bw + 2 : bw)) / 2 + (two ? bw + 2 : 0) + bw / 2;
+    var py = pt + ph - ph * pv / sc.max - 7;
+    var anchor = px < pl + 30 ? 'start' : (px > w - 40 ? 'end' : 'middle');
+    o.push('<text x="' + r1(px) + '" y="' + r1(py) + '" class="vl" text-anchor="' + anchor + '">' + esc(c.peakText(pv)) + '</text>');
+  }
+  if (c.tip) for (i = 0; i < n; i++) o.push('<rect class="hit" x="' + r1(pl + i * band) + '" y="' + pt + '" width="' + r1(band) + '" height="' + ph + '" data-tip="' + esc(c.tip(i)) + '"/>');
+  o.push('</svg>');
+  return o.join('');
+}
+function lineSvg(w, c) {
+  var n = c.labels.length;
+  if (!n) return '<div class="empty">No monthly data in this range.</div>';
+  var h = c.h || 240, pl = 56, pr = 14, pt = 34, pb = 30, pw = w - pl - pr, ph = h - pt - pb, band = pw / n;
+  var sc = scaleOf(c.a.concat(c.b || []));
+  var o = ['<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(c.title || 'Chart') + '">'];
+  axisAndMarker(o, c, w, h, pl, pr, pt, ph, sc, band, n);
+  function xy(i, v) { return [pl + i * band + band / 2, pt + ph - ph * v / sc.max]; }
+  function series(vals, lc, dc) {
+    var d = '', pen = false, last = -1, pts = [];
+    vals.forEach(function (v, i) {
+      if (!isNum(v)) { pen = false; return; }
+      var p = xy(i, v);
+      d += (pen ? 'L' : 'M') + r1(p[0]) + ',' + r1(p[1]);
+      pen = true; last = i; pts.push(i);
+    });
+    if (d) o.push('<path class="' + lc + '" d="' + d + '"/>');
+    vals.forEach(function (v, i) {
+      if (!isNum(v)) return;
+      var alone = !isNum(vals[i - 1]) && !isNum(vals[i + 1]);
+      if (alone || i === last) { var p = xy(i, v); o.push('<circle class="' + dc + '" cx="' + r1(p[0]) + '" cy="' + r1(p[1]) + '" r="4"/>'); }
+    });
+  }
+  if (c.b) series(c.b, 'l2', 'd2');
+  series(c.a, 'l1', 'd1');
+  if (c.tip) for (var i = 0; i < n; i++) o.push('<rect class="hit" x="' + r1(pl + i * band) + '" y="' + pt + '" width="' + r1(band) + '" height="' + ph + '" data-tip="' + esc(c.tip(i)) + '"/>');
+  o.push('</svg>');
+  return o.join('');
+}
+function fitLabel(t, px, size) {
+  var cw = (size || 12) * 0.52, max = Math.floor(px / cw);
+  t = String(t);
+  return t.length <= max ? t : t.slice(0, Math.max(1, max - 1)) + '\u2026';
+}
+function hbarSvg(w, c) {
+  var rows = c.rows;
+  if (!rows.length) return '<div class="empty">No data in this range.</div>';
+  var fs = c.fs || 12, lw = Math.round(Math.min(160, Math.max(92, w * 0.24))), vw = c.vw || 84, pw = Math.max(60, w - lw - vw - 10), rh = c.rh || 46, h = rows.length * rh + 4;
+  var mx = 0;
+  rows.forEach(function (r) { mx = Math.max(mx, r.a || 0, r.b || 0); });
+  if (!(mx > 0)) mx = 1;
+  var o = ['<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(c.title || 'Chart') + '">'];
+  rows.forEach(function (r, i) {
+    var y = i * rh + 6, bh = Math.round((rh - 14) / 2);
+    o.push('<text x="0" y="' + r1(y + bh + 4) + '" class="vl">' + esc(fitLabel(r.label, lw - 10, fs)) + '</text>');
+    var wa = Math.max(r.a > 0 ? 2 : 0, pw * (r.a || 0) / mx), wb = Math.max(r.b > 0 ? 2 : 0, pw * (r.b || 0) / mx);
+    if (wa > 0) o.push('<path class="b1" d="' + hbarPath(lw, y, wa, bh) + '"/>');
+    if (wb > 0) o.push('<path class="b2" d="' + hbarPath(lw, y + bh + 2, wb, bh) + '"/>');
+    o.push('<text x="' + r1(lw + wa + 6) + '" y="' + r1(y + bh - 1) + '" class="vl">' + esc(r.at) + '</text>');
+    o.push('<text x="' + r1(lw + wb + 6) + '" y="' + r1(y + 2 * bh + 1) + '" class="ax">' + esc(r.bt) + '</text>');
+    if (c.tip) o.push('<rect class="hit" x="0" y="' + (i * rh) + '" width="' + w + '" height="' + rh + '" data-tip="' + esc(c.tip(i)) + '"/>');
+  });
+  o.push('</svg>');
+  return o.join('');
+}
+function deltaSvg(w, c) {
+  var rows = c.rows;
+  if (!rows.length) return '<div class="empty">No data in this range.</div>';
+  var fs = c.fs || 12, rh = c.rh || 38, lw = Math.round(Math.min(170, Math.max(100, w * 0.25))), vw = c.vw || 64;
+  var pw = Math.max(120, w - lw - 2 * vw - 16), h = rows.length * rh + 8, cx = lw + vw + pw / 2;
+  var mx = 1;
+  rows.forEach(function (r) { mx = Math.max(mx, Math.abs(r.delta)); });
+  var o = ['<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(c.title || 'Chart') + '">'];
+  o.push('<line class="base" x1="' + r1(cx) + '" x2="' + r1(cx) + '" y1="0" y2="' + (h - 4) + '"/>');
+  rows.forEach(function (r, i) {
+    var y = i * rh + 5, bh = rh - 16, bw = Math.max(2, pw / 2 * Math.abs(r.delta) / mx);
+    o.push('<text x="0" y="' + r1(y + bh / 2 + fs / 2 - 1) + '" class="vl" style="font-size:' + fs + 'px">' + esc(fitLabel(r.label, lw - 8, fs)) + '</text>');
+    if (r.delta >= 0) {
+      o.push('<path class="b1" d="' + hbarPath(cx, y, bw, bh) + '"/>');
+      o.push('<text x="' + r1(cx + bw + 6) + '" y="' + r1(y + bh / 2 + fs / 2 - 1) + '" class="vl" style="font-size:' + fs + 'px">+' + esc(num(r.delta)) + '</text>');
+    } else {
+      o.push('<path class="b2" d="' + hbarPath(cx - bw, y, bw, bh) + '"/>');
+      o.push('<text x="' + r1(cx - bw - 6) + '" y="' + r1(y + bh / 2 + fs / 2 - 1) + '" class="vl" text-anchor="end" style="font-size:' + fs + 'px">-' + esc(num(Math.abs(r.delta))) + '</text>');
+    }
+    if (c.tip) o.push('<rect class="hit" x="0" y="' + (i * rh) + '" width="' + w + '" height="' + rh + '" data-tip="' + esc(c.tip(i)) + '"/>');
+  });
+  o.push('</svg>');
+  return o.join('');
+}
+function chart(el, kind, cfg) {
+  if (!el) return;
+  var o = { el: el, kind: kind, cfg: cfg, w: 0 };
+  S.charts.push(o);
+  drawChart(o);
+}
+function drawChart(o) {
+  var w = Math.max(260, o.el.clientWidth || 640);
+  o.w = w;
+  o.el.innerHTML = o.kind === 'col' ? colSvg(w, o.cfg) : (o.kind === 'line' ? lineSvg(w, o.cfg) : (o.kind === 'delta' ? deltaSvg(w, o.cfg) : hbarSvg(w, o.cfg)));
+}
+function monthLabels(R) {
+  var long = R.months.length > 12;
+  return R.months.map(function (x) {
+    var m = x.cur || x.cmp;
+    if (!m) return '';
+    return MON[+m.m.slice(5, 7) - 1] + (long ? ' ' + m.m.slice(2, 4) : '') + (x.cur && x.cur.partial ? '*' : '');
+  });
+}
+function monthTip(R, key) {
+  return function (i) {
+    var m = R.months[i], a = m.cur, b = m.cmp, f = function (v) { return fmtBy(key, v); };
+    var t = (a ? MONTH[+a.m.slice(5, 7) - 1] + ' ' + a.m.slice(0, 4) : (b ? MONTH[+b.m.slice(5, 7) - 1] + ' ' + b.m.slice(0, 4) : ''));
+    var lines = [t];
+    if (a) lines.push(R.range.curName + ': ' + f(a[key]) + (a.partial ? ' (partial month)' : ''));
+    if (b) lines.push(MONTH[+b.m.slice(5, 7) - 1] + ' ' + b.m.slice(0, 4) + ': ' + f(b[key]) + (b.partial ? ' (partial month)' : ''));
+    if (a && b && isNum(a[key]) && isNum(b[key]) && b[key]) lines.push('Change: ' + upDown((a[key] - b[key]) / Math.abs(b[key])));
+    return lines.join('\n');
+  };
+}
+function monthCfg(R, key, extra) {
+  var cfg = {
+    labels: monthLabels(R),
+    a: R.months.map(function (m) { return m.cur ? m.cur[key] : null; }),
+    b: R.months.map(function (m) { return m.cmp ? m.cmp[key] : null; }),
+    tick: key === 'spend' ? moneyK : (key === 'cpa' ? function (v) { return moneyK(v); } : numK),
+    tip: monthTip(R, key), marker: -1
+  };
+  for (var k in (extra || {})) cfg[k] = extra[k];
+  return cfg;
+}
+function mixCfg(R, extra) {
+  var rows = mixRows(R);
+  var cfg = {
+    title: 'Spend by campaign type',
+    rows: rows.map(function (m) { return { label: m.label, a: m.cur.spend, b: m.cmp.spend, at: moneyK(m.cur.spend) + ' \u00B7 ' + share(m.curShare), bt: moneyK(m.cmp.spend) + ' \u00B7 ' + share(m.cmpShare) }; }),
+    tip: function (i) {
+      var m = rows[i];
+      return m.label + '\n' + R.range.curName + ': ' + money(m.cur.spend) + ' (' + share(m.curShare) + ' of spend), ' + num(m.cur.conv) + ' conversions\n' +
+        R.range.cmpName + ': ' + money(m.cmp.spend) + ' (' + share(m.cmpShare) + ' of spend), ' + num(m.cmp.conv) + ' conversions';
+    }
+  };
+  for (var k in (extra || {})) cfg[k] = extra[k];
+  return cfg;
+}
+function drawReportCharts(R) {
+  chart($('chSpend'), 'col', monthCfg(R, 'spend', { title: 'Spend by month', peakText: moneyK }));
+  chart($('chMix'), 'hbar', mixCfg(R));
+  chart($('chConv'), 'col', monthCfg(R, 'conv', { title: 'Conversions by month', peakText: num }));
+  chart($('chCpa'), 'line', monthCfg(R, 'cpa', { title: 'Cost per conversion by month', h: 230 }));
+  if (R.movers) chart($('chMovers'), 'delta', moversCfg(R));
+}
+function moversCfg(R, extra) {
+  var rows = moversRows(R);
+  var cfg = {
+    title: 'Biggest movers in conversions', rows: rows,
+    tip: function (i) {
+      var m = rows[i];
+      return m.label + '\n' + R.range.curName + ': ' + num(m.cur) + ' conversions\n' + R.range.cmpName + ': ' + num(m.cmp) + ' conversions\nChange: ' + (m.delta > 0 ? '+' : '-') + num(Math.abs(m.delta));
+    }
+  };
+  for (var k in (extra || {})) cfg[k] = extra[k];
+  return cfg;
+}
+function toggleTable(id, btn) {
+  var t = $('tbl-' + id);
+  if (!t) return;
+  var on = t.classList.toggle('hide');
+  btn.textContent = on ? 'Show as table' : 'Hide table';
+}
+
+/* ---------------- tooltip ---------------- */
+function showTip(text, x, y) {
+  var el = $('tip'), lines = String(text).split('\n');
+  el.innerHTML = '<div class="th">' + esc(lines[0]) + '</div>' + lines.slice(1).map(esc).join('<br>');
+  el.style.display = 'block';
+  var w = el.offsetWidth, h = el.offsetHeight, left = x + 14, top = y + 14;
+  if (left + w > window.innerWidth - 8) left = x - w - 14;
+  if (top + h > window.innerHeight - 8) top = y - h - 14;
+  el.style.left = Math.max(8, left) + 'px';
+  el.style.top = Math.max(8, top) + 'px';
+}
+function hideTip() { var el = $('tip'); if (el) el.style.display = 'none'; }
+
+/* ---------------- communities ---------------- */
+function commById(id) { var R = S.rep; if (!R) return null; for (var i = 0; i < R.communities.length; i++) if (R.communities[i].id === id) return R.communities[i]; return null; }
+var SORTS = {
+  name: function (c) { return c.name.toLowerCase(); }, tier: function (c) { return c.tier; }, status: function (c) { return c.statusLabel; },
+  spend: function (c) { return c.cur.spend; }, spendChg: function (c) { return c.chg.spend; },
+  conv: function (c) { return c.cur.conv; }, convChg: function (c) { return c.chg.conv; },
+  cpa: function (c) { return c.cur.cpa; }, cpaChg: function (c) { return c.chg.cpa; },
+  ctr: function (c) { return c.cur.ctr; }, cvr: function (c) { return c.cur.cvr; },
+  isB: function (c) { return c.cur.isB; }, isR: function (c) { return c.cur.isR; }
+};
+function filteredComms() {
+  var R = S.rep, q = S.search.trim().toLowerCase();
+  var list = R.communities.filter(function (c) {
+    return (S.statusFilter === 'all' || c.status === S.statusFilter) && (!q || c.name.toLowerCase().indexOf(q) >= 0);
+  });
+  var f = SORTS[S.sort.k] || SORTS.spend, d = S.sort.d;
+  list.sort(function (x, y) {
+    var a = f(x), b = f(y);
+    var an = a === null || a === undefined, bn = b === null || b === undefined;
+    if (an && bn) return 0; if (an) return 1; if (bn) return -1;
+    return (a < b ? -1 : (a > b ? 1 : 0)) * d;
+  });
+  return list;
+}
+function commTableHtml() {
+  var R = S.rep, list = filteredComms(), cu = esc(R.range.curName);
+  function th(k, label, l) { return '<th data-sort="' + k + '" class="' + (l ? 'l ' : '') + (S.sort.k === k ? 'on' : '') + '">' + label + (S.sort.k === k ? (S.sort.d > 0 ? ' \u2191' : ' \u2193') : '') + '</th>'; }
+  var h = '<div class="tw"><table class="t" id="commTbl"><thead><tr>' + th('name', 'Community', true) + th('tier', 'Tier') + th('status', 'Status', true) +
+    th('spend', 'Spend ' + cu) + th('spendChg', 'Change') + th('conv', 'Conversions') + th('convChg', 'Change') + th('cpa', 'Cost per conv.') + th('cpaChg', 'Change') +
+    th('ctr', 'CTR') + th('cvr', 'Conv. rate') + th('isB', 'Lost to budget') + th('isR', 'Lost to rank') + '</tr></thead><tbody>';
+  var sp = 0, cv = 0;
+  list.forEach(function (c) {
+    sp += c.cur.spend; cv += c.cur.conv;
+    h += '<tr class="click" data-open="' + esc(c.id) + '"><td class="l"><span class="nm">' + esc(c.name) + '</span>' + (c.note ? '<div class="meta">Has a context note</div>' : '') + '</td>' +
+      '<td>' + c.tier + '</td><td class="l">' + esc(c.statusLabel) + '</td><td>' + money(c.cur.spend) + '</td><td>' + chip(c.chg.spend, null) + '</td>' +
+      '<td>' + num(c.cur.conv) + '</td><td>' + chip(c.chg.conv, favOf('conv', c.chg.conv)) + '</td><td>' + money(c.cur.cpa) + '</td><td>' + chip(c.chg.cpa, favOf('cpa', c.chg.cpa)) + '</td>' +
+      '<td>' + rate(c.cur.ctr) + '</td><td>' + rate(c.cur.cvr) + '</td><td>' + share(c.cur.isB) + '</td><td>' + share(c.cur.isR) + '</td></tr>';
+  });
+  if (!list.length) h += '<tr><td class="l" colspan="13">No communities match.</td></tr>';
+  else h += '</tbody><tfoot><tr><td class="l">' + list.length + (list.length === 1 ? ' community' : ' communities') + '</td><td></td><td></td><td>' + money(sp) + '</td><td></td><td>' + num(cv) + '</td><td></td><td>' + money(cv >= 0.5 ? sp / cv : null) + '</td><td colspan="5"></td></tr></tfoot>';
+  return h + (list.length ? '' : '</tbody>') + '</table></div>';
+}
+function renderCommunities() {
+  var R = S.rep, st = R.status;
+  var opts = [['all', 'All', R.communities.length], ['improved', 'Improved', st.improved], ['steady', 'Steady', st.steady], ['attention', 'Needs attention', st.attention], ['new', 'New this period', st['new']], ['ended', 'Not running now', st.ended]];
+  var h = rangeLine(R) + bannersHtml(R) + '<section class="rep"><div class="eyebrow">Communities</div><h2 class="sec">Every community, side by side</h2>' +
+    '<p class="intro">Select a community to see its campaigns, what changed and any context notes. Lost to budget and lost to rank are shares of eligible search impressions.</p>' +
+    '<div class="filters">' + opts.filter(function (o) { return o[0] === 'all' || o[2]; }).map(function (o) {
+      return '<button type="button" class="pill' + (S.statusFilter === o[0] ? ' on' : '') + '" data-status="' + o[0] + '">' + esc(o[1]) + ' ' + o[2] + '</button>';
+    }).join('') + '<input type="text" id="commSearch" placeholder="Search communities" aria-label="Search communities" value="' + esc(S.search) + '"></div>' +
+    '<div id="commWrap">' + commTableHtml() + '</div></section>';
+  setContent(h);
+  $('commSearch').oninput = function () { S.search = this.value; $('commWrap').innerHTML = commTableHtml(); };
+}
+function sortBy(k) {
+  if (S.sort.k === k) S.sort.d = -S.sort.d; else { S.sort.k = k; S.sort.d = (k === 'name' || k === 'tier' || k === 'status' || k === 'cpa') ? 1 : -1; }
+  var w = $('commWrap'); if (w) w.innerHTML = commTableHtml();
+}
+
+/* ---------------- drawer ---------------- */
+function openDrawer(id, focusNote) {
+  var R = S.rep, c = commById(id);
+  if (!c) return;
+  S.drawerId = id;
+  var cn = esc(R.range.cmpName), cu = esc(R.range.curName);
+  var defs = [['spend', 'Ad spend'], ['conv', 'Conversions'], ['cpa', 'Cost per conversion'], ['clicks', 'Clicks'], ['ctr', 'Click-through rate'], ['cvr', 'Conversion rate']];
+  var h = '<div class="dhead"><div><div class="eyebrow">Tier ' + c.tier + (c.tierSet === 'auto' ? ' (auto)' : '') + ' &middot; ' + esc(c.statusLabel) + '</div><h2>' + esc(c.name) + '</h2></div>' +
+    '<button class="btn ghost" type="button" data-act="closeDrawer">Close</button></div>';
+  h += '<div class="tiles">' + defs.map(function (d) {
+    var k = d[0];
+    return '<div class="tile"><div class="tl">' + d[1] + '</div><div class="tv">' + fmtBy(k, c.cur[k]) + '</div><div class="tc">' + cn + ' ' + fmtBy(k, c.cmp[k]) + '</div>' + chip(c.chg[k], favOf(k, c.chg[k])) + '</div>';
+  }).join('') + '</div>';
+  if (isNum(c.cur.is)) h += '<p class="help">Search impression share ' + share(c.cur.is) + SEP + 'lost to budget ' + share(c.cur.isB) + SEP + 'lost to ad rank ' + share(c.cur.isR) + (isNum(c.cmp.is) ? ' (' + cn + ': ' + share(c.cmp.is) + ', ' + share(c.cmp.isB) + ', ' + share(c.cmp.isR) + ')' : '') + '</p>';
+  h += '<div class="subhead">What changed</div>';
+  h += c.drivers.length ? '<ul class="why" style="list-style:none;padding-left:0">' + c.drivers.map(function (d) {
+    var cls = d.good ? 'good' : (d.bad ? 'weak' : 'neutral');
+    return '<li style="display:flex;gap:8px"><span class="chip ' + cls + '"><i class="mk" aria-hidden="true"></i></span><span>' + esc(d.text) + '</span></li>';
+  }).join('') + '</ul>' : '<p class="help">No single metric moved enough to call out.</p>';
+  h += '<div class="chart-card"><div class="chart-head"><h3>Conversions by month</h3>' + legend2(R) + '</div><div class="chart" id="dChart"></div></div>';
+  h += '<div class="subhead">Campaigns</div><div class="tw"><table class="t"><thead><tr><th class="l">Campaign</th><th>Spend ' + cu + '</th><th>' + cn + '</th><th>Conv. ' + cu + '</th><th>' + cn + '</th><th>Cost per conv.</th></tr></thead><tbody>' +
+    (c.camps.length ? c.camps.map(function (k) {
+      return '<tr><td class="l"><span class="nm">' + esc(k.name) + '</span><div class="meta">' + esc(k.typeLabel) + (k.status && k.status !== 'ENABLED' ? ' &middot; ' + esc(k.status.charAt(0) + k.status.slice(1).toLowerCase()) : '') + '</div></td>' +
+        '<td>' + money(k.cur.spend) + '</td><td>' + money(k.cmp.spend) + '</td><td>' + num(k.cur.conv) + '</td><td>' + num(k.cmp.conv) + '</td><td>' + money(k.cur.cpa) + '</td></tr>';
+    }).join('') : '<tr><td class="l" colspan="6">No campaign activity in either period.</td></tr>') + '</tbody></table></div>';
+  if (c.events && c.events.length) {
+    h += '<div class="subhead">Context entries</div><ul class="why">' + c.events.map(function (e) { return '<li>' + esc(e.dateLabel) + ': ' + esc(e.text) + '</li>'; }).join('') + '</ul>';
+  }
+  h += '<div class="subhead">Context note</div>';
+  if (R.meta.isAdmin) {
+    h += '<p class="help">Shown on this community\u2019s limited-results card, so the team reads the numbers in context.</p><textarea id="noteText" maxlength="1200" aria-label="Context note">' + esc(c.note ? c.note.text : '') + '</textarea>' +
+      '<div class="formrow"><button class="btn solid" type="button" data-act="saveNote">Save note</button><span class="status-msg" id="noteMsg">' + (c.note ? 'Last saved ' + esc(c.note.at) + (c.note.by ? ' by ' + esc(c.note.by) : '') : '') + '</span></div>';
+  } else {
+    h += c.note ? '<div class="note"><p>' + esc(c.note.text) + '</p></div>' : '<p class="help">No note yet.</p>';
+  }
+  if (c.warn && c.warn.length) h += '<div class="banner"><span class="t">Partial detail</span>' + esc(c.warn.join(' ')) + '</div>';
+  $('drawerIn').innerHTML = h;
+  $('drawerIn').scrollTop = 0;
+  $('drawer').classList.add('on'); $('drawer').setAttribute('aria-hidden', 'false'); $('scrim').classList.add('on');
+  var lab = monthLabels(R);
+  chart($('dChart'), 'col', {
+    title: 'Conversions by month', labels: lab, h: 210,
+    a: c.months.map(function (m) { return m.cur ? m.cur.conv : null; }), b: c.months.map(function (m) { return m.cmp ? m.cmp.conv : null; }),
+    tick: numK, marker: -1,
+    tip: function (i) {
+      var m = c.months[i], lines = [lab[i].replace('*', '')];
+      if (m.cur) lines.push(R.range.curName + ': ' + num(m.cur.conv) + ' conversions, ' + money(m.cur.spend));
+      if (m.cmp) lines.push(R.range.cmpName + ': ' + num(m.cmp.conv) + ' conversions, ' + money(m.cmp.spend));
+      return lines.join('\n');
+    }
+  });
+  if (focusNote && $('noteText')) $('noteText').focus();
+}
+function closeDrawer(silent) {
+  var was = $('drawer').classList.contains('on');
+  $('drawer').classList.remove('on'); $('drawer').setAttribute('aria-hidden', 'true'); $('scrim').classList.remove('on');
+  S.drawerId = null;
+  if (was && !silent && S.noteChanged) { S.noteChanged = false; render(); }
+}
+function saveNote() {
+  var id = S.drawerId, t = $('noteText').value;
+  $('noteMsg').textContent = 'Saving...';
+  call('apiSaveNote', [id, t], function (r) {
+    var c = commById(id); if (c) c.note = r.note;
+    S.noteChanged = true;
+    $('noteMsg').textContent = r.note ? 'Saved.' : 'Note removed.';
+  }, function (m) { $('noteMsg').textContent = m; });
+}
+
+/* ---------------- context ---------------- */
+function renderContext() {
+  setContent('<div class="loading"><h2>Loading context</h2></div>');
+  call('apiGetContext', [], function (ctx) { S.context = ctx; drawContext(); }, function (m) { setContent(errPanel('Context could not load', m, false)); });
+}
+function drawContext() {
+  var C = S.context, admin = C.admin, b = S.boot;
+  var h = '<section class="rep"><div class="eyebrow">Context</div><h2 class="sec">What changed this year</h2>' +
+    '<p class="intro">Launches, pauses, budget moves and tracking changes. Entries that fall inside the selected periods appear in the report and the slides, so a change in the numbers is read in context.</p>';
+  if (admin) {
+    h += '<div class="panel noprint"><h3>Add an entry</h3><div class="grid2">' +
+      '<div class="field"><label for="evDate">Date</label><input type="date" id="evDate" max="' + esc(b.today) + '"></div>' +
+      '<div class="field"><label for="evAcct">Community</label><select id="evAcct"><option value="all">All communities</option>' +
+      b.communities.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>'; }).join('') + '</select></div></div>' +
+      '<div class="field" style="margin-top:12px"><label for="evText">What changed</label><input type="text" id="evText" maxlength="300" placeholder="For example: Conversion tracking moved to the new GTM container"></div>' +
+      '<div class="formrow"><button class="btn solid" type="button" data-act="addEvent">Add entry</button><span class="status-msg" id="evMsg"></span></div></div>';
+  }
+  h += C.events.length ? '<div class="tw"><table class="t"><thead><tr><th class="l">Date</th><th class="l">Community</th><th class="l">What changed</th>' + (admin ? '<th></th>' : '') + '</tr></thead><tbody>' +
+    C.events.map(function (e) {
+      return '<tr><td class="l">' + esc(e.dateLabel) + '</td><td class="l">' + esc(e.community) + '</td><td class="l">' + esc(e.text) + '</td>' +
+        (admin ? '<td><button class="link" type="button" data-act="delEvent" data-id="' + esc(e.id) + '">Remove</button></td>' : '') + '</tr>';
+    }).join('') + '</tbody></table></div>' : '<div class="empty">No entries yet.' + (admin ? ' Add the changes that shaped this year, such as new campaigns, paused communities or tracking updates.' : '') + '</div>';
+  h += '<div class="subhead">Community notes</div>' + (C.notes.length ? '<div class="tw"><table class="t"><thead><tr><th class="l">Community</th><th class="l">Note</th><th class="l">Saved</th></tr></thead><tbody>' +
+    C.notes.map(function (n) { return '<tr><td class="l">' + esc(n.community) + '</td><td class="l">' + esc(n.text) + '</td><td class="l">' + esc(n.at || '') + '</td></tr>'; }).join('') + '</tbody></table></div>'
+    : '<div class="empty">No community notes yet. Add one from any community\u2019s detail view.</div>');
+  setContent(h + '</section>');
+}
+function addEvent() {
+  var e = { date: $('evDate').value, acct: $('evAcct').value, text: $('evText').value };
+  $('evMsg').textContent = 'Saving...';
+  call('apiAddEvent', [e], function (ctx) { S.context = ctx; S.stale = true; drawContext(); setText('evMsg', 'Added.'); }, function (m) { setText('evMsg', m); });
+}
+function delEvent(id) {
+  call('apiDeleteEvent', [id], function (ctx) { S.context = ctx; S.stale = true; drawContext(); });
+}
+
+/* ---------------- next year ideas ---------------- */
+function renderIdeas() {
+  setContent('<div class="loading"><h2>Loading the board</h2></div>');
+  call('apiGetIdeas', [], function (d) { S.ideas = d; drawIdeas(); }, function (m) { setContent(errPanel('The board could not load', m, false)); });
+}
+function ideaItem(i, d) {
+  var canDel = d.admin || i.mine;
+  var meta = ['<span class="cat">' + esc(i.cat) + '</span>'];
+  if (i.acct !== 'all') meta.push(esc(i.community));
+  meta.push('added by ' + esc(i.by || 'unknown'));
+  if (canDel) meta.push('<button class="link" type="button" data-act="delIdea" data-id="' + esc(i.id) + '">Remove</button>');
+  return '<div class="idea"><div class="ttl">' + esc(i.title) + '</div>' + (i.detail ? '<p class="idet">' + esc(i.detail) + '</p>' : '') +
+    '<div class="meta">' + meta.join(' \u00B7 ') + '</div></div>';
+}
+function drawIdeas() {
+  var d = S.ideas, b = S.boot, nextYear = Number(b.today.slice(0, 4)) + 1;
+  var buckets = {};
+  for (var m = 0; m <= 12; m++) buckets[m] = [];
+  d.ideas.forEach(function (i) { buckets[i.month >= 0 && i.month <= 12 ? i.month : 0].push(i); });
+  var h = '<section class="rep"><div class="eyebrow">Next Year</div><h2 class="sec">Ideas for ' + nextYear + '</h2>' +
+    '<p class="intro">A shared board for next year\u2019s Google Ads plans: seasonal pushes like a Thanksgiving tour special, budget moves, creative tests, landing page fixes. Anyone who can open this report can add an idea, and every idea shows who added it. Drop one on a month to pencil it into the calendar, or leave it under Any time.</p>';
+  h += '<div class="panel noprint"><h3>Add an idea</h3><div class="grid2">' +
+    '<div class="field"><label for="iTitle">Idea</label><input type="text" id="iTitle" maxlength="120" placeholder="For example: Thanksgiving tour special"></div>' +
+    '<div class="field"><label for="iMonth">When</label><select id="iMonth"><option value="0">Any time</option>' + MONTH.map(function (nm, ix) { return '<option value="' + (ix + 1) + '">' + nm + '</option>'; }).join('') + '</select></div>' +
+    '<div class="field"><label for="iCat">Type</label><select id="iCat">' + d.cats.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="field"><label for="iAcct">Community</label><select id="iAcct"><option value="all">All communities</option>' + b.communities.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>'; }).join('') + '</select></div>' +
+    '</div><div class="field" style="margin-top:12px"><label for="iDetail">Detail (optional)</label><input type="text" id="iDetail" maxlength="500" placeholder="What would we run, and what should it do for us?"></div>' +
+    '<div class="formrow"><button class="btn solid" type="button" data-act="addIdea">Add to the board</button><span class="status-msg" id="iMsg"></span></div></div>';
+  h += '<div class="ideas-grid">';
+  if (buckets[0].length) h += '<div class="mcard any"><h3>Any time<span class="cnt">' + buckets[0].length + (buckets[0].length === 1 ? ' idea' : ' ideas') + '</span></h3><div class="ideas">' + buckets[0].map(function (i) { return ideaItem(i, d); }).join('') + '</div></div>';
+  for (var mm = 1; mm <= 12; mm++) {
+    var list = buckets[mm];
+    h += '<div class="mcard"><h3>' + MONTH[mm - 1] + (list.length ? '<span class="cnt">' + list.length + (list.length === 1 ? ' idea' : ' ideas') + '</span>' : '') + '</h3>' +
+      (list.length ? '<div class="ideas">' + list.map(function (i) { return ideaItem(i, d); }).join('') + '</div>' : '<div class="none">Nothing planned yet.</div>') + '</div>';
+  }
+  h += '</div></section>';
+  setContent(h);
+}
+function addIdea() {
+  var o = { title: $('iTitle').value, detail: $('iDetail').value, month: $('iMonth').value, cat: $('iCat').value, acct: $('iAcct').value };
+  setText('iMsg', 'Adding...');
+  call('apiAddIdea', [o], function (d) { S.ideas = d; drawIdeas(); }, function (m) { setText('iMsg', m); });
+}
+function delIdea(id) {
+  call('apiDeleteIdea', [id], function (d) { S.ideas = d; drawIdeas(); }, function (m) { flash(m); });
+}
+
+/* ---------------- settings ---------------- */
+function renderSettings() {
+  if (!S.boot || !S.boot.admin) { setContent(errPanel('Admins only', 'Settings are only available to admins.', false)); return; }
+  setContent('<div class="loading"><h2>Loading settings</h2></div>');
+  call('apiGetSettings', [], function (st) { S.settings = st; drawSettings(); }, function (m) { setContent(errPanel('Settings could not load', m, false)); });
+}
+function secretField(id, label, isSet, help) {
+  return '<div class="field"><label for="' + id + '">' + esc(label) + '</label><input type="password" id="' + id + '" autocomplete="off" placeholder="' + (isSet ? 'Saved. Paste to replace' : 'Not set') + '">' +
+    (help ? '<div class="help">' + esc(help) + '</div>' : '') + '</div>';
+}
+function textField(id, label, val, type, help, extra) {
+  return '<div class="field"><label for="' + id + '">' + esc(label) + '</label><input type="' + (type || 'text') + '" id="' + id + '" value="' + esc(val === null || val === undefined ? '' : val) + '"' + (extra || '') + '>' +
+    (help ? '<div class="help">' + esc(help) + '</div>' : '') + '</div>';
+}
+function acctRows(list) {
+  if (!list.length) return '<tr><td class="l" colspan="5">No accounts yet. Save the connection, then click Find accounts.</td></tr>';
+  var cnt = {};
+  list.forEach(function (a) { var k = String(a.name || '').toLowerCase(); cnt[k] = (cnt[k] || 0) + 1; });
+  return list.map(function (a) {
+    var dup = cnt[String(a.name || '').toLowerCase()] > 1;
+    return '<tr data-acct="' + esc(a.id) + '"><td class="l"><label class="check"><input type="checkbox" class="aInc"' + (a.include !== false ? ' checked' : '') + '> Include</label></td>' +
+      '<td class="l"><span class="nm">' + esc(a.name) + '</span>' + (a.found === false ? '<div class="meta">Not found under the manager account</div>' : (a.status && a.status !== 'ENABLED' ? '<div class="meta">' + esc(a.status) + '</div>' : '')) +
+      (dup ? '<div class="meta">Same name as another account. Keep the live one; give the other a display name or untick it.</div>' : '') + '</td>' +
+      '<td class="l"><input type="text" class="aDisp" value="' + esc(a.display || '') + '" placeholder="Same as Google Ads" aria-label="Display name"></td>' +
+      '<td class="l"><select class="aTier" aria-label="Tier"><option value="auto"' + (a.tier === 'auto' || !a.tier ? ' selected' : '') + '>Auto</option><option value="1"' + (a.tier === '1' ? ' selected' : '') + '>Tier 1</option><option value="2"' + (a.tier === '2' ? ' selected' : '') + '>Tier 2</option><option value="3"' + (a.tier === '3' ? ' selected' : '') + '>Tier 3</option></select></td>' +
+      '<td class="l meta">' + esc(String(a.id).replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3')) + '</td></tr>';
+  }).join('');
+}
+function drawSettings() {
+  var st = S.settings, sec = st.secrets || {};
+  var h = '<section class="rep"><div class="eyebrow">Settings</div><h2 class="sec">Report settings</h2>';
+  if (!S.boot.connected || !S.boot.accounts) {
+    h += '<div class="banner"><span class="t">First time setup</span>Copy the same values SuperDash uses into Connection and click Save settings. Then click Find accounts, choose the communities to include and save again. The report opens once at least one community is selected.</div>';
+  }
+  h += '<div class="panel"><h3>Connection</h3><p class="help">Read only. These keys stay on the server and are never shown again after saving.</p><div class="grid2">' +
+    textField('sManager', 'Manager account ID', st.managerId, 'text', '10 digits, dashes are fine.') +
+    textField('sApi', 'API version', st.apiVersion, 'text', 'Same as SuperDash, for example v25.') +
+    secretField('sDev', 'Developer token', sec.dev) + secretField('sCid', 'OAuth client ID', sec.cid) +
+    secretField('sCsec', 'OAuth client secret', sec.csec) + secretField('sRt', 'Refresh token', sec.rt) +
+    '</div><div class="formrow"><button class="btn" type="button" data-act="testConn">Save and test connection</button><span class="status-msg" id="connMsg"></span></div></div>';
+  h += '<div class="panel"><h3>AI summary</h3><p class="help">Claude writes the headline and section introductions from the report\u2019s own numbers. Any sentence with a number that does not match the data is left out. Findings and recommendations never depend on it.</p><div class="grid2">' +
+    '<div class="field"><span class="flabel">Status</span><div><label class="check"><input type="checkbox" id="sAiOn"' + (st.aiOn ? ' checked' : '') + '> Write an AI summary</label></div></div>' +
+    secretField('sAi', 'Anthropic API key', sec.ai) + textField('sModel', 'Model', st.model) +
+    '</div><div class="formrow"><button class="btn" type="button" data-act="testAi">Save and test Claude</button><span class="status-msg" id="aiMsg"></span></div></div>';
+  h += '<div class="panel"><h3>Report</h3><div class="grid2">' +
+    textField('sTitle', 'Report title', st.title) + textField('sOwner', 'Presenter name', st.ownerName) + textField('sRole', 'Presenter team', st.ownerRole) +
+
+    '<div class="field"><label for="sPrimary">Efficiency metric</label><select id="sPrimary"><option value="cpa"' + (st.primary !== 'cpv' ? ' selected' : '') + '>Cost per conversion</option><option value="cpv"' + (st.primary === 'cpv' ? ' selected' : '') + '>Cost / conv. value</option></select></div>' +
+    textField('sTarget', 'Target cost per conversion ($)', st.targetCpa || '', 'number', 'Optional. Shown against the At a Glance tile.', ' min="0" step="0.01"') +
+    textField('sMinSpend', 'Minimum spend to flag a community ($)', st.minSpend, 'number', '', ' min="0"') +
+    textField('sMinConv', 'Minimum conversions to compare efficiency', st.minConv, 'number', '', ' min="1"') +
+    textField('sZero', 'Flag campaigns with no conversions above ($)', st.zeroConvSpend, 'number', '', ' min="1"') +
+    '</div></div>';
+  var tnm = st.tierNames || ['Tier 1', 'Tier 2', 'Tier 3'];
+  h += '<div class="panel"><h3>Communities and tiers</h3><p class="help">Pick which Google Ads accounts count as communities in the report. Tiers are yours to shape: rename them below, and use the Tier column to pin any community to a tier. Auto places a community by its spend: the top third of spenders in Tier 1, then the middle and lower thirds.</p>' +
+    '<div class="grid2" style="margin-bottom:14px">' + textField('sTn1', 'Tier 1 name', tnm[0]) + textField('sTn2', 'Tier 2 name', tnm[1]) + textField('sTn3', 'Tier 3 name', tnm[2]) + '</div>' +
+    '<div class="formrow" style="margin-top:0;margin-bottom:10px"><button class="btn" type="button" data-act="findAccts">Find accounts</button><span class="status-msg" id="acctMsg"></span></div>' +
+    '<div class="tw"><table class="t"><thead><tr><th class="l">Include</th><th class="l">Google Ads account</th><th class="l">Display name</th><th class="l">Tier</th><th class="l">ID</th></tr></thead><tbody id="acctBody">' + acctRows(st.accounts || []) + '</tbody></table></div></div>';
+  h += '<div class="panel"><h3>People</h3><div class="grid2">' +
+    '<div class="field"><label for="sAdmins">Admins</label><textarea id="sAdmins" placeholder="name@vertex.example">' + esc((st.admins || []).join('\n')) + '</textarea><div class="help">Admins can change settings, notes and context. ' + esc(st.owner || 'The owner') + ' is always an admin.</div></div>' +
+    '<div class="field"><label for="sViewers">Viewers</label><textarea id="sViewers" placeholder="Leave empty so anyone at Vertex can view">' + esc((st.viewers || []).join('\n')) + '</textarea><div class="help">Leave empty to let anyone at Vertex open the report.</div></div>' +
+    '</div></div>';
+  h += '<div class="panel"><h3>Data</h3><p class="help">Results are cached for six hours. Clearing makes the next load read fresh numbers from Google Ads.</p><div class="formrow" style="margin-top:0"><button class="btn" type="button" data-act="clearCache">Clear cached data</button><span class="status-msg" id="cacheMsg"></span></div></div>';
+  h += '<div class="formrow"><button class="btn solid" type="button" data-act="saveSettings">Save settings</button><span class="status-msg" id="saveMsg"></span></div></section>';
+  setContent(h);
+}
+function readAccounts() {
+  var rows = document.querySelectorAll('#acctBody tr[data-acct]'), out = [], byId = {};
+  (S.settings.accounts || []).forEach(function (a) { byId[a.id] = a; });
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i], id = r.getAttribute('data-acct'), base = byId[id] || {};
+    out.push({ id: id, name: base.name || '', display: r.querySelector('.aDisp').value, include: r.querySelector('.aInc').checked, tier: r.querySelector('.aTier').value });
+  }
+  return out;
+}
+function collectSettings() {
+  var o = {
+    managerId: $('sManager').value, apiVersion: $('sApi').value, model: $('sModel').value, aiOn: $('sAiOn').checked,
+    title: $('sTitle').value, ownerName: $('sOwner').value, ownerRole: $('sRole').value, 
+    tierNames: [$('sTn1').value, $('sTn2').value, $('sTn3').value],
+    primary: $('sPrimary').value, targetCpa: $('sTarget').value, minSpend: $('sMinSpend').value, minConv: $('sMinConv').value,
+    zeroConvSpend: $('sZero').value, admins: $('sAdmins').value, viewers: $('sViewers').value, accounts: readAccounts(), secrets: {}
+  };
+  [['sDev', 'dev'], ['sCid', 'cid'], ['sCsec', 'csec'], ['sRt', 'rt'], ['sAi', 'ai']].forEach(function (p) { var v = $(p[0]).value.trim(); if (v) o.secrets[p[1]] = v; });
+  return o;
+}
+function saveSettings(msgId, then) {
+  var o = collectSettings();
+  setText(msgId, 'Saving...');
+  call('apiSaveSettings', [o], function (st) {
+    S.settings = st;
+    call('apiBootstrap', [], function (b) {
+      S.boot = b; buildPresets();
+      drawSettings();
+      setText(msgId, 'Saved.');
+      S.stale = true;
+      if (then) then();
+    });
+  }, function (m) { setText(msgId, m); });
+}
+function settingsAct(a) {
+  if (a === 'saveSettings') saveSettings('saveMsg');
+  if (a === 'testConn') saveSettings('connMsg', function () { setText('connMsg', 'Testing...'); call('apiTestConnection', [], function (r) { setText('connMsg', r.message); }, function (m) { setText('connMsg', m); }); });
+  if (a === 'testAi') saveSettings('aiMsg', function () { setText('aiMsg', 'Testing...'); call('apiTestClaude', [], function (r) { setText('aiMsg', r.message); }, function (m) { setText('aiMsg', m); }); });
+  if (a === 'findAccts') {
+    setText('acctMsg', 'Looking under the manager account...');
+    S.settings.accounts = readAccounts();
+    call('apiFindAccounts', [], function (r) {
+      S.settings.accounts = r.accounts;
+      $('acctBody').innerHTML = acctRows(r.accounts);
+      setText('acctMsg', 'Found ' + r.count + (r.count === 1 ? ' account' : ' accounts') + '. Review the list, then save settings.');
+    }, function (m) { setText('acctMsg', m); });
+  }
+  if (a === 'clearCache') call('apiClearCache', [], function () { S.stale = true; setText('cacheMsg', 'Cleared. The next load reads fresh numbers.'); }, function (m) { setText('cacheMsg', m); });
+}
+
+/* ---------------- slides ---------------- */
+function slideTitleClass(t) { return t.length > 130 ? ' style="font-size:34px"' : (t.length > 90 ? ' style="font-size:39px"' : ''); }
+function sTile(t, cmpName) {
+  return '<div class="s-tile"><div class="tl">' + esc(t.label) + '</div><div class="tv">' + esc(t.curText) + '</div><div class="tc">' + esc(cmpName) + ' ' + esc(t.cmpText) + '</div>' + chip(t.chg, t.fav) + '</div>';
+}
+function buildSlides() {
+  var R = S.rep, a = aiOn(), cu = R.range.curName, cn = R.range.cmpName, c = R.totals.cur, p = R.totals.cmp, ch = R.totals.chg;
+  var list = [];
+  function add(eyebrow, title, body) { list.push({ eyebrow: eyebrow, title: title, body: body }); }
+  list.push({ raw: '<div class="slide dark cover"><div class="cword">VERTEX</div><div class="crule"></div><div class="eyebrow">' + esc(R.meta.tierLabel) + '</div>' +
+    '<h1>' + esc(R.meta.title) + '</h1><p class="csub">' + esc(R.range.curLabel) + ' compared with ' + esc(R.range.cmpLabel) + '</p>' +
+    (R.meta.ownerName ? '<div class="cby">Presented by ' + esc(R.meta.ownerName) + (R.meta.ownerRole ? '<br><span>' + esc(R.meta.ownerRole) + '</span>' : '') + '</div>' : '') + '<div class="ctag">Clear numbers. Confident decisions.</div></div>' });
+  var head = a && a.headline ? a.headline : R.headline;
+  add('At a Glance', head, '<p class="s-lede">' + esc(R.range.curLabel) + ' compared with ' + esc(R.range.cmpLabel) + ' \u00B7 ' + R.meta.communityCount + ' communities</p><div class="s-tiles">' + R.tiles.map(function (t) { return sTile(t, cn); }).join('') + '</div>');
+  var spendBody = '<div class="s-cols"><div><div class="s-big"><div class="bl">Total ad spend</div><div class="bv">' + money(c.spend) + '</div><div class="bs">' + esc(cn) + ' ' + money(p.spend) + ' \u00B7 ' + esc(upDown(ch.spend)) + '</div></div>' +
+    '<div class="s-big"><div class="bl">Conversions per $1,000</div><div class="bv">' + (isNum(c.per1k) ? c.per1k.toFixed(1) : 'n/a') + '</div><div class="bs">' + esc(cn) + ' ' + (isNum(p.per1k) ? p.per1k.toFixed(1) : 'n/a') + ' \u00B7 ' + chip(ch.per1k, favOf('per1k', ch.per1k)) + '</div></div>' +
+    '<div class="s-big"><div class="bl">Average cost per click</div><div class="bv">' + money(c.cpc) + '</div><div class="bs">' + esc(cn) + ' ' + money(p.cpc) + ' \u00B7 ' + chip(ch.cpc, favOf('cpc', ch.cpc)) + '</div></div></div>' +
+    '<div><div class="chart-head"><h3>Spend by month</h3>' + legend2(R) + '</div><div class="chart">' + colSvg(740, monthCfg(R, 'spend', { h: 400, tip: null, peakText: moneyK })) + '</div></div></div>';
+  add('Ad Spend', 'How ad spend compared', spendBody);
+  var fun = [['See', 'Impressions', 'impr'], ['Think', 'Clicks', 'clicks'], ['Do', 'Conversions', 'conv']].map(function (s) {
+    return '<div class="s-big"><div class="bl">' + s[0] + ' \u00B7 ' + s[1] + '</div><div class="bv">' + num(c[s[2]]) + '</div><div class="bs">' + esc(cn) + ' ' + num(p[s[2]]) + ' \u00B7 ' + chip(ch[s[2]], favOf(s[2], ch[s[2]])) + '</div></div>';
+  }).join('');
+  add('Results', 'What the spend produced', '<div class="s-cols"><div>' + fun + '</div><div><div class="chart-head"><h3>Conversions by month</h3>' + legend2(R) + '</div><div class="chart">' + colSvg(740, monthCfg(R, 'conv', { h: 400, tip: null, peakText: num })) + '</div></div></div>');
+  if (R.movers) {
+    var mrows = moversRows(R);
+    add('Results', 'Biggest movers in conversions', '<div class="chart-head" style="justify-content:space-between"><p class="s-lede" style="margin:0">Change in conversions against ' + esc(R.range.cmpName) + '.</p>' + moversLegend() + '</div><div class="chart" style="margin-top:14px">' +
+      deltaSvg(1120, { rows: mrows, rh: Math.min(48, Math.floor(380 / mrows.length)), fs: 16, vw: 90, tip: null, title: 'Biggest movers in conversions' }) + '</div>');
+  }
+  if (R.wins.length) {
+    add('What Went Well', 'Where the portfolio performed strongly', '<div class="s-cards">' + R.wins.slice(0, 4).map(function (w, i) {
+      return '<div class="s-card' + (i === 0 ? ' lead' : '') + '"><div class="eyebrow">' + esc(w.scope) + '</div><h3>' + esc(w.title) + '</h3><div class="metric"><span class="mv">' + esc(w.metric) + '</span><span class="ml">' + esc(w.metricLabel) + '</span></div><p>' + esc(w.detail) + '</p>' + (w.why && w.why.length ? '<p class="w">' + esc(w.why[0]) + '</p>' : '') + '</div>';
+    }).join('') + '</div>');
+  }
+  var rw = reasonList('wins');
+  if (rw.length) add('What Went Well', 'Why it went well', reasonSlide(rw));
+  if (R.limits.length) {
+    add('Limited Results', 'Where spend did not produce the results we expected', '<div class="s-lim">' + R.limits.slice(0, 3).map(function (l) {
+      return '<div class="s-card"><div class="eyebrow">' + esc(l.scope) + '</div><h3>' + esc(l.title) + '</h3><div class="lh">' + esc(l.headline) + '</div>' +
+        (l.why && l.why.length ? '<div class="sub">What drove it</div><p>' + esc(l.why[0]) + '</p>' : '') + '<div class="sub">Next step</div><p>' + esc(l.next) + '</p></div>';
+    }).join('') + '</div>');
+  }
+  var rl = reasonList('limits');
+  if (rl.length) add('Limited Results', 'What drove the limited results', reasonSlide(rl));
+  if (R.recs.length) {
+    add('Recommendations', 'Where we can improve next year', '<ol class="s-recs">' + R.recs.slice(0, 5).map(function (r, i) {
+      return '<li><div class="rn">' + (i + 1) + '</div><div><h3>' + esc(r.title) + '</h3><p>' + esc(r.detail) + '</p></div></li>';
+    }).join('') + '</ol>');
+  }
+  var comms = R.communities.slice(), pages = Math.max(1, Math.ceil(comms.length / 16)), per = Math.ceil(comms.length / pages);
+  for (var i = 0; i < comms.length; i += per) {
+    var part = comms.slice(i, i + per);
+    add('Communities', 'Communities at a glance' + (comms.length > per ? ' (' + (Math.floor(i / per) + 1) + ' of ' + Math.ceil(comms.length / per) + ')' : ''),
+      '<table class="t"><thead><tr><th class="l">Community</th><th>Tier</th><th>Spend ' + esc(cu) + '</th><th>Change</th><th>Conversions</th><th>Change</th><th>Cost per conv.</th><th>Change</th><th class="l">Status</th></tr></thead><tbody>' +
+      part.map(function (x) {
+        return '<tr><td class="l">' + esc(x.name) + '</td><td>' + x.tier + '</td><td>' + money(x.cur.spend) + '</td><td>' + chip(x.chg.spend, null) + '</td><td>' + num(x.cur.conv) + '</td><td>' + chip(x.chg.conv, favOf('conv', x.chg.conv)) + '</td><td>' + money(x.cur.cpa) + '</td><td>' + chip(x.chg.cpa, favOf('cpa', x.chg.cpa)) + '</td><td class="l">' + esc(x.statusLabel) + '</td></tr>';
+      }).join('') + '</tbody></table>');
+  }
+  if (R.events && R.events.length) {
+    add('Context', 'What changed this year', '<ul class="s-ctx">' + R.events.slice(0, 8).map(function (e) {
+      return '<li><span>' + esc(e.dateLabel) + '</span><span>' + esc(e.community) + '</span><span>' + esc(e.text) + '</span></li>';
+    }).join('') + '</ul>');
+  }
+  list.push({ raw: '<div class="slide dark closing"><div class="cword" style="font-family:var(--serif);font-size:30px;letter-spacing:.5em">VERTEX</div><h1>Thank you</h1><p>Questions and discussion</p><div class="ctag">Clear numbers. Confident decisions.</div></div>' });
+  var total = list.length;
+  return list.map(function (s, ix) {
+    if (s.raw) return s.raw;
+    return '<div class="slide"><div class="shead"><div class="eyebrow">' + esc(s.eyebrow) + '</div><h2' + slideTitleClass(s.title) + '>' + esc(s.title) + '</h2></div><div class="sbody">' + s.body + '</div>' +
+      '<div class="sfoot"><span>Vertex \u00B7 ' + esc(R.meta.title) + ' \u00B7 ' + esc(R.range.curLabel) + '</span><span>' + (ix + 1) + ' / ' + total + '</span></div></div>';
+  });
+}
+function reasonSlide(list) {
+  return '<ol class="s-recs">' + list.slice(0, 5).map(function (r, i) {
+    return '<li><div class="rn">' + (i + 1) + '</div><div><h3>' + esc(r.title) + '</h3><p>' + esc(r.detail) + '</p></div></li>';
+  }).join('') + '</ol>';
+}
+function openPresent() {
+  if (!S.rep) return;
+  S.slides = buildSlides(); S.slideIx = 0;
+  $('present').classList.add('on'); $('present').setAttribute('aria-hidden', 'false');
+  showSlide();
+  try { var d = document.documentElement; if (d.requestFullscreen) { var pr = d.requestFullscreen(); if (pr && pr.catch) pr.catch(function () {}); } } catch (e) {}
+}
+function showSlide() {
+  $('stage').innerHTML = S.slides[S.slideIx];
+  $('pCount').textContent = (S.slideIx + 1) + ' of ' + S.slides.length;
+  $('pPrev').disabled = S.slideIx === 0; $('pNext').disabled = S.slideIx === S.slides.length - 1;
+  fitStage();
+}
+function fitStage() {
+  var wrap = $('stageWrap'), W = wrap.clientWidth - 24, H = wrap.clientHeight - 24;
+  var sc = Math.min(W / 1280, H / 720);
+  if (!(sc > 0)) sc = 0.5;
+  $('stage').style.transform = 'scale(' + sc + ')';
+  $('stageBox').style.width = Math.floor(1280 * sc) + 'px';
+  $('stageBox').style.height = Math.floor(720 * sc) + 'px';
+}
+function goSlide(d) { var n = S.slideIx + d; if (n < 0 || n >= S.slides.length) return; S.slideIx = n; showSlide(); }
+function closePresent() {
+  $('present').classList.remove('on'); $('present').setAttribute('aria-hidden', 'true'); $('stage').innerHTML = '';
+  try { if (document.fullscreenElement && document.exitFullscreen) { var pr = document.exitFullscreen(); if (pr && pr.catch) pr.catch(function () {}); } } catch (e) {}
+}
+
+/* ---------------- export ---------------- */
+function printSlides() {
+  if (!S.rep) return;
+  $('printArea').innerHTML = buildSlides().map(function (s) { return '<div class="pslide">' + s + '</div>'; }).join('');
+  document.body.classList.add('p-slides');
+  window.print();
+  afterPrint();
+}
+function printReport() {
+  if (!S.rep) return;
+  if (S.view !== 'report') { S.view = 'report'; render(); }
+  document.body.classList.add('p-report');
+  window.print();
+  afterPrint();
+}
+function afterPrint() { document.body.classList.remove('p-slides'); document.body.classList.remove('p-report'); $('printArea').innerHTML = ''; }
+function csvCell(v) { var s = v === null || v === undefined ? '' : String(v); return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+function n2(v) { return isNum(v) ? Math.round(v * 100) / 100 : ''; }
+function p2(v) { return isNum(v) ? Math.round(v * 10000) / 100 : ''; }
+function downloadCsv() {
+  var R = S.rep; if (!R) return;
+  var cu = R.range.curName, cn = R.range.cmpName;
+  var head = ['Community', 'Tier', 'Status', 'Spend ' + cu, 'Spend ' + cn, 'Spend change %', 'Conversions ' + cu, 'Conversions ' + cn, 'Conversions change %',
+    'Cost per conversion ' + cu, 'Cost per conversion ' + cn, 'Clicks ' + cu, 'Clicks ' + cn, 'Impressions ' + cu, 'Impressions ' + cn, 'CTR % ' + cu, 'CTR % ' + cn,
+    'Conversion rate % ' + cu, 'Conversion rate % ' + cn, 'Lost to budget % ' + cu, 'Lost to rank % ' + cu];
+  var rows = R.communities.map(function (c) {
+    return [c.name, c.tier, c.statusLabel, n2(c.cur.spend), n2(c.cmp.spend), p2(c.chg.spend), n2(c.cur.conv), n2(c.cmp.conv), p2(c.chg.conv), n2(c.cur.cpa), n2(c.cmp.cpa),
+      c.cur.clicks, c.cmp.clicks, c.cur.impr, c.cmp.impr, p2(c.cur.ctr), p2(c.cmp.ctr), p2(c.cur.cvr), p2(c.cmp.cvr), p2(c.cur.isB), p2(c.cur.isR)];
+  });
+  var csv = [head].concat(rows).map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+  var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Vertex Google Ads ' + R.range.start + ' to ' + R.range.end + '.csv';
+  document.body.appendChild(a); a.click(); a.parentNode.removeChild(a);
+}
+
+/* ---------------- events ---------------- */
+function act(name, el) {
+  var m = $('exportMenu'); if (m) m.removeAttribute('open');
+  if (name === 'pdfSlides') return printSlides();
+  if (name === 'pdfReport') return printReport();
+  if (name === 'csv') return downloadCsv();
+  if (name === 'refresh') return load(true);
+  if (name === 'closeDrawer') return closeDrawer(false);
+  if (name === 'saveNote') return saveNote();
+  if (name === 'aiRedo') return loadAi(true);
+  if (name === 'addEvent') return addEvent();
+  if (name === 'delEvent') return delEvent(el.getAttribute('data-id'));
+  if (name === 'setDefault') return saveDefault();
+  if (name === 'why') return toggleWhy(el.getAttribute('data-kind'));
+  if (name === 'auditRedo') return loadAudit(true);
+  if (name === 'addIdea') return addIdea();
+  if (name === 'delIdea') return delIdea(el.getAttribute('data-id'));
+  if (name === 'closeFlash') { var f = $('flash'); if (f) f.parentNode.removeChild(f); return; }
+  settingsAct(name);
+}
+function bindUi() {
+  $('fPreset').onchange = function () { setPreset(this.value); if (this.value === 'custom') showApply(); else load(false); };
+  $('fCompare').onchange = function () { syncCustom(); if (this.value === 'custom') showApply(); else load(false); };
+  $('fTier').onchange = function () { load(false); };
+  ['fStart', 'fEnd', 'fCmpStart', 'fCmpEnd'].forEach(function (id) { $(id).onchange = showApply; });
+  $('bApply').onclick = function () { load(false); };
+  $('bPresent').onclick = openPresent;
+  $('pPrev').onclick = function () { goSlide(-1); };
+  $('pNext').onclick = function () { goSlide(1); };
+  $('pExit').onclick = closePresent;
+  $('scrim').onclick = function () { closeDrawer(false); };
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest ? e.target.closest('[data-view],[data-open],[data-note],[data-tbl],[data-act],[data-sort],[data-status]') : null;
+    if (!t) {
+      var tipEl = e.target && e.target.getAttribute ? e.target.getAttribute('data-tip') : null;
+      if (tipEl) showTip(tipEl, e.clientX, e.clientY);
+      return;
+    }
+    if (t.tagName === 'A') e.preventDefault();
+    if (t.hasAttribute('data-act')) return act(t.getAttribute('data-act'), t);
+    if (t.hasAttribute('data-view')) return showView(t.getAttribute('data-view'), t.getAttribute('data-sec'));
+    if (t.hasAttribute('data-open')) return openDrawer(t.getAttribute('data-open'));
+    if (t.hasAttribute('data-note')) return openDrawer(t.getAttribute('data-note'), true);
+    if (t.hasAttribute('data-tbl')) return toggleTable(t.getAttribute('data-tbl'), t);
+    if (t.hasAttribute('data-sort')) return sortBy(t.getAttribute('data-sort'));
+    if (t.hasAttribute('data-status')) {
+      S.statusFilter = t.getAttribute('data-status');
+      if (S.view !== 'communities') showView('communities'); else renderCommunities();
+    }
+  });
+  document.addEventListener('mousemove', function (e) {
+    var tip = e.target && e.target.getAttribute ? e.target.getAttribute('data-tip') : null;
+    if (tip) showTip(tip, e.clientX, e.clientY); else hideTip();
+  });
+  document.addEventListener('keydown', function (e) {
+    if ($('present').classList.contains('on')) {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); goSlide(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goSlide(-1); }
+      else if (e.key === 'Home') { S.slideIx = 0; showSlide(); }
+      else if (e.key === 'End') { S.slideIx = S.slides.length - 1; showSlide(); }
+      else if (e.key === 'Escape') closePresent();
+      return;
+    }
+    if (e.key === 'Escape' && $('drawer').classList.contains('on')) closeDrawer(false);
+  });
+  window.addEventListener('resize', function () {
+    S.charts = S.charts.filter(function (c) { return document.body.contains(c.el); });
+    S.charts.forEach(function (c) { var w = c.el.clientWidth; if (w && Math.abs(w - c.w) > 3) drawChart(c); });
+    if ($('present').classList.contains('on')) fitStage();
+  });
+  window.addEventListener('afterprint', afterPrint);
+}
+init();
+
+</script>
+</body>
+</html>
