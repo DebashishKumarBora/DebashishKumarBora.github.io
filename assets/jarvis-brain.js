@@ -253,11 +253,11 @@ window.JARVIS_BRAIN = (function(){
      act:'book', card:'hire', next:['How much does he charge?','Is he available?','Show me his best work']},
 
     {id:'clean', re:[[/\b(clean(s|ing)? (up )?(the |your |my )?data|data clean(ing|up)|messy data|dirty data|data quality|prepare (the )?data|data prep)\b/,7]],
-     a:['In steps: fix numbers saved as text, remove duplicate and blank rows, merge names spelled several ways, and mark missing values instead of counting them as zero. The <b>data lab</b> near the bottom of the page does exactly that, live, on any CSV you drop in.'],
+     a:['In steps: fix numbers saved as text, remove duplicate and blank rows, merge names spelled several ways, and mark missing values instead of counting them as zero. The <b>data lab</b> does exactly that, live, on any CSV you drop in.'],
      act:'go:#lab', next:['What tools does he use?','Show me his best work','Book a call']},
 
     {id:'lab', re:[[/\b(data lab|lab|try it( myself| yourself)?|upload|csv|my own data|my data|my file|messy (data|export|file))\b/,6]],
-     a:['Try the <b>data lab</b> near the bottom of the page. Drop in a CSV, or pick a sample, and it cleans the file, charts it and writes the insights right in your browser. Nothing is uploaded.'],
+     a:['Try the <b>data lab</b>. Drop in a CSV, or pick a sample, and it cleans the file, charts it and writes the insights right in your browser. Nothing is uploaded.'],
      act:'go:#lab', next:['How does he clean data?','Show me his best work','Book a call']},
 
     {id:'tour', re:[[/\b(tour|walk ?through|walk me|show me around|guide me|give me a tour|quick tour)\b/,6]],

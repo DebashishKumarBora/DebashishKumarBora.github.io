@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+<title>Debashish Bora · AI agents & dashboards</title>
+<meta name="description" content="Debashish Kumar Bora builds AI agents and live dashboards for marketing teams. 4+ years with US & UK brands. Live demos run right on your phone." />
+<link rel="canonical" href="https://debashishkumarbora.github.io/" />
+<meta name="theme-color" content="#0A0B14" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://debashishkumarbora.github.io/" />
+<meta property="og:title" content="Debashish Kumar Bora · Data & Automation Analyst" />
+<meta property="og:description" content="I build live, AI-powered dashboards and AI agents that turn messy data into decisions. 4+ years, US & UK clients." />
+<meta property="og:image" content="https://debashishkumarbora.github.io/images/og-cover.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png" />
+<script>
+/* the phone app. Whoever lands here wants it, so forget any earlier "desktop site" choice,
+   and keep the theme the visitor picked on either version */
+try{sessionStorage.removeItem('dkb_view');}catch(e){}
+try{var th0=localStorage.getItem('dkb_theme');if(th0==='light'||th0==='dark')document.documentElement.setAttribute('data-theme',th0);}catch(e){}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   DEB · MOBILE APP
+   Built for phones from the ground up: a compact top bar, a bottom tab
+   bar, swipeable rows of cards, sheets that slide up, small dense type.
+   Nothing here is shared with the desktop styles.
+   ===================================================================== */
+:root{
+  --indigo:#6D5EF8; --cyan:#22D3EE; --emerald:#34D399; --amber:#FBBF24; --magenta:#F471B5;
+  --grad:linear-gradient(110deg,var(--indigo),var(--cyan) 55%,var(--magenta));
+  --display:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --body:var(--display);
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-sm:10px; --r:14px; --r-lg:20px; --ease:cubic-bezier(.22,1,.36,1);
+  --bar:56px; --nav:62px; --safe:env(safe-area-inset-bottom,0px); --appw:100%;
+}
+[data-theme="dark"]{
+  --bg:#0A0B14; --bg2:#0E1019; --surface:#13151F; --surface2:#191C29;
+  --border:rgba(255,255,255,.075); --border2:rgba(255,255,255,.14);
+  --text:#EDEEF7; --muted:#9397AB; --faint:#62667A;
+  --glass:rgba(10,11,20,.8); --card-shadow:0 12px 30px -20px rgba(0,0,0,.9); --img:#0F1220;
+}
+[data-theme="light"]{
+  --bg:#F3F4F9; --bg2:#ECEEF5; --surface:#FFFFFF; --surface2:#F4F5FA;
+  --border:rgba(15,20,40,.08); --border2:rgba(15,20,40,.15);
+  --text:#14172B; --muted:#596076; --faint:#979DB2;
+  --glass:rgba(243,244,249,.86); --card-shadow:0 12px 26px -20px rgba(20,25,60,.45); --img:#E6E8F1;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 14px/1.45 var(--body);-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+img{display:block;max-width:100%}
+svg{display:block}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.press{transition:transform .16s var(--ease)}
+.press:active{transform:scale(.97)}
+
+/* ---------- app frame (a centred phone column when opened on a big screen) ---------- */
+.app{position:relative;min-height:100vh;min-height:100dvh}
+.wide-note{display:none}
+@media (min-width:640px){
+  :root{--appw:430px}
+  body{background:radial-gradient(60% 60% at 50% 0%,rgba(109,94,248,.18),transparent 70%),var(--bg)}
+  .app{max-width:430px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);background:var(--bg);box-shadow:0 0 80px -30px rgba(0,0,0,.8)}
+  .wide-note{display:flex;position:fixed;top:14px;right:18px;z-index:70;align-items:center;gap:8px;padding:9px 14px;border-radius:20px;background:var(--surface);border:1px solid var(--border2);font:600 12px var(--display);text-decoration:none;color:var(--text)}
+}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:0;z-index:20;height:calc(var(--bar) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 12px 0 14px;display:flex;align-items:center;gap:10px;
+  background:var(--glass);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid var(--border)}
+.me{position:relative;width:36px;height:36px;border-radius:50%;padding:2px;border:0;background:var(--grad);flex-shrink:0}
+.me img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--bg);background:var(--img)}
+.me .dot{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:var(--emerald);border:2px solid var(--bg)}
+.id{flex:1;min-width:0;line-height:1.15}
+.id b{display:block;font:800 14px/1.2 var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.id span{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;flex-shrink:0}
+.ib .ico{width:18px;height:18px}
+.cta{height:34px;padding:0 13px;border-radius:17px;background:var(--grad);color:#fff;font:700 12px/34px var(--display);text-decoration:none;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.25);flex-shrink:0}
+
+/* ---------- screens ---------- */
+.screen{display:none;padding:14px 16px calc(var(--nav) + var(--safe) + 28px)}
+.screen.on{display:block;animation:scrIn .3s var(--ease)}
+@keyframes scrIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scr-h{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:2px 0 12px}
+.scr-h h1{font:800 21px/1.15 var(--display);letter-spacing:-.02em;margin:0}
+.scr-h span{font-size:12px;color:var(--muted)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin:24px 0 10px}
+.sh h2{font:800 16px/1.2 var(--display);letter-spacing:-.01em;margin:0}
+.sh h2 small{display:block;font:500 11.5px/1.3 var(--body);color:var(--muted);letter-spacing:0;margin-top:2px}
+.sh button,.sh a{background:none;border:0;padding:6px 0 6px 10px;color:var(--cyan);font:700 12px var(--display);text-decoration:none;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:44px;padding:0 16px;border-radius:13px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font:700 13.5px/1 var(--display);text-decoration:none;white-space:nowrap}
+.btn .ico{width:17px;height:17px}
+.btn.pri{background:var(--grad);border:0;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.btn.full{width:100%}
+
+/* ---------- home: hero ---------- */
+.hero{position:relative;overflow:hidden;border-radius:var(--r-lg);padding:16px;border:1px solid var(--border);
+  background:radial-gradient(120% 90% at 100% 0%,rgba(109,94,248,.32),transparent 58%),radial-gradient(90% 90% at 0% 100%,rgba(34,211,238,.14),transparent 60%),var(--surface)}
+.hero-top{display:grid;grid-template-columns:1fr 82px;gap:12px;align-items:center}
+.avail{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:20px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.28);color:var(--emerald);font:600 9.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.avail i{width:6px;height:6px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 3px rgba(52,211,153,.2);animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(52,211,153,.05)}}
+.hero h1{font:800 20px/1.2 var(--display);letter-spacing:-.02em;margin:10px 0 6px}
+.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.pfp{width:82px;height:82px;border-radius:50%;padding:3px;background:var(--grad);box-shadow:0 10px 30px -10px rgba(109,94,248,.7)}
+.pfp img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--surface);background:var(--img)}
+.hero-cta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.hero-cta .btn{height:42px;font-size:13px}
+
+/* ---------- home: numbers ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.stat{padding:10px 6px 9px;border-radius:12px;background:var(--surface);border:1px solid var(--border);text-align:center;min-width:0}
+.stat b{display:block;font:800 16px/1.1 var(--display);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;margin-top:4px;font-size:9.5px;line-height:1.25;color:var(--muted)}
+
+/* ---------- home: shortcuts ---------- */
+.cats{display:flex;gap:12px;overflow-x:auto;margin:18px -16px 0;padding:2px 16px 4px;scrollbar-width:none}
+.cats::-webkit-scrollbar,.rail::-webkit-scrollbar,.chips::-webkit-scrollbar,.gal::-webkit-scrollbar,.qchips::-webkit-scrollbar,.mrail::-webkit-scrollbar{display:none}
+.cat{flex:0 0 auto;width:62px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;border:0;background:none;color:var(--text);font:600 10.5px/1.2 var(--display);text-align:center}
+.cat i{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;background:var(--tint);border:1px solid var(--border);color:var(--ink)}
+.cat i .ico{width:23px;height:23px}
+
+/* ---------- swipeable rows of project cards ---------- */
+.rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 6px;scroll-padding:0 16px;scrollbar-width:none}
+.pc{flex:0 0 78%;scroll-snap-align:start;display:block;padding:0;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);overflow:hidden;text-align:left;box-shadow:var(--card-shadow)}
+.pc.sm{flex-basis:64%}
+.shot{position:relative;aspect-ratio:16/10;background:var(--img);overflow:hidden}
+.shot img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity .4s}
+.shot img[data-lz]{opacity:0}
+.live{position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:20px;background:rgba(5,8,16,.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;font:600 9px/1 var(--mono);letter-spacing:.08em}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 3px rgba(52,211,153,.25)}
+.pc-b{padding:10px 12px 12px}
+.pc-b b{display:block;font:700 14px/1.25 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-b span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;font-size:12px;line-height:1.42;color:var(--muted);min-height:2.84em}
+.pc-b small{display:block;margin-top:8px;font:500 9.5px/1 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- home: data lab promo ---------- */
+.promo{display:grid;grid-template-columns:1fr 84px;gap:12px;align-items:center;width:100%;margin-top:24px;padding:15px 14px 15px 16px;border-radius:var(--r-lg);border:1px solid var(--border);text-align:left;
+  background:linear-gradient(135deg,rgba(52,211,153,.16),rgba(34,211,238,.08) 55%,transparent),var(--surface)}
+.promo small{font:600 9.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--emerald)}
+.promo b{display:block;margin:6px 0 4px;font:800 16px/1.2 var(--display)}
+.promo span{display:block;font-size:12px;line-height:1.45;color:var(--muted)}
+.promo em{display:inline-flex;align-items:center;gap:4px;margin-top:9px;font:700 12px var(--display);font-style:normal;color:var(--cyan)}
+.mbars{display:flex;align-items:flex-end;gap:5px;height:66px;padding:8px;border-radius:12px;background:var(--bg2);border:1px solid var(--border)}
+.mbars i{flex:1;border-radius:3px 3px 2px 2px;background:var(--grad);animation:grow 1.4s var(--ease) both}
+.mbars i:nth-child(2){animation-delay:.08s}.mbars i:nth-child(3){animation-delay:.16s}.mbars i:nth-child(4){animation-delay:.24s}.mbars i:nth-child(5){animation-delay:.32s}
+@keyframes grow{from{transform:scaleY(.1);transform-origin:bottom}to{transform:none;transform-origin:bottom}}
+
+/* ---------- brands ---------- */
+.brands{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.br{display:flex;align-items:center;gap:10px;min-width:0;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--surface);text-align:left}
+.logo{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:#fff;display:grid;place-items:center;overflow:hidden}
+.logo img{width:22px;height:22px;object-fit:contain}
+.logo.mono{background:var(--grad);color:#fff;font:800 13px var(--display)}
+.br div{min-width:0}
+.br b{display:block;font:700 12.5px/1.2 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.br div span{display:block;margin-top:2px;font-size:10.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.br em{display:block;margin-top:3px;font:600 9.5px/1 var(--mono);font-style:normal;color:var(--emerald)}
+
+/* ---------- lists (services, contact, certificates) ---------- */
+.list{border-radius:var(--r);border:1px solid var(--border);background:var(--surface);overflow:hidden}
+.row{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--border);background:none;text-align:left;text-decoration:none;color:inherit}
+.row:first-child{border-top:0}
+.row>i{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--tint,rgba(109,94,248,.14));color:var(--ink,#9A90FF)}
+.row>i .ico{width:19px;height:19px}
+.row b{display:block;font:700 13.5px/1.25 var(--display)}
+.row span{display:block;margin-top:2px;font-size:12px;line-height:1.42;color:var(--muted)}
+.row .chev{width:16px;height:16px;color:var(--faint)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.steps div{padding:10px 8px;border-radius:12px;border:1px solid var(--border);background:var(--surface)}
+.steps b{display:block;font:700 10px/1 var(--mono);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.steps span{display:block;margin-top:5px;font-size:10.5px;line-height:1.3}
+.endcard{margin-top:26px;padding:18px 16px;border-radius:var(--r-lg);border:1px solid var(--border);text-align:center;
+  background:radial-gradient(100% 120% at 50% 0%,rgba(109,94,248,.22),transparent 60%),var(--surface)}
+.endcard h3{margin:0 0 6px;font:800 18px/1.25 var(--display);letter-spacing:-.01em}
+.endcard p{margin:0 0 14px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.endcard .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.foot{margin-top:22px;text-align:center;font-size:11px;color:var(--faint);line-height:1.8}
+.foot a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- work ---------- */
+.chips{position:sticky;top:calc(var(--bar) + env(safe-area-inset-top,0px));z-index:6;display:flex;gap:6px;overflow-x:auto;margin:0 -16px 12px;padding:8px 16px;scrollbar-width:none;
+  background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.chip{flex:0 0 auto;height:32px;padding:0 13px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--muted);font:600 12px var(--display);white-space:nowrap}
+.chip.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gc{display:block;padding:0;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);overflow:hidden;text-align:left}
+.gc .shot{aspect-ratio:4/3}
+.gc-b{padding:9px 10px 11px}
+.gc-b b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em;font:700 12.5px/1.25 var(--display)}
+.gc-b small{display:block;margin-top:5px;font:500 9.5px/1.2 var(--mono);color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note{margin:14px 2px 0;font-size:11.5px;line-height:1.5;color:var(--faint);text-align:center}
+
+/* ---------- about ---------- */
+.prof{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface)}
+.prof .pfp{width:72px;height:72px;flex-shrink:0}
+.prof b{display:block;font:800 17px/1.2 var(--display)}
+.prof b+span{display:block;margin:3px 0 2px;font-size:12px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:5px;margin:6px 6px 0 0;padding:5px 9px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font:500 10.5px/1 var(--body);color:var(--muted)}
+.bio{margin:14px 2px 0;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.fact{padding:11px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);min-width:0}
+.fact small{display:block;font:600 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.fact b{display:block;margin-top:5px;font:700 12.5px/1.3 var(--display)}
+.tl{position:relative;padding-left:18px}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;border-radius:2px;background:linear-gradient(var(--indigo),var(--cyan),transparent)}
+.tl div{position:relative;padding:0 0 14px}
+.tl div::before{content:"";position:absolute;left:-17px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--cyan)}
+.tl div:first-child::before{background:var(--cyan);box-shadow:0 0 0 4px rgba(34,211,238,.18)}
+.tl b{display:block;font:700 13px/1.3 var(--display)}
+.tl span{display:block;margin-top:2px;font-size:12px;color:var(--muted)}
+.tl em{display:block;margin-top:3px;font:500 10px/1 var(--mono);font-style:normal;color:var(--faint)}
+.tools{display:flex;flex-wrap:wrap;gap:6px}
+.tools span{padding:7px 11px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font:600 11.5px/1 var(--display)}
+
+/* ---------- contact ---------- */
+.lead{margin:-4px 2px 14px;font-size:13px;line-height:1.55;color:var(--muted)}
+.bookcard{padding:16px;border-radius:var(--r-lg);border:1px solid var(--border);background:radial-gradient(110% 130% at 100% 0%,rgba(34,211,238,.18),transparent 60%),var(--surface)}
+.bookcard b{display:block;font:800 16px/1.25 var(--display)}
+.bookcard span{display:block;margin:4px 0 12px;font-size:12.5px;color:var(--muted)}
+.availcard{margin-top:12px;padding:13px 14px;border-radius:var(--r);border:1px dashed var(--border2);font-size:12.5px;line-height:1.5;color:var(--muted)}
+.availcard b{color:var(--text)}
+
+/* ---------- ask (Jarvis) ---------- */
+#s-ask.on{display:flex;flex-direction:column;padding:0;position:fixed;z-index:5;left:0;right:0;margin:0 auto;max-width:var(--appw);
+  top:calc(var(--bar) + env(safe-area-inset-top,0px));bottom:calc(var(--nav) + var(--safe));background:var(--bg);animation:none}
+.ask-h{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.orb{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.95) 0 5%,transparent 28%),conic-gradient(from 210deg,var(--indigo),var(--cyan),var(--magenta),var(--indigo));box-shadow:0 0 18px rgba(34,211,238,.35)}
+.ask-h b{display:block;font:800 14px/1.2 var(--display)}
+.ask-h span{display:block;font-size:11px;color:var(--muted)}
+.msgs{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.msgs>*{flex-shrink:0}
+.msg{max-width:86%;padding:10px 12px;border-radius:16px;font-size:13.5px;line-height:1.5;animation:scrIn .25s var(--ease)}
+.msg.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-bottom-left-radius:6px}
+.msg.you{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:6px}
+.msg b{font-weight:700}
+.att{align-self:stretch;animation:scrIn .3s var(--ease)}
+.typing{align-self:flex-start;display:flex;gap:4px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{display:flex;flex-direction:column;gap:3px;padding:12px;border-radius:14px;border:1px solid var(--border);background:var(--surface);text-align:left}
+.tile .ico{width:19px;height:19px;color:var(--cyan);margin-bottom:4px}
+.tile b{font:700 12.5px/1.2 var(--display)}
+.tile span{font-size:11px;color:var(--muted)}
+.mrail{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+.mini{flex:0 0 150px;padding:0;border-radius:12px;border:1px solid var(--border);background:var(--surface);overflow:hidden;text-align:left}
+.mini .shot{aspect-ratio:16/10}
+.mini b{display:block;padding:7px 9px 9px;font:700 11.5px/1.25 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.one{border-radius:14px;border:1px solid var(--border);background:var(--surface);overflow:hidden}
+.one-b{display:flex;gap:8px;padding:10px}
+.one-b .btn{flex:1;height:38px;font-size:12.5px;padding:0 10px}
+.abtn{display:flex;flex-wrap:wrap;gap:6px}
+.abtn button,.abtn a{height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font:600 12px/32px var(--display);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.abtn .p{background:var(--grad);border:0;color:#fff;line-height:34px}
+.mstats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mstats div{padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--surface)}
+.mstats b{display:block;font:800 16px/1 var(--display);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mstats span{display:block;margin-top:4px;font-size:10.5px;color:var(--muted)}
+.qchips{display:flex;gap:6px;overflow-x:auto;padding:8px 16px;flex-shrink:0;scrollbar-width:none;border-top:1px solid var(--border)}
+.qchips button{flex:0 0 auto;height:32px;padding:0 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);font:600 12px var(--display);white-space:nowrap}
+.askbar{display:flex;gap:8px;align-items:center;padding:8px 12px 10px;flex-shrink:0;background:var(--bg2);border-top:1px solid var(--border)}
+.askbar input{flex:1;min-width:0;height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font:400 16px var(--body);outline:none}
+.askbar input:focus{border-color:var(--cyan)}
+.askbar button{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;flex-shrink:0}
+.askbar .send{background:var(--grad);color:#fff}
+.askbar .mic{background:var(--surface);border:1px solid var(--border2)}
+.askbar .mic.on{background:rgba(244,113,181,.18);border-color:var(--magenta);color:var(--magenta)}
+
+/* ---------- data lab (a screen of its own) ---------- */
+.back{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 12px 0 6px;border-radius:17px;border:1px solid var(--border);background:var(--surface);font:700 12.5px var(--display)}
+.back .ico{width:18px;height:18px}
+.seg{height:32px;padding:0 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--muted);font:600 11.5px var(--display);white-space:nowrap}
+.seg.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+.lab-card{padding:12px;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface)}
+.lab-card.drop{border-color:var(--cyan)}
+.lab-src{display:flex;gap:6px;overflow-x:auto;margin:0 -12px 12px;padding:0 12px 2px;scrollbar-width:none}
+.lab-src::-webkit-scrollbar{display:none}
+.lab-src .seg{flex-shrink:0}
+.lab-src .seg.up{border-style:dashed}
+.lab-grid{display:flex;flex-direction:column-reverse;gap:16px}
+.lab-in,.lab-out{min-width:0}
+.lab-card h5{margin:0 0 8px;font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.lab-raw{overflow:auto;max-height:190px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);margin-bottom:10px}
+.lab-raw table{border-collapse:collapse;min-width:100%;white-space:nowrap;font:400 10px/1.3 var(--mono)}
+.lab-raw td{padding:6px 9px;border-bottom:1px solid var(--border);color:var(--muted)}
+.lab-raw tr.h td{position:sticky;top:0;z-index:1;background:var(--surface2);color:var(--text);font-weight:700}
+.lab-raw tr.t td{color:var(--faint);font-style:italic}
+.lab-raw tr.b td{background:rgba(245,176,65,.08)}
+.lab-raw tr.d td{background:rgba(244,113,181,.1);text-decoration:line-through}
+.lab-raw td.fx{color:#f5b041;background:rgba(245,176,65,.1)}
+.lab-raw td.na{color:var(--magenta);background:rgba(244,113,181,.12)}
+.lab-raw td i{font-style:normal;color:var(--faint)}
+.lab-key{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 14px;font:500 9.5px/1 var(--mono);color:var(--faint)}
+.lab-key span{display:inline-flex;align-items:center;gap:5px}
+.lab-key i{width:9px;height:9px;border-radius:3px}
+.lab-key .k-fx{background:rgba(245,176,65,.55)}.lab-key .k-na{background:rgba(244,113,181,.6)}.lab-key .k-d{background:rgba(244,113,181,.22);border:1px solid rgba(244,113,181,.5)}.lab-key .k-b{background:rgba(245,176,65,.2)}
+.lab-steps{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.lab-steps li{position:relative;padding-left:23px;font-size:12px;line-height:1.45;color:var(--muted)}
+.lab-steps li::before{content:"\2713";position:absolute;left:0;top:1px;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;background:var(--emerald);color:#04121f;font:800 9px/1 var(--display)}
+.lab-steps b{color:var(--text)}
+.lab-anim .lab-steps li{animation:scrIn .4s var(--ease) both;animation-delay:var(--d)}
+.lab-kpis{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.lab-kpis div{min-width:0;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--bg2)}
+.lab-kpis span{display:block;font-size:10px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lab-kpis b{display:block;margin-top:3px;font:800 17px/1.1 var(--display);white-space:nowrap}
+.lab-metrics{display:flex;gap:6px;overflow-x:auto;margin-bottom:6px;scrollbar-width:none}
+.lab-metrics::-webkit-scrollbar{display:none}
+.lab-metrics .seg{flex-shrink:0;height:28px;font-size:10.5px}
+.lab-trend{position:relative;margin-bottom:12px}
+.lab-ymax{font:400 9.5px/1.3 var(--mono);color:var(--faint);margin-bottom:2px}
+.lab-ymax em{font-style:normal}
+.lab-plot{position:relative;height:130px;touch-action:pan-y}
+.lab-plot svg{width:100%;height:100%}
+.lab-x{position:relative;height:15px;font:400 9px/1 var(--mono);color:var(--faint)}
+.lab-x span{position:absolute;top:3px;transform:translateX(-50%);white-space:nowrap}
+.lab-x span:first-child{transform:none}
+.lab-cur{position:absolute;top:0;bottom:0;width:1px;background:var(--border2);opacity:0;pointer-events:none}
+.lab-tip{position:absolute;top:2px;transform:translateX(8px);padding:6px 9px;border-radius:9px;border:1px solid var(--border2);background:var(--surface);font:400 10px/1.3 var(--mono);color:var(--muted);opacity:0;pointer-events:none;white-space:nowrap}
+.lab-tip.flip{transform:translateX(calc(-100% - 8px))}
+.lab-tip b{display:block;color:var(--text);font-size:11.5px}
+.lab-none{font-size:12px;color:var(--muted)}
+.lab-bars{margin-bottom:12px}
+.lab-bar{display:grid;grid-template-columns:minmax(0,7.5em) 1fr auto;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px}
+.lab-bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.lab-bar i{height:7px;border-radius:5px;background:var(--surface2);overflow:hidden}
+.lab-bar em{display:block;height:100%;border-radius:5px;background:var(--grad)}
+.lab-bar b{font:600 10px var(--mono)}
+.lab-ins{padding-top:10px;border-top:1px solid var(--border)}
+.lab-ins ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.lab-ins li{position:relative;padding-left:14px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.lab-ins li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--grad)}
+.lab-ins b{color:var(--text)}
+.lab-foot{display:flex;flex-direction:column;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.lab-foot span{font-size:11px;color:var(--faint)}
+
+/* ---------- bottom tabs ---------- */
+.tabs{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:var(--appw);z-index:30;height:calc(var(--nav) + var(--safe));padding-bottom:var(--safe);
+  display:grid;grid-template-columns:repeat(5,1fr);background:var(--glass);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-top:1px solid var(--border)}
+.tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;background:none;color:var(--faint);font:600 10px/1 var(--display)}
+.tab .ico{width:22px;height:22px}
+.tab.on{color:var(--text)}
+.tab.on::before{content:"";position:absolute;top:0;width:26px;height:3px;border-radius:0 0 3px 3px;background:var(--grad)}
+.tab.ask{justify-content:flex-end;padding-bottom:9px}
+.tab.ask .orb{position:absolute;top:-18px;left:50%;margin-left:-26px;width:52px;height:52px;border:4px solid var(--bg);display:grid;place-items:center;color:#fff}
+.tab.ask .orb .ico{width:22px;height:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.tab.ask.on::before{display:none}
+
+/* while typing to Jarvis the tab bar steps aside, so the keyboard has room */
+body.kb-open .tabs{display:none}
+body.kb-open #s-ask.on{bottom:0}
+
+/* ---------- sheet ---------- */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(3,4,10,.6);opacity:0;pointer-events:none;transition:opacity .28s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:var(--appw);z-index:41;display:flex;flex-direction:column;max-height:92vh;max-height:92dvh;
+  border-radius:22px 22px 0 0;border-top:1px solid var(--border2);background:var(--bg2);transform:translateY(105%);transition:transform .34s var(--ease);overflow:hidden}
+.sheet.on{transform:none}
+.sheet.drag{transition:none}
+.sheet-h{position:relative;flex-shrink:0;height:46px;touch-action:none}
+.grab{width:38px;height:4px;margin:9px auto 0;border-radius:4px;background:var(--border2)}
+.sheet-x{position:absolute;right:12px;top:8px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);display:grid;place-items:center;z-index:2}
+.sheet-x .ico{width:16px;height:16px}
+.sheet-body{flex:1;overflow-y:auto;padding:4px 16px 18px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet-foot{flex-shrink:0;display:flex;gap:8px;padding:10px 16px calc(10px + var(--safe));border-top:1px solid var(--border);background:var(--bg2)}
+.sheet-foot .btn{height:46px}
+.sheet-foot .btn.pri{flex:1}
+.gal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px;scrollbar-width:none}
+.gal .shot{flex:0 0 100%;scroll-snap-align:center;border-radius:14px;border:1px solid var(--border)}
+.dots{display:flex;justify-content:center;gap:5px;margin:9px 0 0}
+.dots i{width:5px;height:5px;border-radius:5px;background:var(--border2);transition:width .25s,background .25s}
+.dots i.on{width:16px;background:var(--cyan)}
+.ps-t{margin:12px 0 7px;font:800 19px/1.2 var(--display);letter-spacing:-.01em}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:12px;border:1px solid var(--border);background:var(--surface);font:500 10px/1 var(--mono);color:var(--muted)}
+.tag.ok{color:var(--emerald);border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.ps-one{margin:12px 0 14px;font-size:14px;line-height:1.55}
+.pbr{display:grid;gap:8px}
+.pbr div{padding:11px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface)}
+.pbr small{display:block;margin-bottom:4px;font:600 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.pbr p{margin:0;font-size:12.5px;line-height:1.55;color:var(--muted)}
+.pbr .res p{color:var(--emerald)}
+.next{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface);text-align:left}
+.next small{display:block;font:600 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.next b{display:block;margin-top:4px;font:700 13px/1.2 var(--display)}
+.bsheet{text-align:center;padding:4px 4px 6px}
+.bsheet .logo{width:56px;height:56px;border-radius:16px;margin:2px auto 10px}
+.bsheet .logo img{width:36px;height:36px}
+.bsheet .logo.mono{font-size:22px}
+.bsheet h3{margin:0;font:800 18px/1.2 var(--display)}
+.bsheet p{margin:10px 0 0;font-size:13.5px;line-height:1.55;color:var(--muted)}
+
+/* ---------- live demo viewer ---------- */
+.viewer{position:fixed;inset:0;margin:0 auto;max-width:var(--appw);z-index:50;display:flex;flex-direction:column;background:var(--bg);transform:translateY(100%);transition:transform .32s var(--ease);visibility:hidden}
+.viewer.on{transform:none;visibility:visible}
+.vbar{display:flex;align-items:center;gap:8px;height:calc(52px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 8px 0;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--bg2)}
+.vbar div{flex:1;min-width:0}
+.vbar b{display:block;font:700 13.5px/1.2 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vbar small{display:block;font:500 9.5px/1.2 var(--mono);color:var(--amber)}
+.vbody{position:relative;flex:1}
+.vbody iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
+.vload{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:12px;color:var(--muted);font-size:12.5px;text-align:center;padding:24px}
+.spin{width:30px;height:30px;margin:0 auto;border-radius:50%;border:3px solid var(--border2);border-top-color:var(--cyan);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(var(--nav) + var(--safe) + 14px);z-index:80;max-width:86%;padding:10px 14px;border-radius:12px;background:var(--text);color:var(--bg);font:600 12.5px/1.35 var(--display);
+  transform:translate(-50%,16px);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s var(--ease)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:359px){
+  .cta{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.6 12 3.5l9 7.1V20a1 1 0 0 1-1 1h-5.2v-6.2H9.2V21H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z"/><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3.9"/><path d="M4.5 20.5c1.2-3.8 4.1-5.7 7.5-5.7s6.3 1.9 7.5 5.7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.5 12a8 8 0 0 1-11.7 7.1L3.5 20.5l1.4-4.9A8 8 0 1 1 20.5 12z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.8 4.8 13.3h6.1L10 21.2l8.2-10.5h-6.1z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9.5 3.5h5M10 3.5v5.4L4.8 18a1.9 1.9 0 0 0 1.7 2.8h11a1.9 1.9 0 0 0 1.7-2.8L14 8.9V3.5"/><path d="M7.6 14.5h8.8"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5.5a1.5 1.5 0 0 1 1.5-1.5h8A1.5 1.5 0 0 1 15 5.5V21M15 10h3.5A1.5 1.5 0 0 1 20 11.5V21M2.5 21h19M8 8h3M8 12h3M8 16h3"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.8 9.6c.3 2.5 2.1 4.4 4.6 4.9l1.2-1.2 1.9.8"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M3 12.5h18"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8.5 7-5 5 5 5M15.5 7l5 5-5 5M13.5 4.5l-3 15"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.8v14.4a1 1 0 0 0 1.5.9l11.2-7.2a1 1 0 0 0 0-1.7L8.5 3.9A1 1 0 0 0 7 4.8z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12 20 4l-4.5 16-3.5-6.5z"/><path d="M12 13.5 20 4"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8"/><path d="M5 12v6.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V12"/></symbol>
+  <symbol id="i-cert" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="m8.8 13.4-1.3 7.1 4.5-2.4 4.5 2.4-1.3-7.1"/></symbol>
+</svg>
+
+<a class="wide-note" href="../" id="wideNote">This is the phone version · Open the full site <svg class="ico" style="width:14px;height:14px"><use href="#i-ext"/></svg></a>
+
+<div class="app" id="app">
+  <header class="bar">
+    <button class="me press" data-go="about" aria-label="About Deb"><img src="../images/profile.jpg" alt="" onerror="this.onerror=null;this.src='../images/portrait.png'"><span class="dot"></span></button>
+    <div class="id"><b>Debashish Bora</b><span>AI agents · Live dashboards</span></div>
+    <button class="ib press" id="themeBtn" aria-label="Switch light or dark theme"><svg class="ico"><use href="#i-moon"/></svg></button>
+    <a class="cta press" data-book href="https://calendly.com/debashishbora/30min" target="_blank" rel="noopener">Book a call</a>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="screen on" id="s-home" aria-label="Home">
+      <div class="hero">
+        <div class="hero-top">
+          <div>
+            <span class="avail"><i></i>Open to projects &amp; roles</span>
+            <h1>I turn messy data into <em>decisions.</em></h1>
+            <p>AI agents and live dashboards for marketing teams. 4+ years with US &amp; UK brands.</p>
+          </div>
+          <div class="pfp"><img src="../images/profile.jpg" alt="Debashish Kumar Bora" onerror="this.onerror=null;this.src='../images/portrait.png'"></div>
+        </div>
+        <div class="hero-cta">
+          <button class="btn pri press" data-go="work"><svg class="ico"><use href="#i-grid"/></svg>See my work</button>
+          <a class="btn press" data-book href="https://calendly.com/debashishbora/30min" target="_blank" rel="noopener"><svg class="ico"><use href="#i-cal"/></svg>Book a call</a>
+        </div>
+      </div>
+      <div class="stats" id="stats"></div>
+
+      <nav class="cats" aria-label="Shortcuts">
+        <button class="cat press" data-go="work" data-f="agent" style="--tint:rgba(109,94,248,.16);--ink:#9A90FF"><i><svg class="ico"><use href="#i-bolt"/></svg></i>AI agents</button>
+        <button class="cat press" data-go="work" data-f="app" style="--tint:rgba(34,211,238,.13);--ink:#22D3EE"><i><svg class="ico"><use href="#i-chart"/></svg></i>Dashboards</button>
+        <button class="cat press" data-go="lab" style="--tint:rgba(52,211,153,.13);--ink:#34D399"><i><svg class="ico"><use href="#i-flask"/></svg></i>Data lab</button>
+        <button class="cat press" data-go="ask" style="--tint:rgba(244,113,181,.13);--ink:#F471B5"><i><svg class="ico"><use href="#i-spark"/></svg></i>Ask AI</button>
+        <button class="cat press" data-jump="brands" style="--tint:rgba(251,191,36,.13);--ink:#FBBF24"><i><svg class="ico"><use href="#i-building"/></svg></i>Brands</button>
+        <button class="cat press" data-go="about" style="--tint:rgba(148,163,184,.14);--ink:#AAB4C5"><i><svg class="ico"><use href="#i-user"/></svg></i>About</button>
+      </nav>
+
+      <div class="sh"><h2>AI agents<small>Tools that do the work, not just show it</small></h2><button data-go="work" data-f="agent">See all</button></div>
+      <div class="rail" id="railAgents"></div>
+
+      <button class="promo press" data-go="lab">
+        <div><small>Try it yourself</small><b>Hand it a messy export</b><span>Drop in a CSV and get a dashboard and plain English insights in seconds. Nothing is uploaded.</span><em>Open the data lab <svg class="ico" style="width:14px;height:14px"><use href="#i-chev"/></svg></em></div>
+        <div class="mbars" aria-hidden="true"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:84%"></i><i style="height:70%"></i></div>
+      </button>
+
+      <div class="sh"><h2>Live dashboards<small>Every one opens right here</small></h2><button data-go="work" data-f="app">See all</button></div>
+      <div class="rail" id="railDash"></div>
+
+      <div class="sh" id="brands"><h2>Brands I've delivered for<small>£3M+ a year in Google Ads on the top travel accounts alone</small></h2></div>
+      <div class="brands" id="brandGrid"></div>
+
+      <div class="sh"><h2>How I can help</h2></div>
+      <div class="list" id="services"></div>
+      <div class="steps" id="steps"></div>
+
+      <div class="endcard">
+        <h3>Still building that report by hand?</h3>
+        <p>Tell me what your team reports by hand today. I'll show you what a live version could look like.</p>
+        <div class="two">
+          <a class="btn pri press" data-book href="https://calendly.com/debashishbora/30min" target="_blank" rel="noopener">Book a call</a>
+          <a class="btn press" data-wa href="#" target="_blank" rel="noopener"><svg class="ico"><use href="#i-msg"/></svg>WhatsApp</a>
+        </div>
+      </div>
+      <p class="foot">© <span class="yr"></span> Debashish Kumar Bora<br><a href="#" class="deskLink">View the desktop site</a></p>
+    </section>
+
+    <!-- WORK -->
+    <section class="screen" id="s-work" aria-label="Work">
+      <div class="scr-h"><h1>Work</h1><span id="workCount"></span></div>
+      <div class="chips" id="chips" role="tablist" aria-label="Filter">
+        <button class="chip on" data-f="all">All</button>
+        <button class="chip" data-f="agent">AI agents</button>
+        <button class="chip" data-f="app">Dashboards</button>
+        <button class="chip" data-f="looker">Looker Studio</button>
+      </div>
+      <div class="grid" id="workGrid"></div>
+      <p class="note">Every live demo runs on invented sample data, so nothing confidential is shown.</p>
+    </section>
+
+    <!-- ASK -->
+    <section class="screen" id="s-ask" aria-label="Ask Jarvis">
+      <div class="ask-h"><span class="orb"></span><div><b>Jarvis</b><span>Answers from Deb's work · private to your phone</span></div></div>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+      <div class="qchips" id="qchips"></div>
+      <form class="askbar" id="askForm" autocomplete="off">
+        <label class="sr" for="askIn">Ask about Deb's work</label>
+        <input id="askIn" type="text" enterkeyhint="send" placeholder="Ask anything about Deb's work">
+        <button type="button" class="mic" id="micBtn" aria-label="Talk" hidden><svg class="ico"><use href="#i-mic"/></svg></button>
+        <button type="submit" class="send" aria-label="Send"><svg class="ico"><use href="#i-send"/></svg></button>
+      </form>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="screen" id="s-about" aria-label="About">
+      <div class="prof">
+        <div class="pfp"><img src="../images/profile.jpg" alt="Debashish Kumar Bora" loading="lazy" onerror="this.onerror=null;this.src='../images/portrait.png'"></div>
+        <div><b>Debashish Kumar Bora</b><span>Marketing guy. Data brain.</span>
+          <span class="pill">📍 Guwahati, India</span><span class="pill">🌍 Remote</span></div>
+      </div>
+      <p class="bio" id="bio"></p>
+      <div class="facts" id="facts"></div>
+      <div class="sh"><h2>Experience</h2></div>
+      <div class="tl" id="timeline"></div>
+      <div class="sh" id="toolsHead"><h2>Tools I use daily</h2></div>
+      <div class="tools" id="tools"></div>
+      <div class="sh" id="certsHead"><h2>Certified</h2></div>
+      <div class="list" id="certs"></div>
+      <div class="sh"><h2>Education</h2></div>
+      <div class="list"><div class="row" style="cursor:default"><i style="--tint:rgba(34,211,238,.13);--ink:#22D3EE"><svg class="ico"><use href="#i-cert"/></svg></i><div><b>MBA</b><span>IIT (ISM) Dhanbad</span></div><span></span></div></div>
+      <p class="foot"><a href="#" class="deskLink">View the desktop site</a></p>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="screen" id="s-contact" aria-label="Contact">
+      <div class="scr-h"><h1>Let's build yours</h1></div>
+      <p class="lead">Tell me what your team reports by hand today. I'll show you what a live version could look like.</p>
+      <div class="bookcard">
+        <b>Book a 30 minute intro call</b>
+        <span>Free, no prep needed. Pick any slot that suits you.</span>
+        <a class="btn pri full press" data-book href="https://calendly.com/debashishbora/30min" target="_blank" rel="noopener"><svg class="ico"><use href="#i-cal"/></svg>Pick a time</a>
+      </div>
+      <div class="sh"><h2>Or reach me directly</h2></div>
+      <div class="list" id="contactList"></div>
+      <div class="availcard"><b>Open to freelance projects and the right full time role.</b> Remote, overlapping UK and US working hours.</div>
+      <p class="foot"><a href="#" class="deskLink">View the desktop site</a></p>
+    </section>
+
+    <!-- DATA LAB -->
+    <section class="screen" id="s-lab" aria-label="Data lab">
+      <div class="scr-h" style="align-items:center"><button class="back press" data-back><svg class="ico"><use href="#i-back"/></svg>Back</button><span>Runs on your phone</span></div>
+      <div class="scr-h" style="margin-top:4px"><h1>Data lab</h1></div>
+      <p class="lead">Pick a sample, or drop in your own CSV. It gets cleaned, charted and read right here. Nothing is uploaded.</p>
+      <div id="lab">
+        <div class="lab-card">
+          <div class="lab-src" role="group" aria-label="Choose the data">
+            <button type="button" class="seg on" data-s="ads">Google Ads export</button>
+            <button type="button" class="seg" data-s="ga4">Website traffic (GA4)</button>
+            <button type="button" class="seg" data-s="lease">Leasing funnel</button>
+            <button type="button" class="seg up" id="labUp">⬆ Your own CSV</button>
+            <input type="file" id="labFile" accept=".csv,.tsv,.txt,text/csv" hidden>
+          </div>
+          <div class="lab-grid">
+            <div class="lab-in">
+              <h5>The raw export</h5>
+              <div class="lab-raw" id="labRaw"></div>
+              <div class="lab-key" aria-hidden="true"><span><i class="k-fx"></i>Needs fixing</span><span><i class="k-na"></i>Missing</span><span><i class="k-d"></i>Duplicate</span><span><i class="k-b"></i>Blank row</span></div>
+              <h5>What got cleaned</h5>
+              <ol class="lab-steps" id="labSteps"></ol>
+            </div>
+            <div class="lab-out" id="labOut">
+              <div class="lab-kpis" id="labKpis"></div>
+              <div class="lab-metrics" id="labMetrics" role="group" aria-label="Metric to chart"></div>
+              <div class="lab-trend" id="labTrend"></div>
+              <div class="lab-bars" id="labBars"></div>
+              <div class="lab-ins"><h5>What it says</h5><ul id="labIns"></ul></div>
+            </div>
+          </div>
+          <div class="lab-foot">
+            <span>Your file never leaves your phone.</span>
+            <a class="btn pri full press" data-book href="https://calendly.com/debashishbora/30min" target="_blank" rel="noopener">Want this on your live data? Book a call</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" aria-label="Sections">
+    <button class="tab on" data-go="home"><svg class="ico"><use href="#i-home"/></svg>Home</button>
+    <button class="tab" data-go="work"><svg class="ico"><use href="#i-grid"/></svg>Work</button>
+    <button class="tab ask" data-go="ask"><span class="orb"><svg class="ico"><use href="#i-spark"/></svg></span>Ask AI</button>
+    <button class="tab" data-go="about"><svg class="ico"><use href="#i-user"/></svg>About</button>
+    <button class="tab" data-go="contact"><svg class="ico"><use href="#i-chat"/></svg>Contact</button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Details">
+  <div class="sheet-h" id="sheetGrab"><div class="grab"></div><button class="sheet-x" id="sheetX" aria-label="Close"><svg class="ico"><use href="#i-x"/></svg></button></div>
+  <div class="sheet-body" id="sheetBody"></div>
+  <div class="sheet-foot" id="sheetFoot"></div>
+</div>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Live demo">
+  <div class="vbar">
+    <button class="ib press" id="vBack" aria-label="Close the demo"><svg class="ico"><use href="#i-back"/></svg></button>
+    <div><b id="vTitle"></b><small>Live demo · sample data</small></div>
+    <a class="ib press" id="vExt" href="#" target="_blank" rel="noopener" aria-label="Open in a new tab"><svg class="ico"><use href="#i-ext"/></svg></a>
+  </div>
+  <div class="vbody"><div class="vload" id="vLoad"><div class="spin"></div><span>Loading the live demo</span></div></div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="../assets/site-data.js"></script>
+<script src="app.js"></script>
+<script src="../assets/jarvis-brain.js" defer></script>
+<script src="../assets/lab.js" defer></script>
+</body>
+</html>
