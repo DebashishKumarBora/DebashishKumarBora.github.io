@@ -67,7 +67,7 @@ window.JARVIS_BRAIN = (function(){
     gsc:{en:['search console','gsc','organic','seo','keyword','query','ranking'],
          hi:['सर्च कंसोल','ऑर्गेनिक','कीवर्ड','search console','gsc','organic','seo','keyword'],
          as:['ছাৰ্চ কনচল','অৰ্গানিক','কীৱৰ্ড','search console','gsc','organic','seo','keyword']},
-    ads:{en:['ads','google ads','adcommand','ad command','ppc','paid search','campaign','spend','budget'],
+    ads:{en:['ads','google ads','adcommand','ad command','ppc','paid search','campaign','spend','budget','superdash','ads intelligence'],
          hi:['एड','एड्स','गूगल एड्स','कैंपेन','बजट','खर्च','ads','google ads','campaign','budget'],
          as:['এড','এডছ','গুগল এডছ','কেম্পেইন','বাজেট','খৰচ','ads','google ads','campaign','budget']},
     work:{en:['work','project','projects','portfolio','dashboard','dashboards','build','builds','case study'],
@@ -132,8 +132,8 @@ window.JARVIS_BRAIN = (function(){
      ===================================================================== */
   var A={
     en:{
-      work:['He has six live dashboards on this page, plus AdCommand as the flagship. Every one of them opens and runs in your browser right now. Want me to open one?',
-            'The work is all real builds, not mockups: a marketing hub, a leasing dashboard, GA4 analytics, reviews, search console, and a Google Ads command center. Say the name and I will open it.'],
+      work:['He has three AI agents and six live dashboards on this page, and every one opens and runs in your browser right now. Want me to open one?',
+            'All real builds, shown on sample data: Ads Intelligence, a Claude-style chat over sixteen ad accounts, a self-building Performance Review, Client Reports, a marketing hub, leasing, GA4, reviews, search console and AdCommand. Say the name and I will open it.'],
       results:['The headline numbers: over three million pounds a year in managed Google Ads spend, one hundred and twenty one million impressions and eighty six thousand conversions surfaced in one build, and more than a hundred ad accounts across his career.',
                'Four years, eight or more brands, a hundred plus ad accounts, and three million pounds a year in live ad budget. One Looker Studio build alone mapped one hundred and twenty one million impressions.'],
       tools:['Looker Studio, Power BI, Google Apps Script, Snowflake, GA4, BigQuery, Google Ads API, Python, React, and Claude for the AI layers.',
@@ -174,8 +174,8 @@ window.JARVIS_BRAIN = (function(){
       bye:['Thanks for stopping by.','See you around.']
     },
     hi:{
-      work:['इस पेज पर छह लाइव डैशबोर्ड हैं, और फ्लैगशिप है ऐडकमांड। हर एक ब्राउज़र में अभी चलता है। कोई खोलूं?',
-            'सारा काम असली है, मॉकअप नहीं: मार्केटिंग हब, लीजिंग डैशबोर्ड, जीए4 एनालिटिक्स, रिव्यू, सर्च कंसोल और गूगल एड्स कमांड सेंटर।'],
+      work:['इस पेज पर तीन AI एजेंट और छह लाइव डैशबोर्ड हैं। हर एक ब्राउज़र में अभी चलता है। कोई खोलूं?',
+            'सारा काम असली है, सैंपल डेटा पर: ऐड्स इंटेलिजेंस, परफॉर्मेंस रिव्यू, क्लाइंट रिपोर्ट, मार्केटिंग हब, लीजिंग डैशबोर्ड, जीए4 एनालिटिक्स, रिव्यू, सर्च कंसोल और ऐडकमांड।'],
       results:['मुख्य आंकड़े: हर साल तीस लाख पाउंड से ज़्यादा का गूगल एड्स खर्च, एक बिल्ड में बारह करोड़ इंप्रेशन और छियासी हज़ार कन्वर्ज़न, और करियर में सौ से ज़्यादा एड अकाउंट।',
                'चार साल, आठ से ज़्यादा ब्रांड, सौ से ज़्यादा एड अकाउंट, और हर साल तीस लाख पाउंड का लाइव एड बजट।'],
       tools:['लुकर स्टूडियो, पावर बीआई, गूगल ऐप्स स्क्रिप्ट, स्नोफ़्लेक, जीए4, बिगक्वेरी, गूगल एड्स एपीआई, पायथन, रिएक्ट, और एआई के लिए क्लॉड।'],
@@ -197,8 +197,8 @@ window.JARVIS_BRAIN = (function(){
       thanks:['कभी भी।'], bye:['आने के लिए धन्यवाद।']
     },
     as:{
-      work:['এই পৃষ্ঠাত ছটা লাইভ ডেছবৰ্ড আছে, আৰু আটাইতকৈ ডাঙৰটো এডকমাণ্ড। প্ৰতিটোৱে ব্ৰাউজাৰতে চলে। এটা খুলি দিম নেকি?',
-            'সকলো কাম সঁচা, মকআপ নহয়: মাৰ্কেটিং হাব, লিজিং ডেছবৰ্ড, জিএ4 এনালিটিক্স, ৰিভিউ, ছাৰ্চ কনচল আৰু গুগল এডছ কমাণ্ড চেণ্টাৰ।'],
+      work:['এই পৃষ্ঠাত তিনিটা AI এজেণ্ট আৰু ছটা লাইভ ডেছবৰ্ড আছে। প্ৰতিটোৱে ব্ৰাউজাৰতে চলে। এটা খুলি দিম নেকি?',
+            'সকলো কাম সঁচা, নমুনা ডেটাত দেখুওৱা: এডছ ইণ্টেলিজেন্স, পাৰফৰমেন্স ৰিভিউ, ক্লায়েণ্ট ৰিপৰ্ট, মাৰ্কেটিং হাব, লিজিং ডেছবৰ্ড, জিএ4 এনালিটিক্স, ৰিভিউ, ছাৰ্চ কনচল আৰু এডকমাণ্ড।'],
       results:['মূল সংখ্যাবোৰ: বছৰেকত ত্ৰিশ লাখ পাউণ্ডতকৈ অধিক গুগল এডছ খৰচ, এটা বিল্ডত বাৰ কোটি ইম্প্ৰেছন আৰু ছয়াশী হাজাৰ কনভাৰ্ছন, আৰু কেৰিয়াৰত এশতকৈ অধিক এড একাউণ্ট।',
                'চাৰি বছৰ, আঠতকৈ অধিক ব্ৰেণ্ড, এশতকৈ অধিক এড একাউণ্ট, আৰু বছৰেকত ত্ৰিশ লাখ পাউণ্ডৰ লাইভ এড বাজেট।'],
       tools:['লুকাৰ ষ্টুডিঅ’, পাওৱাৰ বিআই, গুগল এপ্স স্ক্ৰিপ্ট, স্নোফ্লেক, জিএ4, বিগকুৱেৰী, গুগল এডছ এপিআই, পাইথন, ৰিয়েক্ট, আৰু এআইৰ বাবে ক্লড।'],
