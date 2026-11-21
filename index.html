@@ -1207,6 +1207,30 @@ section{padding:44px 0}
 /* ---- estimator and contact: a little tighter ---- */
 .roi-note{margin:12px 0 16px}
 .ba-after{object-position:top left}
+
+/* ---- trusted by: a slim moving line of names, the cards come later ---- */
+#trusted{padding-top:22px;padding-bottom:0}
+@media(min-width:1024px){#trusted{padding-top:30px}}
+.tb{display:flex;flex-direction:column;align-items:center;gap:10px;color:inherit;text-decoration:none}
+.tb-k{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.tb-track{display:flex;width:100%;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.tb-row{display:flex;align-items:center;flex-shrink:0;animation:tbMove 38s linear infinite}
+.tb-row span{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:-.01em;color:var(--muted);white-space:nowrap;padding:0 16px;transition:color .25s}
+.tb-row i{width:5px;height:5px;border-radius:50%;background:var(--border2);flex-shrink:0}
+.tb:hover .tb-row{animation-play-state:paused}
+.tb:hover .tb-row span{color:var(--text)}
+@keyframes tbMove{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@media(min-width:760px){
+  .tb{flex-direction:row;gap:22px}
+  .tb-k{padding-right:18px;border-right:1px solid var(--border)}
+  .tb-row span{font-size:1.12rem;padding:0 20px}
+}
+@media(prefers-reduced-motion:reduce){
+  .tb-row{animation:none;flex-wrap:wrap;justify-content:center;row-gap:6px}
+  .tb-row[aria-hidden]{display:none}
+  .tb-track{-webkit-mask-image:none;mask-image:none;justify-content:center}
+}
 .ba-tag{background:rgba(8,10,18,.86);color:#fff;font-size:.62rem}
 .ba-tag-r{color:var(--emerald)}
 </style>
@@ -1223,6 +1247,7 @@ section{padding:44px 0}
     <a href="#top" class="logo"><span class="mark">DKB</span> Debashish Bora</a>
     <div class="nav-links" id="navlinks">
       <a href="#work">Work</a>
+      <a href="#clients">Clients</a>
       <a href="#services">Services</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
@@ -1289,19 +1314,12 @@ section{padding:44px 0}
   </div>
 </section>
 
-<!-- CLIENTS -->
-<section class="wrap" id="clients">
-  <p class="lw-k reveal">Brands I've delivered for</p>
-  <div class="logo-wall reveal">
-    <a class="lw" href="https://www.southalltravel.co.uk/" target="_blank" rel="noopener" title="Southall Travel · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=southalltravel.co.uk&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'S'}))"><span>Southall Travel</span></a>
-    <a class="lw" href="https://www.awayholidays.co.uk/" target="_blank" rel="noopener" title="Away Holidays · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=awayholidays.co.uk&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'A'}))"><span>Away Holidays</span></a>
-    <a class="lw" href="https://www.advantage.com/" target="_blank" rel="noopener" title="Advantage Rent A Car · Car rental, USA"><img src="https://www.google.com/s2/favicons?domain=advantage.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'A'}))"><span>Advantage Rent A Car</span></a>
-    <a class="lw" href="https://www.sailmgmt.com/" target="_blank" rel="noopener" title="Sail · Property management, USA"><img src="https://www.google.com/s2/favicons?domain=sailmgmt.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'S'}))"><span>Sail</span></a>
-    <a class="lw" href="https://qxglobalgroup.com/" target="_blank" rel="noopener" title="QX Global Group · BPM, global"><img src="https://www.google.com/s2/favicons?domain=qxglobalgroup.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'Q'}))"><span>QX Global Group</span></a>
-    <a class="lw" href="https://www.flysharp.com/" target="_blank" rel="noopener" title="FlySharp · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=flysharp.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'F'}))"><span>FlySharp</span></a>
-    <a class="lw" href="https://www.traveltrolley.co.uk/" target="_blank" rel="noopener" title="Travel Trolley · Travel, UK"><img src="https://www.google.com/s2/favicons?domain=traveltrolley.co.uk&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'T'}))"><span>Travel Trolley</span></a>
-    <a class="lw" href="https://www.programming.com/" target="_blank" rel="noopener" title="Programming.com · Technology"><img src="https://www.google.com/s2/favicons?domain=programming.com&sz=64" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'P'}))"><span>Programming.com</span></a>
-  </div>
+<!-- TRUSTED BY -->
+<section class="wrap" id="trusted">
+  <a class="tb reveal" href="#clients" aria-label="Brands Deb has delivered for. See the details">
+    <span class="tb-k">Trusted by</span>
+    <span class="tb-track"><span class="tb-row"><span>Southall Travel</span><i></i><span>Away Holidays</span><i></i><span>Advantage Rent A Car</span><i></i><span>Sail</span><i></i><span>QX Global Group</span><i></i><span>FlySharp</span><i></i><span>Travel Trolley</span><i></i><span>Programming.com</span><i></i></span><span class="tb-row" aria-hidden="true"><span>Southall Travel</span><i></i><span>Away Holidays</span><i></i><span>Advantage Rent A Car</span><i></i><span>Sail</span><i></i><span>QX Global Group</span><i></i><span>FlySharp</span><i></i><span>Travel Trolley</span><i></i><span>Programming.com</span><i></i></span></span>
+  </a>
 </section>
 
 <!-- WORK -->
@@ -1339,6 +1357,65 @@ section{padding:44px 0}
       <div class="ba-divider"><span class="ba-handle">‹&nbsp;›</span></div>
       <input type="range" min="0" max="100" value="50" class="ba-range" id="baRange" aria-label="Drag to compare the messy spreadsheet with the finished dashboard" />
     </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="wrap" id="clients">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Clients</span>
+    <h2>Brands I've delivered for.</h2>
+    <p>From UK travel leaders to US property and global BPM. That includes <b>£3M+ per year</b> (~&#8377;32 crore) in Google Ads budget on the top travel accounts alone, plus <b>100+ ad accounts</b> across 4+ years.</p>
+  </div>
+  <div class="clients-grid">
+    <a class="client reveal" href="https://www.southalltravel.co.uk/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=southalltravel.co.uk&sz=128" alt="Southall Travel" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">S</span>
+        <div class="cl-id"><div class="nm">Southall Travel</div><div class="sector">Travel · UK</div></div></div>
+      <div class="desc">One of the UK's largest travel agencies, paid search at scale.</div>
+      <span class="badge2">£1.5M+/yr · ~&#8377;16 Cr</span><span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://www.awayholidays.co.uk/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=awayholidays.co.uk&sz=128" alt="Away Holidays" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">A</span>
+        <div class="cl-id"><div class="nm">Away Holidays</div><div class="sector">Travel · UK</div></div></div>
+      <div class="desc">UK holidays specialist, performance &amp; paid media.</div>
+      <span class="badge2">£1.6M+/yr · ~&#8377;17 Cr</span><span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://www.advantage.com/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=advantage.com&sz=128" alt="Advantage Rent A Car" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">A</span>
+        <div class="cl-id"><div class="nm">Advantage Rent A Car</div><div class="sector">Car Rental · USA</div></div></div>
+      <div class="desc">Major US car-rental brand, paid search &amp; analytics.</div>
+      <span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://www.sailmgmt.com/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=sailmgmt.com&sz=128" alt="Sail" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">S</span>
+        <div class="cl-id"><div class="nm">Sail</div><div class="sector">Property Mgmt · USA</div></div></div>
+      <div class="desc">US multi-family property marketing, Google Ads &amp; data, the team behind the AdCommand build.</div>
+      <span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://qxglobalgroup.com/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=qxglobalgroup.com&sz=128" alt="QX Global Group" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">Q</span>
+        <div class="cl-id"><div class="nm">QX Global Group</div><div class="sector">BPM · Global</div></div></div>
+      <div class="desc">Global business process management, current marketing &amp; data role.</div>
+      <span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://www.flysharp.com/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=flysharp.com&sz=128" alt="FlySharp" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">F</span>
+        <div class="cl-id"><div class="nm">FlySharp</div><div class="sector">Travel · UK</div></div></div>
+      <div class="desc">UK flights &amp; holidays, campaign management.</div>
+      <span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://www.traveltrolley.co.uk/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=traveltrolley.co.uk&sz=128" alt="Travel Trolley" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">T</span>
+        <div class="cl-id"><div class="nm">Travel Trolley</div><div class="sector">Travel · UK</div></div></div>
+      <div class="desc">UK travel agency, analytics &amp; paid media.</div>
+      <span class="visit">Visit site ↗</span>
+    </a>
+    <a class="client reveal" href="https://www.programming.com/" target="_blank" rel="noopener">
+      <div class="lock"><img class="cl-logo" src="https://www.google.com/s2/favicons?domain=programming.com&sz=128" alt="Programming.com" loading="lazy" onerror="this.closest('.client').classList.add('noimg')"><span class="mono-badge">P</span>
+        <div class="cl-id"><div class="nm">Programming.com</div><div class="sector">Technology</div></div></div>
+      <div class="desc">Software &amp; technology services.</div>
+      <span class="visit">Visit site ↗</span>
+    </a>
   </div>
 </section>
 
@@ -1734,7 +1811,7 @@ document.getElementById('filters').addEventListener('click',e=>{
    on its own if those files fail to load. */
 var EMAIL='debashishbora30@gmail.com';
 var DEMOS=projects.filter(function(p){return p.live&&p.k;}).map(function(p){return {k:p.k,t:p.t,tool:p.tool,img:'images/'+p.shots[0],live:p.live,agent:p.tag.indexOf('agent')>-1};});
-var STATS=[['£3M+','Google Ads budget a year'],['100+','Ad accounts managed'],['8+','Brands delivered for'],['4+','Years, US and UK clients']];
+var STATS=[['£3M+','Google Ads budget a year'],['100+','Ad accounts managed'],['8','Brands delivered for'],['4+','Years, US and UK clients']];
 var ICON={
   play:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M10 8.5v5l4.5-2.5z"/><path d="M8 21h8"/></svg>',
   tour:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>',
@@ -1749,7 +1826,7 @@ var fab=document.getElementById('chatFab'),panel=document.getElementById('chatPa
   send=document.getElementById('chatSend'),closeBtn=document.getElementById('chatClose'),
   quickEl=document.getElementById('quickReplies');
 var greeted=false;
-var QUICK=['What does he do?','See his results','Give me a tour','Book a call'];
+var QUICK=['What does he do?','Show me his best work','Is he available?','Book a call'];
 var DEFAULTQ=QUICK;
 
 function dkbToast(msg){
@@ -1766,15 +1843,17 @@ function dkbAct(a){
   else if(type==='demo'){ var d=DEMOS.filter(function(x){return x.k===arg;})[0]; if(d&&window.__openDemo)window.__openDemo(d.live,d.t); }
   else if(type==='book'){ e=document.querySelector('.nav-right [data-book]'); if(e)e.click(); }
   else if(type==='wa'){ window.open('https://wa.me/917002820482?text='+encodeURIComponent("Hi Deb, I'd like to discuss a dashboard project"),'_blank','noopener'); }
-  else if(type==='email'){ try{navigator.clipboard.writeText(EMAIL);dkbToast('Email copied: '+EMAIL);}catch(er){window.location.href='mailto:'+EMAIL;} }
+  else if(type==='email'){ var mail=function(){window.location.href='mailto:'+EMAIL;};
+    try{ navigator.clipboard.writeText(EMAIL).then(function(){dkbToast('Email copied: '+EMAIL);},mail); }catch(er){ mail(); } }
   else if(type==='theme'){ document.getElementById('themeBtn').click(); }
   else if(type==='tour'){ if(window.Jarvis&&window.Jarvis.tour){ if(narrow())closeChat(); window.Jarvis.tour(); } else dkbAct('go:#work'); }
   else if(type==='chat'){ openChat(); }
   else if(type==='ask'){ openChat(); addUser(arg); respond(arg); }
   else if(type==='demos'){ botSay('Pick one and it opens right here, live.',null,{topic:'work'}); }
   else if(type==='top'){ window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(type==='link'){ window.open(arg,'_blank','noopener'); }
 }
-window.DKB={act:dkbAct,demos:DEMOS,toast:dkbToast,ask:function(q){dkbAct('ask:'+q);}};
+window.DKB={act:dkbAct,demos:DEMOS,projects:projects,toast:dkbToast,ask:function(q){dkbAct('ask:'+q);}};
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-act]'); if(!b)return;
   e.preventDefault(); dkbAct(b.getAttribute('data-act'));
@@ -1791,29 +1870,53 @@ function jcButtons(list){
   return '<div class="jc jc-btns">'+list.map(function(b){
     return '<button type="button" class="jc-btn'+(b[3]?' pri':'')+'" data-act="'+b[2]+'">'+(ICON[b[0]]||'')+'<span>'+b[1]+'</span></button>';}).join('')+'</div>';
 }
+var LINKS={li:'https://www.linkedin.com/in/debashish-kumar-bora-367845159/',gh:'https://github.com/DebashishKumarBora'};
+var BRANDS=[['Southall Travel','Travel · UK'],['Away Holidays','Travel · UK'],['Advantage Rent A Car','Car rental · USA'],['Sail','Property · USA'],
+            ['QX Global Group','BPM · Global'],['FlySharp','Travel · UK'],['Travel Trolley','Travel · UK'],['Programming.com','Technology']];
+function projFor(k){
+  for(var i=0;i<projects.length;i++){var p=projects[i];
+    if(p.k===k) return p;
+    if(!p.k&&((k==='ccp'&&p.t==='Client Campaign Performance')||(k==='gta'&&p.t==='GA4 Traffic Analytics'))) return p;}
+  return null;
+}
+function demoRow(list){
+  return '<div class="jc jc-demos">'+list.map(function(d){
+    return '<button type="button" class="jc-demo" data-act="demo:'+d.k+'"><img src="'+d.img+'" alt="" loading="lazy"><b>'+d.t+'</b><span>'+d.tool+'</span><em>Open live '+ICON.arrow+'</em></button>';}).join('')+'</div>';
+}
 function attach(topic){
   if(!topic)return '';
   if(topic==='welcome'){
-    var tiles=[['play','Open a live demo',DEMOS.length+' run right here','demos'],['tour','Take the guided tour','Narrated, about a minute','tour'],
-               ['stat','See the numbers','Budget, accounts, brands','ask:See his results'],['cal','Book a call','Thirty minute intro','book']];
+    var tiles=[['play','Open a live demo',DEMOS.length+' run right here','demos'],['tour','Take the guided tour','About a minute','tour'],
+               ['stat','See the numbers','Budget, accounts, brands','ask:What results has he delivered?'],['cal','Book a call','Thirty minute intro','book']];
     return '<div class="jc jc-tiles">'+tiles.map(function(t){
       return '<button type="button" class="jc-tile" data-act="'+t[3]+'">'+ICON[t[0]]+'<b>'+t[1]+'</b><span>'+t[2]+'</span></button>';}).join('')+'</div>';
   }
-  if(/^(work|demo|ads|hub|ga4|lease|gbp|gsc|ai|data|adsintel|perf|clients|agents)$/.test(topic)){
-    var list=DEMOS.slice().sort(function(a,b){return (b.k===topic)-(a.k===topic);});
-    return '<div class="jc jc-demos">'+list.map(function(d){
-      return '<button type="button" class="jc-demo" data-act="demo:'+d.k+'"><img src="'+d.img+'" alt="" loading="lazy"><b>'+d.t+'</b><span>'+d.tool+'</span><em>Open live '+ICON.arrow+'</em></button>';}).join('')+'</div>';
+  if(topic.indexOf('one:')===0){
+    var p=projFor(topic.slice(4)); if(!p) return '';
+    var img='images/'+(p.shots?p.shots[0]:p.file);
+    var pic=p.live?'<button type="button" class="jc-one" data-act="demo:'+p.k+'" aria-label="Open the '+p.t+' live demo"><img src="'+img+'" alt="" loading="lazy"><span>'+ICON.play+'Open live</span></button>'
+                  :'<div class="jc-one"><img src="'+img+'" alt="" loading="lazy"></div>';
+    var b=p.live?[['play','Open live demo','demo:'+p.k,1],['arrow','Show me another','ask:Show me another one']]
+                :[['arrow','Show it on the page','f:looker',1],['play','Open an AI agent','demo:adsintel']];
+    return '<div class="jc">'+pic+'</div>'+jcButtons(b);
   }
-  if(/^(results|exp|clients|why)$/.test(topic)){
+  if(topic==='agents') return demoRow(DEMOS.filter(function(d){return d.agent;}));
+  if(topic==='dash') return demoRow(DEMOS.filter(function(d){return !d.agent;}));
+  if(/^(work|demo|demos)$/.test(topic)) return demoRow(DEMOS);
+  if(topic==='results'){
     return '<div class="jc jc-stats">'+STATS.map(function(s){return '<div><b>'+s[0]+'</b><span>'+s[1]+'</span></div>';}).join('')+'</div>'+
-      jcButtons([['arrow','See the clients','go:#clients'],['cal','Book a call','book',1]]);
+      jcButtons([['arrow','Which brands?','ask:Which brands has he worked with?'],['cal','Book a call','book',1]]);
   }
-  if(/^(hire|rate|contact|timeline|process|remote)$/.test(topic)){
-    return jcButtons([['cal','Book a call','book',1],['wa','WhatsApp','wa'],['mail','Copy email','email']]);
+  if(topic==='brands'){
+    return '<div class="jc jc-brands">'+BRANDS.map(function(b){return '<span><b>'+b[0]+'</b>'+b[1]+'</span>';}).join('')+'</div>'+
+      jcButtons([['arrow','See the client cards','go:#clients'],['cal','Book a call','book',1]]);
   }
-  if(topic==='about') return jcButtons([['play','See the work','go:#work'],['stat','See the numbers','ask:See his results'],['cal','Book a call','book',1]]);
-  if(topic==='edu') return jcButtons([['arrow','See the credentials','go:#certs']]);
-  if(topic==='tools') return jcButtons([['arrow','See the stack','go:#skills'],['play','Open a live dashboard','demos']]);
+  if(topic==='hire'||topic==='contact') return jcButtons([['cal','Book a call','book',1],['wa','WhatsApp','wa'],['mail','Copy email','email']]);
+  if(topic==='links') return jcButtons([['arrow','LinkedIn','link:'+LINKS.li,1],['arrow','GitHub','link:'+LINKS.gh],['mail','Copy email','email']]);
+  if(topic==='looker') return jcButtons([['arrow','Show the Looker Studio builds','f:looker',1],['cal','Book a call','book']]);
+  if(topic==='about') return jcButtons([['play','See the work','go:#work'],['stat','See the numbers','ask:What results has he delivered?'],['cal','Book a call','book',1]]);
+  if(topic==='edu') return jcButtons([['arrow','See the credentials','go:#certs'],['arrow','LinkedIn','link:'+LINKS.li]]);
+  if(topic==='tools') return jcButtons([['arrow','See the stack','go:#skills'],['play','Open a live demo','demos']]);
   return '';
 }
 
@@ -1823,7 +1926,7 @@ function openChat(){
   panel.classList.add('open'); document.documentElement.classList.add('chat-open');
   var bd=fab.querySelector('.badge'); if(bd)bd.style.display='none';
   if(!greeted){greeted=true;setQuick(QUICK);setTimeout(function(){
-    botSay("Hey, I'm Debashish's assistant. Tap a card, type a question, or tell me what to open.",QUICK,{topic:'welcome'});},250);}
+    botSay("Hi, I'm Jarvis. Ask me anything about Deb's work, or pick a starting point.",QUICK,{topic:'welcome'});},250);}
   if(!narrow()) setTimeout(function(){try{input.focus({preventScroll:true});}catch(e){}},350);
 }
 function closeChat(){panel.classList.remove('open');document.documentElement.classList.remove('chat-open');}

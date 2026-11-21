@@ -409,3 +409,19 @@ html[data-theme="light"] .chat-log{scrollbar-color:rgba(15,20,40,.2) transparent
   html.chat-open .jv-toast{display:none}
 }
 @media(prefers-reduced-motion:reduce){.jc-wrap{animation:none}}
+
+/* ---- v5 cards: one project, brands ---- */
+.jc-one{display:block;position:relative;width:100%;padding:0;border-radius:14px;overflow:hidden;cursor:pointer;
+  border:1px solid var(--jv-line);background:#0b0d16;transition:transform .25s var(--jv-ease),border-color .25s}
+div.jc-one{cursor:default}
+.jc-one img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left}
+.jc-one span{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:20px;
+  font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#04121f;background:linear-gradient(140deg,var(--jv-a2),var(--jv-a1));
+  box-shadow:0 8px 20px -8px rgba(0,0,0,.7)}
+.jc-one span svg{width:13px;height:13px}
+button.jc-one:hover{transform:translateY(-2px);border-color:var(--jv-a1)}
+.jc-brands{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.jc-brands span{display:flex;flex-direction:column;gap:2px;padding:9px 11px;border-radius:12px;background:var(--jv-glass2);border:1px solid var(--jv-line);
+  font:400 10px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--jv-dim)}
+.jc-brands b{font:600 12px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;color:var(--jv-ink)}
+
