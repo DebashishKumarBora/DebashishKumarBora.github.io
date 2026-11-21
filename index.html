@@ -2,6 +2,17 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
+<script>
+/* Phones get the app built for them at /m/. Tablets and computers stay here.
+   ?desktop=1 keeps this full site for the rest of the visit (the link at the bottom of the phone app). */
+(function(){try{
+  var q=location.search,ss=window.sessionStorage;
+  if(/[?&]desktop=1(&|$)/.test(q)){ss.setItem('dkb_view','desktop');return;}
+  if(ss.getItem('dkb_view')==='desktop')return;
+  var small=Math.min(screen.width,screen.height)<600, touch=(window.matchMedia&&matchMedia('(pointer:coarse)').matches)||('ontouchstart' in window);
+  if(small&&touch){location.replace((location.protocol==='file:'?'m/index.html':'m/')+location.hash);}
+}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Debashish Kumar Bora · Data & Automation Analyst</title>
 <meta name="description" content="Debashish Kumar Bora · Data & Automation Analyst. I build live, AI-powered dashboards and AI agents in Looker Studio, Power BI & Google Apps Script that turn messy data into decisions. 4+ years, US & UK clients." />
@@ -13,6 +24,7 @@
 <script>try{var th0=localStorage.getItem("dkb_theme");if(th0==="light"||th0==="dark")document.documentElement.setAttribute("data-theme",th0);}catch(e){}</script>
 
 <!-- Favicons -->
+<link rel="alternate" media="only screen and (max-width: 640px)" href="https://debashishkumarbora.github.io/m/" />
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
@@ -2612,5 +2624,21 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 <script src="assets/lab.js" defer></script>
 <script src="assets/jarvis-brain.js" defer></script>
 <script src="assets/jarvis.js" defer></script>
+<a href="m/" id="toMobile" class="to-mobile" hidden>📱 Back to mobile view</a>
+<style>
+.to-mobile{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9998;padding:10px 16px;border-radius:22px;
+  background:var(--surface);border:1px solid var(--border2);color:var(--text);font:600 13px/1 var(--body);text-decoration:none;white-space:nowrap;box-shadow:0 12px 30px -12px rgba(0,0,0,.6)}
+.to-mobile[hidden]{display:none}
+</style>
+<script>
+(function(){try{
+  var forced=sessionStorage.getItem('dkb_view')==='desktop', small=Math.min(screen.width,screen.height)<600;
+  if(!forced||!small) return;
+  var a=document.getElementById('toMobile');
+  a.href=(location.protocol==='file:'?'m/index.html':'m/');
+  a.hidden=false;
+  a.addEventListener('click',function(){try{sessionStorage.removeItem('dkb_view');}catch(e){}});
+}catch(e){}})();
+</script>
 </body>
 </html>
