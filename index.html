@@ -802,6 +802,43 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .ba-range::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:64px; height:100%; cursor:ew-resize}
 .ba-range::-moz-range-thumb{width:64px; height:100%; border:0; background:transparent; cursor:ew-resize}
 @media(prefers-reduced-motion:reduce){ .ba-handle{animation:none} }
+
+/* ===== FLAGSHIP: Campaign Ops MCP ===== */
+#flagship{padding-top:clamp(56px,8vw,96px)}
+.fl-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,64px);align-items:center;padding:clamp(26px,4vw,48px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden}
+.fl-wrap::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.55;pointer-events:none}
+.fl-tag{display:inline-flex;align-items:center;gap:8px;font:600 .78rem/1 var(--body);color:var(--emerald);background:rgba(52,211,153,.12);border-radius:999px;padding:7px 12px}
+.fl-tag i{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 4px rgba(52,211,153,.18)}
+.fl-copy h2{margin:16px 0 0;font-size:clamp(1.8rem,4.2vw,2.9rem);line-height:1.06;letter-spacing:-.03em}
+.fl-copy>p{margin:14px 0 0;color:var(--muted);font-size:1.02rem;line-height:1.6;max-width:58ch}
+.fl-points{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
+.fl-points li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;font-size:.95rem;line-height:1.5}
+.fl-points b{color:var(--text)}
+.fl-points span{color:var(--muted)}
+.fl-points svg{width:18px;height:18px;margin-top:2px;color:var(--emerald)}
+.fl-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.fl-cta .btn{min-height:46px}
+.fl-meta{margin:16px 0 0;font:500 .78rem/1.5 var(--mono);color:var(--faint)}
+.fl-art{position:relative}
+.fl-slip{position:relative;background:var(--surface2);border:1px solid var(--border2);border-left:4px solid var(--indigo);border-radius:14px;padding:22px 22px 18px;transform:rotate(-1deg)}
+.fl-slip-h{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted)}
+.fl-slip-h b{color:var(--text);font-variant-numeric:tabular-nums}
+.fl-slip-h em{margin-left:auto;font-style:normal;font-weight:700;color:var(--amber)}
+.fl-slip-t{margin:8px 0 0;font-weight:700;font-size:1.02rem}
+.fl-slip-f{margin:16px 0 2px;font-size:.74rem;color:var(--muted)}
+.fl-vals{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.fl-was{font-size:1.5rem;color:var(--faint);text-decoration:line-through;text-decoration-color:#F87171;text-decoration-thickness:2px;font-variant-numeric:tabular-nums}
+.fl-now{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.fl-delta{align-self:center;font-size:.78rem;font-weight:700;color:var(--indigo);background:rgba(109,94,248,.14);border-radius:999px;padding:3px 10px}
+.fl-checks{list-style:none;margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--border);display:grid;gap:6px;font-size:.84rem;color:var(--muted)}
+.fl-checks li::before{content:"\2713";color:var(--emerald);font-weight:800;margin-right:8px}
+.fl-checks li.x{color:#F87171}
+.fl-checks li.x::before{content:"\2715";color:#F87171}
+.fl-ok{margin:14px 0 0;font-weight:700;font-size:.86rem;color:var(--emerald)}
+.fl-blocked{position:absolute;right:-8px;bottom:-26px;max-width:270px;background:var(--surface);border:1px solid rgba(248,113,113,.4);border-radius:12px;padding:12px 14px;font-size:.8rem;line-height:1.45;color:var(--muted);box-shadow:var(--card-shadow);transform:rotate(1.5deg)}
+.fl-blocked b{display:block;color:#F87171;margin-bottom:3px}
+@media (max-width:900px){.fl-wrap{grid-template-columns:minmax(0,1fr)}.fl-art{margin-bottom:28px}.fl-blocked{right:0}}
+@media (max-width:520px){.fl-slip{transform:none}.fl-now{font-size:2.1rem}.fl-blocked{position:relative;right:auto;bottom:auto;margin-top:12px;max-width:none;transform:none}.fl-art{margin-bottom:0}.fl-cta .btn{width:100%}}
 </style>
 
 <style>
@@ -1337,6 +1374,7 @@ section{padding:44px 0}
   <nav class="nav wrap">
     <a href="#top" class="logo"><span class="mark">DKB</span> Debashish Bora</a>
     <div class="nav-links" id="navlinks">
+      <a href="#flagship">Flagship</a>
       <a href="#work">Work</a>
       <a href="#clients">Clients</a>
       <a href="#services">Services</a>
@@ -1411,6 +1449,40 @@ section{padding:44px 0}
     <span class="tb-k">Trusted by</span>
     <span class="tb-track"><span class="tb-row"><span>Southall Travel</span><i></i><span>Away Holidays</span><i></i><span>Advantage Rent A Car</span><i></i><span>Sail</span><i></i><span>QX Global Group</span><i></i><span>FlySharp</span><i></i><span>Travel Trolley</span><i></i><span>Programming.com</span><i></i></span><span class="tb-row" aria-hidden="true"><span>Southall Travel</span><i></i><span>Away Holidays</span><i></i><span>Advantage Rent A Car</span><i></i><span>Sail</span><i></i><span>QX Global Group</span><i></i><span>FlySharp</span><i></i><span>Travel Trolley</span><i></i><span>Programming.com</span><i></i></span></span>
   </a>
+</section>
+
+
+<!-- FLAGSHIP: Campaign Ops MCP -->
+<section class="wrap" id="flagship">
+  <div class="fl-wrap reveal">
+    <div class="fl-copy">
+      <span class="fl-tag"><i></i>Flagship build: AI agent engineering</span>
+      <h2>Campaign Ops: an AI media buyer that needs your signature.</h2>
+      <p>An MCP server that lets AI agents like Claude change real Google Ads accounts, safely. Every change is checked, dry-run, approved by a person, applied, verified and reversible. Google's own Google Ads MCP server can only read. This one writes, with guardrails.</p>
+      <ul class="fl-points">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Try it live.</b> The real guardrail engine runs in your browser. Approve the agent's fixes, then try to make it misbehave.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Fair Housing built in.</b> It refuses to hide ads from protected groups and blocks copy like "adults only".</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Proven in Claude.</b> A real Claude Desktop session found $1,083 a month in waste and applied three fixes after approval.</span></li>
+      </ul>
+      <div class="fl-cta">
+        <a class="btn btn-primary" href="campaign-ops/">Try the live demo</a>
+        <a class="btn btn-ghost" href="campaign-ops/#replay">Watch the Claude session</a>
+        <a class="btn btn-ghost" href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Code on GitHub</a>
+      </div>
+      <p class="fl-meta">TypeScript, Model Context Protocol, 13 tools, 28 tests, hash-chained audit log</p>
+    </div>
+    <div class="fl-art" aria-hidden="true">
+      <div class="fl-slip">
+        <div class="fl-slip-h"><b>P-0005</b><span>Budget change</span><em>Medium risk</em></div>
+        <p class="fl-slip-t">Northlight Lofts | Search | Generic</p>
+        <p class="fl-slip-f">Daily budget</p>
+        <div class="fl-vals"><span class="fl-was">$40.00</span><span class="fl-now">$50.00</span><span class="fl-delta">+25.0%</span></div>
+        <ul class="fl-checks"><li>Within the +30% step limit</li><li>Account total $235 of $400 per day</li><li>Dry run accepted by the platform</li></ul>
+        <p class="fl-ok">Approved by a person. Applied and verified.</p>
+      </div>
+      <div class="fl-blocked"><b>Stopped by guardrails</b>Excluding "wheelchair accessible apartments" could keep a protected group from seeing housing ads.</div>
+    </div>
+  </div>
 </section>
 
 <!-- WORK -->

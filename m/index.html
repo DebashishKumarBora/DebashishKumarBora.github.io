@@ -428,6 +428,20 @@ body.kb-open #s-ask.on{bottom:0}
   .steps{grid-template-columns:1fr 1fr}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* flagship card */
+.flag{display:block;margin:4px 0 18px;padding:16px 16px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--border2);box-shadow:var(--card-shadow);position:relative;overflow:hidden;text-decoration:none;color:var(--text)}
+.flag::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,#6D5EF8,#22D3EE)}
+.flag-k{display:inline-flex;align-items:center;gap:6px;font:700 10.5px/1 var(--display);color:#34D399;background:rgba(52,211,153,.12);border-radius:999px;padding:5px 9px}
+.flag-k i{width:6px;height:6px;border-radius:50%;background:#34D399}
+.flag h3{margin:10px 0 0;font:800 18px/1.15 var(--display);letter-spacing:-.02em}
+.flag p{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.flag-red{display:flex;align-items:baseline;gap:10px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface2)}
+.flag-red s{color:var(--faint);text-decoration-color:#F87171;text-decoration-thickness:2px;font-size:14px}
+.flag-red b{font:800 22px/1 var(--display);color:#9A90FF;letter-spacing:-.02em}
+.flag-red span{margin-left:auto;font-size:11px;font-weight:700;color:#34D399}
+.flag-cta{display:flex;gap:8px;margin-top:12px}
+.flag-cta .btn{flex:1;height:40px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -498,6 +512,17 @@ body.kb-open #s-ask.on{bottom:0}
         <button class="cat press" data-jump="brands" style="--tint:rgba(251,191,36,.13);--ink:#FBBF24"><i><svg class="ico"><use href="#i-building"/></svg></i>Brands</button>
         <button class="cat press" data-go="about" style="--tint:rgba(148,163,184,.14);--ink:#AAB4C5"><i><svg class="ico"><use href="#i-user"/></svg></i>About</button>
       </nav>
+
+      <div class="flag">
+        <span class="flag-k"><i></i>Flagship build</span>
+        <h3>Campaign Ops: AI that changes ad accounts, safely</h3>
+        <p>An MCP server that lets Claude change Google Ads campaigns. Every change is checked, approved by a person, applied, verified and reversible, with Fair Housing guardrails.</p>
+        <div class="flag-red"><s>$40.00</s><b>$50.00</b><span>Approved. Verified.</span></div>
+        <div class="flag-cta">
+          <a class="btn pri press" href="../campaign-ops/">Try live demo</a>
+          <a class="btn press" href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Code</a>
+        </div>
+      </div>
 
       <div class="sh"><h2>AI agents<small>Tools that do the work, not just show it</small></h2><button data-go="work" data-f="agent">See all</button></div>
       <div class="rail" id="railAgents"></div>

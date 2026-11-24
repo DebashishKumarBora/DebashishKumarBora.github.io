@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>Campaign Ops Live Demo</title>
+  <meta name="description" content="An MCP server that lets AI agents change Google Ads campaigns safely. Try the real guardrail engine in your browser: propose, approve, apply, verify, undo.">
+  <meta property="og:title" content="Campaign Ops: an AI media buyer that needs your signature">
+  <meta property="og:description" content="Try the real guardrail engine in your browser. Every change is checked, approved by a person, applied, verified and reversible.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232346C2'/%3E%3Cpath d='M9 17l5 5 9-12' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <a class="skip" href="#demo">Skip to the live demo</a>
+
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="mark" href="#top" aria-label="Campaign Ops home">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><path d="M9 17l5 5 9-12" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Campaign Ops</span>
+      </a>
+      <nav class="top-nav" aria-label="Page">
+        <a href="#demo">Live demo</a>
+        <a href="#replay">Real session</a>
+        <a href="#how">How it works</a>
+      </nav>
+      <a class="top-cta" href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Code on GitHub</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">Model Context Protocol server for Google Ads</p>
+          <h1>An AI media buyer that needs your signature.</h1>
+          <p class="lede">Campaign Ops lets AI agents like Claude change real ad accounts. Every change is checked against policy, dry-run, approved by a person, applied, verified and reversible. Fair Housing guardrails are built in.</p>
+          <div class="hero-actions">
+            <a class="btn btn-sign btn-lg" href="#demo">Try the live demo</a>
+            <a class="btn btn-quiet btn-lg" href="#replay">Watch the real Claude session</a>
+          </div>
+          <p class="hero-note">The demo runs the actual engine in your browser on a fictional sandbox account. No sign-up, nothing to install.</p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="sheet-card">
+            <div class="sheet-head"><span class="pid">P-0005</span><span class="type">Budget change</span><span class="risk risk-medium"><span class="dot"></span>Medium risk</span></div>
+            <p class="sheet-target">Northlight Lofts | Search | Generic</p>
+            <p class="sheet-field">Daily budget</p>
+            <div class="sheet-values">
+              <span class="h-was">$40.00<i></i></span>
+              <span class="h-now">$50.00</span>
+              <span class="h-delta">+25.0%</span>
+            </div>
+            <ul class="sheet-checks">
+              <li><b>✓</b> Within the +30% step limit</li>
+              <li><b>✓</b> Account total $235 of $400 per day</li>
+              <li><b>✓</b> Dry run accepted by the platform</li>
+            </ul>
+            <div class="stamp">
+              <svg viewBox="0 0 220 64"><path class="sig" d="M8 44 C 30 10, 42 10, 46 36 S 70 58, 84 30 S 108 8, 116 34 S 140 54, 156 26 S 186 18, 212 30" /></svg>
+              <span class="stamp-label">Approved by you. Applied and verified.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="demo" aria-labelledby="demo-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="demo-title">Run it yourself</h2>
+          <p>You are the person in the loop. The agent analyzes a fictional property group's ad account and proposes fixes. Nothing changes until you approve it. Then try to make it do something it shouldn't.</p>
+        </div>
+
+        <div class="ws" id="ws">
+          <div class="ws-bar">
+            <div class="ws-acct">
+              <span class="badge-sandbox">Sandbox</span>
+              <span class="ws-acct-name">Demo Property Group</span>
+            </div>
+            <div class="ws-controls">
+              <button class="switch" id="killBtn" type="button" aria-pressed="false">
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+                <span class="switch-label" id="killLabel">Changes live</span>
+              </button>
+              <button class="btn btn-quiet btn-sm" id="resetBtn" type="button">Reset sandbox</button>
+            </div>
+          </div>
+
+          <div class="ws-tabs" role="tablist" aria-label="Demo panels">
+            <button role="tab" class="ws-tab" data-mtab="agent" aria-selected="true">Agent</button>
+            <button role="tab" class="ws-tab" data-mtab="approvals" aria-selected="false">Approvals <span class="count-pill" data-count="pending" hidden>0</span></button>
+            <button role="tab" class="ws-tab" data-mtab="account" aria-selected="false">Account</button>
+            <button role="tab" class="ws-tab" data-mtab="audit" aria-selected="false">Audit</button>
+          </div>
+
+          <div class="ws-body" data-mtab-active="agent">
+            <section class="pane pane-agent" data-pane="agent" aria-label="Agent">
+              <div class="pane-head">
+                <div class="agent-id"><span class="agent-dot"></span><span>Campaign agent</span></div>
+                <span class="pane-sub">13 MCP tools, no approve tool</span>
+              </div>
+              <div class="chat" id="chat" aria-live="polite"></div>
+              <div class="composer" id="composer"></div>
+              <p class="disclose">The agent's words are scripted for this demo. Every tool call runs the real Campaign Ops engine.</p>
+            </section>
+
+            <section class="pane pane-side" aria-label="Approval console">
+              <div class="side-tabs" role="tablist" aria-label="Console views">
+                <button role="tab" class="side-tab" data-stab="approvals" aria-selected="true">Approvals <span class="count-pill" data-count="pending" hidden>0</span></button>
+                <button role="tab" class="side-tab" data-stab="account" aria-selected="false">Account</button>
+                <button role="tab" class="side-tab" data-stab="audit" aria-selected="false">Audit log <span class="chain-mini" id="chainMini">✓</span></button>
+              </div>
+              <div class="side-body">
+                <div class="view" data-pane="approvals" id="viewApprovals"></div>
+                <div class="view" data-pane="account" id="viewAccount" hidden></div>
+                <div class="view" data-pane="audit" id="viewAudit" hidden></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="replay" class="replay" aria-labelledby="replay-title">
+      <div class="wrap replay-grid">
+        <div class="replay-copy">
+          <h2 id="replay-title">The real thing, in Claude</h2>
+          <p>This is a real session from November 24, 2026. Claude Desktop is connected to the Campaign Ops MCP server on a laptop, using the same sandbox account. Claude found five problems, put the Fair Housing fix first, refused to exclude protected searches, waited for approval in the console, then applied and verified each change.</p>
+          <ul class="facts">
+            <li><span>5</span> problems found, with dollar amounts</li>
+            <li><span>3</span> fixes proposed, all approved by a person</li>
+            <li><span>3</span> protected searches it chose not to exclude</li>
+            <li><span>$952</span> estimated monthly savings, verified changes only</li>
+          </ul>
+          <button class="btn btn-sign" id="replayBtn" type="button">Play the session</button>
+        </div>
+        <div class="desk" aria-label="Recorded Claude Desktop session">
+          <div class="desk-bar"><span></span><span></span><span></span><p>Claude Desktop with campaign-ops connected</p></div>
+          <div class="desk-chat" id="replayChat"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="how" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="how-title">One door for every change</h2>
+          <p>Google's official Google Ads MCP server can only read. Reading is the easy part. Campaign Ops adds safe writing: the controls a careful media buyer would insist on, enforced in code.</p>
+        </div>
+
+        <figure class="flow" aria-label="How a change flows">
+          <svg viewBox="0 0 1120 250" role="img" aria-labelledby="flowTitle">
+            <title id="flowTitle">Agent proposes, checks and dry run, a person approves, re-check, apply, verify. Failures are blocked with a reason.</title>
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8A94A3"/></marker>
+            </defs>
+            <g class="fl-node"><rect x="8" y="70" width="150" height="74" rx="10"/><text x="83" y="102">AI agent</text><text class="fl-sub" x="83" y="124">propose_change</text></g>
+            <g class="fl-node"><rect x="196" y="70" width="170" height="74" rx="10"/><text x="281" y="102">Policy checks</text><text class="fl-sub" x="281" y="124">and dry run</text></g>
+            <g class="fl-node fl-human"><rect x="404" y="70" width="170" height="74" rx="10"/><text x="489" y="102">A person</text><text class="fl-sub" x="489" y="124">approves</text></g>
+            <g class="fl-node"><rect x="612" y="70" width="170" height="74" rx="10"/><text x="697" y="102">Re-check</text><text class="fl-sub" x="697" y="124">drift, limits, kill switch</text></g>
+            <g class="fl-node"><rect x="820" y="70" width="130" height="74" rx="10"/><text x="885" y="102">Apply</text><text class="fl-sub" x="885" y="124">apply_change</text></g>
+            <g class="fl-node fl-ok"><rect x="984" y="70" width="128" height="74" rx="10"/><text x="1048" y="102">Verify</text><text class="fl-sub" x="1048" y="124">read back</text></g>
+            <path class="fl-line" d="M158 107H190" marker-end="url(#arr)"/>
+            <path class="fl-line" d="M366 107H398" marker-end="url(#arr)"/>
+            <path class="fl-line" d="M574 107H606" marker-end="url(#arr)"/>
+            <path class="fl-line" d="M782 107H814" marker-end="url(#arr)"/>
+            <path class="fl-line" d="M950 107H978" marker-end="url(#arr)"/>
+            <path class="fl-line fl-stop" d="M281 144V196" marker-end="url(#arr)"/>
+            <path class="fl-line fl-stop" d="M697 144V196" marker-end="url(#arr)"/>
+            <text class="fl-stoptext" x="281" y="222">Blocked, with the reason</text>
+            <text class="fl-stoptext" x="697" y="222">Refused or conflict</text>
+            <path class="fl-line fl-undo" d="M1048 70V34H281V64" marker-end="url(#arr)"/>
+            <text class="fl-undotext" x="664" y="24">Undo is a proposal too, with the same checks</text>
+            <path class="fl-line fl-audit" d="M83 160V178"/>
+            <text class="fl-audittext" x="16" y="246">Every step is written to a hash-chained audit log</text>
+          </svg>
+        </figure>
+
+        <div class="guards">
+          <article><h3>No self-approval</h3><p>The agent has 13 tools and none of them approves. Only a person can, in the console or an approval prompt in the chat app.</p></article>
+          <article><h3>Fair Housing built in</h3><p>Copy like "adults only" is blocked. Negative keywords that would hide ads from protected groups are always refused.</p></article>
+          <article><h3>Budget limits</h3><p>Step limits per change, a per-campaign range and an account-wide daily cap.</p></article>
+          <article><h3>Dry run</h3><p>Every proposal is validated by the platform without being applied, the way the Google Ads API's validate_only works.</p></article>
+          <article><h3>Drift detection</h3><p>If someone changed the live value after the proposal, nothing is overwritten. It becomes a conflict instead.</p></article>
+          <article><h3>Approval binding</h3><p>An approval is tied to a hash of the exact change. Editing the stored proposal afterwards is detected.</p></article>
+          <article><h3>Collateral and brand checks</h3><p>Negatives that would block converting searches or your own community name are flagged or blocked.</p></article>
+          <article><h3>Kill switch and rate limits</h3><p>One click pauses every change. Cooldowns and hourly caps stop runaway loops.</p></article>
+          <article><h3>Tamper-evident audit</h3><p>Every event is hash-chained. Editing any line breaks the chain, and the tool reports where.</p></article>
+        </div>
+
+        <div class="stack">
+          <div>
+            <h3>Same code, three places</h3>
+            <p>The guardrail engine is one TypeScript codebase. It runs as an MCP server for Claude Desktop, on this page as a browser build, and next against a real Google Ads test account through the official API.</p>
+          </div>
+          <dl class="specs">
+            <div><dt>Protocol</dt><dd>Model Context Protocol, stdio server, tool annotations, elicitation for in-chat approval</dd></div>
+            <div><dt>Engine</dt><dd>TypeScript, file-locked state, approval binding hashes, hash-chained audit log</dd></div>
+            <div><dt>Tests</dt><dd>28 automated tests: guardrails, lifecycle, console security, MCP over stdio</dd></div>
+            <div><dt>Security</dt><dd>Local console with key auth, Host header and origin checks, strict CSP, escaped AI text</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-inner">
+      <p>Built by <a href="../">Debashish Kumar Bora</a>. All accounts, communities and numbers on this page are fictional. Fair Housing checks are a screening aid, not legal advice.</p>
+      <p><a href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Source code (MIT)</a><a href="../">Back to portfolio</a></p>
+    </div>
+  </footer>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <script src="engine.js"></script>
+  <script src="replay.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
