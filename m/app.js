@@ -16,11 +16,16 @@
   var DESK=(location.protocol==='file:'?'../index.html':'../')+'?desktop=1';
 
   function shotsOf(p){return (p.shots&&p.shots.length?p.shots:[p.file]).map(function(s){return IMG+s;});}
-  function demoUrl(p){
+  function phoneShotsOf(p){return (p.mshots||[]).map(function(s){return IMG+s;});}
+  var BASE='https://debashishkumarbora.github.io/';
+  function onSite(p){return !!p.live&&p.live.indexOf(BASE)===0;}
+  /* demos on this site open in app mode: no credit badges, and the app's back
+     button can close their panels. Demos hosted elsewhere open as they are. */
+  function demoUrl(p,app){
     if(!p.live) return null;
-    var base='https://debashishkumarbora.github.io/';
-    var u=p.live.indexOf(base+'demos/')===0?'../'+p.live.slice(base.length):p.live;
-    if(location.protocol==='file:'&&u.indexOf('../')===0&&/\/$/.test(u)) u+='index.html';   /* local preview only */
+    var u=onSite(p)?'../'+p.live.slice(BASE.length):p.live;
+    if(location.protocol==='file:'&&onSite(p)&&/\/$/.test(u)) u+='index.html';   /* local preview only */
+    if(app&&onSite(p)) u+=(u.indexOf('?')<0?'?':'&')+'embed=app';
     return u;
   }
   function shot(src,live,eager){
@@ -148,9 +153,10 @@
   }
   function openProject(k){
     var p=byK[k]; if(!p) return;
-    var imgs=shotsOf(p), idx=P.indexOf(p), nx=P[(idx+1)%P.length];
-    sBody.innerHTML='<div class="gal" id="gal">'+imgs.map(function(s,i){return shot(s,false,i<2);}).join('')+'</div>'+
-      (imgs.length>1?'<div class="dots" id="dots">'+imgs.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>';}).join('')+'</div>':'')+
+    var ph=phoneShotsOf(p), imgs=ph.length?ph:shotsOf(p), idx=P.indexOf(p), nx=P[(idx+1)%P.length];
+    sBody.innerHTML='<div class="gal'+(ph.length?' ph':'')+'" id="gal">'+imgs.map(function(s,i){return shot(s,false,i<3);}).join('')+'</div>'+
+      (imgs.length>1&&!ph.length?'<div class="dots" id="dots">'+imgs.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>';}).join('')+'</div>':'')+
+      (ph.length?'<p class="gal-note">How the live demo looks on your phone</p>':(p.live&&!onSite(p)?'<p class="gal-note">Desktop screens. The live app runs on Google Apps Script</p>':''))+
       '<h3 class="ps-t">'+esc(p.t)+'</h3><div class="tags"><span class="tag">'+esc(p.tool)+'</span>'+
       (p.live?'<span class="tag ok">Live demo</span>':'<span class="tag">Report, no live app</span>')+'</div>'+
       '<p class="ps-one">'+esc(p.s)+'</p>'+
@@ -207,32 +213,47 @@
      LIVE DEMO VIEWER
      ===================================================================== */
   /* a fresh frame per demo: changing a frame's address would add steps to the phone's back history */
-  var viewer=$('#viewer'), vBody=$('.vbody',viewer), vLoad=$('#vLoad'), viewerOpen=false, vTimer=null;
+  var viewer=$('#viewer'), vBody=$('.vbody',viewer), vLoad=$('#vLoad'), vLoadTxt=$('span',vLoad), viewerOpen=false, vTimer=null, vSlow=null, vKey=null;
   var old=$('#vFrame'); if(old) old.remove();
   function openViewer(p){
-    var u=demoUrl(p); if(!u) return;
+    var u=demoUrl(p,true); if(!u) return;
     blurInput();
-    $('#vTitle').textContent=p.t; $('#vExt').href=u;
-    clearTimeout(vTimer); var prev=$('iframe',vBody); if(prev) prev.remove();
+    vKey=p.k;
+    $('#vTitle').textContent=p.t; $('#vExt').href=demoUrl(p,false);
+    clearTimeout(vTimer); clearTimeout(vSlow); var prev=$('iframe',vBody); if(prev) prev.remove();
     vLoad.style.display='';
+    var away=!onSite(p);
+    vLoadTxt.textContent=away?'Starting the app on Google Apps Script':'Loading the live demo';
+    vSlow=setTimeout(function(){ vLoadTxt.textContent='Still loading. You can also open it in a new tab with the button above.'; },away?9000:7000);
     var f=document.createElement('iframe'); f.title=p.t+' live demo'; f.src=u;
-    f.addEventListener('load',function(){ vLoad.style.display='none'; });
+    f.setAttribute('allow','clipboard-write');
+    f.addEventListener('load',function(){ vLoad.style.display='none'; clearTimeout(vSlow); });
     vBody.appendChild(f);
     viewer.classList.add('on'); viewerOpen=true; lockScroll(true);
     history.pushState({tab:cur,overlay:'viewer'},'','#demo-'+p.k);
   }
+  /* back inside a demo: let it close its own drawer, chat or page first */
+  function innerBack(){
+    var f=$('iframe',vBody); if(!f) return false;
+    try{ var d=f.contentWindow&&f.contentWindow.DKB_DEMO; return !!(d&&typeof d.closeTop==='function'&&d.closeTop()); }
+    catch(e){ return false; }   /* a demo on another site keeps its panels to itself */
+  }
   function closeViewer(fromPop){
     if(!viewerOpen) return;
     if(!fromPop&&history.state&&history.state.overlay==='viewer'){ history.back(); return; }
-    viewerOpen=false; viewer.classList.remove('on');
+    viewerOpen=false; viewer.classList.remove('on'); clearTimeout(vSlow);
     vTimer=setTimeout(function(){ if(!viewerOpen){ var f=$('iframe',vBody); if(f) f.remove(); } },360);
     if(!sheetOpen) lockScroll(false);
   }
-  $('#vBack').addEventListener('click',function(){closeViewer();});
+  $('#vBack').addEventListener('click',function(){ if(innerBack()) return; closeViewer(); });
 
   window.addEventListener('popstate',function(e){
     var st=e.state||{tab:'home'};
-    if(st.overlay!=='viewer'&&viewerOpen) closeViewer(true);
+    if(st.overlay!=='viewer'&&viewerOpen){
+      /* the phone's back gesture closes the demo's own panel first, and the demo stays open */
+      if(innerBack()){ history.pushState({tab:cur,overlay:'viewer'},'','#demo-'+vKey); return; }
+      closeViewer(true);
+    }
     if(!st.overlay&&sheetOpen) closeSheet(true);
     show(st.tab||'home',{fromPop:true});
   });
@@ -338,7 +359,7 @@
     if(a.intent){CTX.intent=a.intent;if(!a.project){CTX.project=null;CTX.facet=null;}}
     CTX.offer=a.offer||null;
     var text=a.text, topic=a.card, action=a.act;
-    if(action==='tour'){ text='The quick version: start with the three AI agents, then the live dashboards. If you like what you see, booking a call takes thirty seconds.'; topic='agents'; action=null; }
+    if(action==='tour'){ text='The quick version: start with the four AI agents, then the live dashboards. If you like what you see, booking a call takes thirty seconds.'; topic='agents'; action=null; }
     bot(text);
     var extra=attach(topic);
     if(action&&action.indexOf('go:')===0){ var l=goLabel(action.slice(3)); if(l) extra+=btns([[l,action,1]]); }

@@ -13,7 +13,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="app.css?v=2">
+  <script>
+    /* App mode: inside the portfolio's phone app the page shows only the workspace. */
+    if (/[?&]embed=app(&|$)/.test(location.search)) document.documentElement.classList.add('embed');
+  </script>
 </head>
 <body>
   <a class="skip" href="#demo">Skip to the live demo</a>
@@ -29,7 +33,8 @@
         <a href="#replay">Real session</a>
         <a href="#how">How it works</a>
       </nav>
-      <a class="top-cta" href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Code on GitHub</a>
+      <a class="top-home" href="../" target="_top">Portfolio</a>
+      <a class="top-cta" href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener"><span class="xs-hide">Code on </span>GitHub</a>
     </div>
   </header>
 
@@ -213,8 +218,8 @@
 
   <footer class="foot">
     <div class="wrap foot-inner">
-      <p>Built by <a href="../">Debashish Kumar Bora</a>. All accounts, communities and numbers on this page are fictional. Fair Housing checks are a screening aid, not legal advice.</p>
-      <p><a href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Source code (MIT)</a><a href="../">Back to portfolio</a></p>
+      <p>Built by <a href="../" target="_top">Debashish Kumar Bora</a>. All accounts, communities and numbers on this page are fictional. Fair Housing checks are a screening aid, not legal advice.</p>
+      <p><a href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Source code (MIT)</a><a href="../" target="_top">Back to portfolio</a></p>
     </div>
   </footer>
 
@@ -222,6 +227,6 @@
 
   <script src="engine.js"></script>
   <script src="replay.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

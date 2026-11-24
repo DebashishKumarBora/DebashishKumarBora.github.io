@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../kit/mobile.js"></script>
+
+<script>
+/* Vertex Search Console Dashboard - demo data layer.
+   Fictional sample data for 16 communities. No backend, no credentials.
+   Concept and design by Debashish Kumar Bora. */
+var GSCMOCK = (function(){
+  var _s=99173; function rnd(){_s=(_s*1103515245+12345)&0x7fffffff;return _s/0x7fffffff;}
+  function ri(a,b){return Math.floor(a+rnd()*(b-a+1));}
+  function rf(a,b){return a+rnd()*(b-a);}
+  var COMM=['Maple Ridge','S\u014dl Lofts','Elmwood Lakes','MetroLine','Cedar Meadows','Alto','Lumi','Kova','Forma','Quinn','Harbor Cove','Clearwater Pointe','The Mercer','The Whitmore','The Carver','The Seven'];
+  function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'');}
+  function ymd(d){return d.toISOString().slice(0,10);}
+  function sites(){
+    return COMM.map(function(n){ var imp=ri(4000,42000), clk=Math.round(imp*rf(0.02,0.06)); return {siteUrl:'sc-domain:'+slug(n)+'apts.com', label:n+' Apartments', clicks:clk, impressions:imp}; });
+  }
+  var QUERIES=['apartments near me','[name] apartments','2 bedroom apartments [city]','pet friendly apartments','luxury apartments minneapolis','[name] floor plans','apartments for rent [city]','income restricted apartments','[name] reviews','downtown lofts for rent'];
+  var PAGES=['/','/floorplans','/gallery','/amenities','/contact','/apply','/neighborhood','/availability'];
+  function series(days, base){
+    var out=[], d=new Date(); d.setDate(d.getDate()-days);
+    for(var i=0;i<days;i++){ d.setDate(d.getDate()+1); var wk=(d.getDay()===0||d.getDay()===6)?0.75:1; var imp=Math.round(base*wk*rf(0.8,1.2)); var clk=Math.round(imp*rf(0.02,0.06)); out.push({key:ymd(d), date:ymd(d), clicks:clk, impressions:imp, ctr:clk/Math.max(1,imp), position:rf(6,18)}); }
+    return out;
+  }
+  function rows(list, base, kind){
+    return list.map(function(item,idx){ var imp=Math.round(base*rf(0.3,1)* (1-idx*0.06)); imp=Math.max(20,imp); var clk=Math.round(imp*rf(0.02,0.08)); return {key:item, clicks:clk, impressions:imp, ctr:clk/Math.max(1,imp), position:rf(3,22)}; })
+      .sort(function(a,b){return b.clicks-a.clicks;});
+  }
+  function getGscData(siteUrl, days){
+    days=days||28;
+    var label=(function(){ for(var i=0;i<COMM.length;i++){ if(('sc-domain:'+slug(COMM[i])+'apts.com')===siteUrl) return COMM[i]+' Apartments'; } return 'Vertex Property Group'; })();
+    var name=label.replace(' Apartments','');
+    var base=ri(300,1400);
+    var ser=series(days, base);
+    var totals={clicks:0,impressions:0,position:0};
+    ser.forEach(function(s){ totals.clicks+=s.clicks; totals.impressions+=s.impressions; totals.position+=s.position; });
+    totals.ctr=totals.clicks/Math.max(1,totals.impressions); totals.position=totals.position/ser.length;
+    var prev={clicks:Math.round(totals.clicks*rf(0.82,0.98)), impressions:Math.round(totals.impressions*rf(0.85,1.02)), ctr:totals.ctr*rf(0.9,1.05), position:totals.position*rf(0.98,1.08)};
+    var q=QUERIES.map(function(t){return t.replace('[name]',name).replace('[city]','Minneapolis');});
+    return { label:label, start:ser[0].date, end:ser[ser.length-1].date, totals:totals, prev:prev,
+      series:ser, queries:rows(q, base*0.7,'q'), pages:rows(PAGES, base*0.8,'p'),
+      devices:[{key:'MOBILE',clicks:Math.round(totals.clicks*0.62),impressions:Math.round(totals.impressions*0.6),ctr:totals.ctr*1.02,position:totals.position},
+               {key:'DESKTOP',clicks:Math.round(totals.clicks*0.33),impressions:Math.round(totals.impressions*0.35),ctr:totals.ctr*0.95,position:totals.position*0.9},
+               {key:'TABLET',clicks:Math.round(totals.clicks*0.05),impressions:Math.round(totals.impressions*0.05),ctr:totals.ctr,position:totals.position*1.1}] };
+  }
+  function route(fn,a){
+    switch(fn){
+      case 'getSites': return { sites:sites() };
+      case 'getGscData': return getGscData(a[0], a[1]);
+      case 'forceAuth': return {ok:true};
+      case 'checkScopes': return {ok:true};
+      default: return {};
+    }
+  }
+  return {route:route};
+})();
+
+</script>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#0a0c10;--bg2:#0e1116;--card:#12161d;--card2:#161b23;--raise:#1b212b;
+    --border:#222834;--border2:#2c3542;--text:#e8edf4;--muted:#8a94a3;--muted2:#c2cbd6;
+    --blue:#7ca8f8;--blue-soft:rgba(124,168,248,.13);--green:#5bd6a0;--green-soft:rgba(91,214,160,.13);
+    --red:#f2777a;--red-soft:rgba(242,119,122,.13);--amber:#f5c451;--amber-soft:rgba(245,196,81,.13);
+    --purple:#c58af9;--teal:#78d9ec;--orange:#fcad70;
+    --radius:18px;--radius-sm:13px;--disp:'Segoe UI',system-ui,sans-serif;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.32);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1000px 700px at 82% -12%,rgba(124,168,248,.08),transparent 60%),radial-gradient(820px 600px at -6% 4%,rgba(197,138,249,.07),transparent 55%),var(--bg);
+    color:var(--text);font-family:var(--disp);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(1000px 700px at 82% -12%,rgba(124,168,248,.06),transparent 60%);animation:aurora 26s ease-in-out infinite alternate}
+  @keyframes aurora{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(2.5%,-1.6%,0)}}
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 26px 60px}
+  .top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .mark{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--orange),var(--amber));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(252,173,112,.35)}
+  .mark svg{width:24px;height:24px;stroke:#0a0c10;fill:none;stroke-width:2.4}
+  .brand h1{font-size:19px;margin:0;font-weight:600}
+  .brand p{margin:1px 0 0;font-size:12.5px;color:var(--muted)}
+  .controls{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  select.sitesel{background:var(--card2);border:1px solid var(--border2);border-radius:11px;padding:10px 13px;color:var(--text);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;outline:none;max-width:280px}
+  select.sitesel:focus{border-color:var(--orange)}
+  .seg{display:flex;background:var(--card2);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+  .seg button{border:none;background:transparent;color:var(--muted2);font-family:inherit;font-size:13px;padding:9px 14px;cursor:pointer}
+  .seg button.on{background:var(--orange);color:#0a0c10;font-weight:600}
+  .icon-btn{width:40px;height:40px;border:1px solid var(--border2);background:var(--card2);border-radius:11px;color:var(--muted2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s,color .15s}
+  .icon-btn:hover{color:var(--text);transform:translateY(-1px)}
+  .icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+  .icon-btn.spin svg{animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .daterange{font-size:12.5px;color:var(--muted);margin:2px 0 20px}
+  .banner{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:26px;color:var(--muted2);font-size:14px;line-height:1.6}
+  .banner b{color:var(--text)}
+  .banner.blue{border-color:rgba(124,168,248,.3);background:var(--blue-soft)}
+  .banner.bad{border-color:rgba(242,119,122,.3);background:var(--red-soft);color:var(--red)}
+  .banner code{background:var(--raise);padding:1px 6px;border-radius:5px;color:var(--text);font-size:12.5px}
+  .btn-en{background:var(--orange);color:#0a0c10;border:none;border-radius:10px;padding:11px 16px;font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer}
+  .btn-en:hover{filter:brightness(1.06)}
+  .btn-re{background:var(--card2);color:var(--muted2);border:1px solid var(--border2);border-radius:10px;padding:11px 16px;font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer}
+  .btn-re:hover{color:var(--text)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;overflow:hidden;transition:transform .16s,border-color .16s,box-shadow .16s}
+  .stat:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:var(--shadow)}
+  .stat .l{font-size:12px;color:var(--muted);font-weight:500}
+  .stat .v{font-size:27px;font-weight:600;margin-top:8px;letter-spacing:-.5px}
+  .stat .d{font-size:12px;margin-top:6px;font-weight:600}
+  .stat .d.up{color:var(--green)}.stat .d.dn{color:var(--red)}.stat .d.flat{color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-head h3{font-size:15px;margin:0;font-weight:600}
+  .sec-head .sub{font-size:12px;color:var(--muted)}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--muted2)}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:820px){.two{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:0 8px 9px}
+  th.n,td.n{text-align:right}
+  td{padding:9px 8px;border-top:1px solid var(--border)}
+  td.k{max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted2)}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .dev{display:flex;gap:12px;flex-wrap:wrap}
+  .devcard{flex:1;min-width:150px;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px 15px}
+  .devcard .dl{font-size:12px;color:var(--muted);text-transform:capitalize}
+  .devcard .dv{font-size:20px;font-weight:600;margin-top:5px}
+  .devcard .dm{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .foot{margin-top:26px;font-size:11.5px;color:var(--muted);text-align:center}
+  .loader{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:40px 0;justify-content:center}
+  .spin2{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
+  .skel{position:relative;overflow:hidden;background:var(--card2);border-radius:8px}
+  .skel::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);animation:sh 1.3s infinite}
+  @keyframes sh{100%{transform:translateX(100%)}}
+</style>
+<title>Vertex Search Console Dashboard - Demo</title><style id="dkb-phone">
+@media (max-width:760px){
+  .wrap{padding:16px 14px 80px}
+  .top{gap:12px}
+  .brand{flex:1 1 100%;min-width:0}
+  .mark{width:38px;height:38px;border-radius:11px}
+  .brand h1{font-size:17px}
+  .controls{margin:0 -14px;flex:1 1 auto;width:calc(100% + 28px);flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:0 14px 2px}
+  .controls::-webkit-scrollbar{display:none}
+  .controls>*{flex:none}
+  select.sitesel{max-width:none}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .two>*,.card{min-width:0}
+  .card{padding:16px}
+  .stat{padding:14px}
+  .stat .v{font-size:23px}
+  td.k{max-width:48vw}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
+      <div><h1>Search Console</h1><p>Organic search: clicks, impressions, position</p></div>
+    </div>
+    <div class="controls">
+      <select class="sitesel" id="siteSel"></select>
+      <div class="seg" id="seg"><button data-d="7">7d</button><button data-d="28" class="on">28d</button><button data-d="90">90d</button></div>
+      <button class="icon-btn" id="refresh" title="Refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+    </div>
+  </div>
+  <div class="daterange" id="daterange"></div>
+  <div id="body"><div class="loader"><div class="spin2"></div> Loading your Search Console properties…</div></div>
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+var SITES=[], site='', days=28, DATA=null;
+function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res){setTimeout(function(){res(GSCMOCK.route(fn,a));},120+Math.random()*140);});}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmt(n){return Math.round(Number(n||0)).toLocaleString('en-US');}
+function fmt1(n){return (Math.round(Number(n||0)*10)/10).toLocaleString('en-US');}
+function pctTxt(n){return (n>=0?'+':'')+fmt1(n)+'%';}
+function delta(cur,prev,lowerBetter){
+  if(prev==null||prev===0) return {cls:'flat',txt:'-'};
+  var ch=(cur-prev)/Math.abs(prev)*100;
+  var good = lowerBetter ? ch<0 : ch>0;
+  var cls = Math.abs(ch)<0.5 ? 'flat' : (good?'up':'dn');
+  var arrow = ch>0?'▲':(ch<0?'▼':'');
+  return {cls:cls, txt:arrow+' '+pctTxt(Math.abs(ch))+' vs prior '+days+'d'};
+}
+
+function boot(){
+  gcall('getSites').then(function(r){
+    if(r.error){ showErr(r); return; }
+    SITES=r.sites||[];
+    if(!SITES.length){
+      showBanner('blue','<b>No Search Console properties are shared with this Google account yet.</b><br><br>You mentioned you currently have access to MetroLine only: once that property (or any other) is granted to the Google account this dashboard runs as, it will appear here <b>automatically</b> on the next refresh. Nothing to rebuild: this dashboard simply lists whatever properties the account can see.');
+      document.getElementById('siteSel').innerHTML='<option>No properties yet</option>';
+      return;
+    }
+    var sel=document.getElementById('siteSel');
+    sel.innerHTML=SITES.map(function(s){return '<option value="'+esc(s.siteUrl)+'">'+esc(s.label)+'</option>';}).join('');
+    site=SITES[0].siteUrl;
+    load();
+  }).catch(function(e){ showBanner('bad','<b>Could not load properties.</b> '+esc((e&&e.message)||e)); });
+}
+function showBanner(kind,html){ document.getElementById('body').innerHTML='<div class="banner '+kind+'">'+html+'</div>'; document.getElementById('daterange').textContent=''; }
+function showErr(r){
+  if(r && r.needEnable){
+    var link=r.enableUrl||'https://console.cloud.google.com/apis/library/searchconsole.googleapis.com';
+    document.getElementById('body').innerHTML='<div class="banner blue">'+
+      '<b>One quick switch to turn on.</b> The Search Console API isn\u2019t enabled yet on this dashboard\u2019s Google Cloud project'+(r.project?(' (<code>'+esc(r.project)+'</code>)'):'')+'. Because the dashboard now runs under your own project, you can turn it on in one click.'+
+      '<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">'+
+        '<button class="btn-en" onclick="window.open(\''+esc(link)+'\',\'_blank\')">Enable Search Console API \u2192</button>'+
+        '<button class="btn-re" onclick="boot()">I\u2019ve enabled it \u2014 Retry</button>'+
+      '</div>'+
+      '<div style="margin-top:12px;font-size:12px;color:var(--muted)">On that page click the blue <b>Enable</b> button, wait about a minute for it to propagate, then hit Retry.</div>'+
+    '</div>';
+    document.getElementById('daterange').textContent='';
+    return;
+  }
+  if(r && r.needScopes){
+    document.getElementById('body').innerHTML='<div class="banner blue">'+
+      '<b>Authorization needs refreshing.</b> The dashboard\u2019s Google token is missing the Search Console read permission. Follow these three steps:'+
+      '<ol style="margin:14px 0 14px 20px;line-height:2">'+
+        '<li>In the Apps Script editor \u2014 function dropdown \u2192 select <b>forceAuth</b> \u2192 click <b>Run</b>.</li>'+
+        '<li>If a permission pop-up appears, approve it. If it silently passes, open <b>View &gt; Execution log</b> \u2014 there will be a URL there. Paste it in a new tab and approve.</li>'+
+        '<li>No pop-up at all? Go to <b>myaccount.google.com/permissions</b>, find this app and <b>Remove access</b>, then run <b>forceAuth</b> again.</li>'+
+      '</ol>'+
+      '<button class="btn-re" onclick="boot()">I\u2019ve approved it \u2014 Retry</button>'+
+    '</div>';
+    document.getElementById('daterange').textContent='';
+    return;
+  }
+  showBanner('bad','<b>Could not reach Search Console.</b> '+esc((r&&r.error)||'Unknown error'));
+}
+
+function load(){
+  if(!site) return;
+  var rf=document.getElementById('refresh'); rf.classList.add('spin');
+  document.getElementById('body').innerHTML='<div class="stats">'+skelStat()+skelStat()+skelStat()+skelStat()+'</div><div class="card"><div class="skel" style="height:230px"></div></div>';
+  gcall('getGscData', site, days).then(function(r){
+    rf.classList.remove('spin'); DATA=r;
+    if(r.error){ showErr(r); return; }
+    render(r);
+  }).catch(function(e){ rf.classList.remove('spin'); showBanner('bad','<b>Error.</b> '+esc((e&&e.message)||e)); });
+}
+function skelStat(){return '<div class="stat"><div class="skel" style="height:12px;width:55%"></div><div class="skel" style="height:26px;width:75%;margin-top:12px"></div></div>';}
+
+function render(r){
+  document.getElementById('daterange').textContent='Property: '+r.label+'  ·  '+r.start+' → '+r.end+'  ·  organic Google Search (data lags ~3 days)';
+  var t=r.totals||{}, p=r.prev||{};
+  var dC=delta(t.clicks,p.clicks,false), dI=delta(t.impressions,p.impressions,false),
+      dR=delta((t.ctr||0)*100,(p.ctr||0)*100,false), dP=delta(t.position,p.position,true);
+  var stats='<div class="stats">'+
+    statCard('Clicks', fmt(t.clicks), dC)+
+    statCard('Impressions', fmt(t.impressions), dI)+
+    statCard('CTR', fmt1((t.ctr||0)*100)+'%', dR)+
+    statCard('Avg position', fmt1(t.position), dP)+
+  '</div>';
+  var chart='<div class="card"><div class="sec-head"><h3>Clicks & impressions over time</h3><div class="legend"><span><i style="background:var(--orange)"></i>Clicks</span><span><i style="background:var(--blue)"></i>Impressions</span></div></div>'+lineChart(r.series||[])+'</div>';
+  var tables='<div class="two">'+
+    tableCard('Top queries', r.queries||[], true)+
+    tableCard('Top pages', r.pages||[], false)+
+  '</div>';
+  var dev='<div class="card"><div class="sec-head"><h3>By device</h3></div><div class="dev">'+
+    (r.devices||[]).map(function(d){var tot=(r.totals.clicks||0)||1;return '<div class="devcard"><div class="dl">'+esc(String(d.key||'').toLowerCase())+'</div><div class="dv">'+fmt(d.clicks)+' clicks</div><div class="dm">'+fmt(d.impressions)+' impr · '+fmt1((d.ctr||0)*100)+'% CTR · '+fmt1(d.clicks/tot*100)+'% of clicks</div></div>';}).join('')||'<div style="color:var(--muted);font-size:13px">No device data in this range.</div>'+
+  '</div></div>';
+  document.getElementById('body').innerHTML=stats+chart+tables+dev;
+  document.getElementById('foot').textContent='Updated '+new Date().toLocaleString();
+}
+function statCard(label,val,d){ return '<div class="stat"><div class="l">'+label+'</div><div class="v">'+val+'</div><div class="d '+d.cls+'">'+d.txt+'</div></div>'; }
+
+function lineChart(series){
+  if(!series.length) return '<div style="color:var(--muted);font-size:13px;padding:20px 0">No daily data in this range.</div>';
+  var W=1080,H=240,pl=44,pr=16,pt=14,pb=28,iw=W-pl-pr,ih=H-pt-pb;
+  var n=series.length;
+  var maxC=Math.max.apply(null,series.map(function(s){return s.clicks;}).concat([1]));
+  var maxI=Math.max.apply(null,series.map(function(s){return s.impressions;}).concat([1]));
+  function X(i){return pl+(n<=1?iw/2:(i/(n-1))*iw);}
+  function Yc(v){return pt+ih-(v/maxC)*ih;}
+  function Yi(v){return pt+ih-(v/maxI)*ih;}
+  function path(fn,key){return series.map(function(s,i){return (i?'L':'M')+X(i).toFixed(1)+' '+fn(s[key]).toFixed(1);}).join(' ');}
+  var grid='';for(var g=0;g<=3;g++){var y=pt+ih*(g/3);grid+='<line x1="'+pl+'" y1="'+y.toFixed(1)+'" x2="'+(pl+iw)+'" y2="'+y.toFixed(1)+'" stroke="var(--border)" />';}
+  var labs='';var step=Math.max(1,Math.floor(n/6));for(var i=0;i<n;i+=step){labs+='<text x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" fill="var(--muted)" font-size="10">'+esc(series[i].date.slice(5))+'</text>';}
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">'+grid+
+    '<path d="'+path(Yi,'impressions')+'" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0.85"/>'+
+    '<path d="'+path(Yc,'clicks')+'" fill="none" stroke="var(--orange)" stroke-width="2.4"/>'+
+    labs+'</svg>';
+}
+function tableCard(title,rows,isQuery){
+  var head='<div class="card"><div class="sec-head"><h3>'+title+'</h3><div class="sub">Top '+rows.length+'</div></div>';
+  if(!rows.length) return head+'<div style="color:var(--muted);font-size:13px">No data in this range.</div></div>';
+  var body='<table><thead><tr><th>'+(isQuery?'Query':'Page')+'</th><th class="n">Clicks</th><th class="n">Impr</th><th class="n">CTR</th><th class="n">Pos</th></tr></thead><tbody>'+
+    rows.map(function(r){var k=isQuery?r.key:String(r.key||'').replace(/^https?:\/\/[^\/]+/,'');return '<tr><td class="k" title="'+esc(r.key)+'">'+esc(k||r.key)+'</td><td class="n">'+fmt(r.clicks)+'</td><td class="n">'+fmt(r.impressions)+'</td><td class="n">'+fmt1((r.ctr||0)*100)+'%</td><td class="n">'+fmt1(r.position)+'</td></tr>';}).join('')+
+    '</tbody></table></div>';
+  return head+body;
+}
+
+document.getElementById('siteSel').addEventListener('change',function(e){ site=e.target.value; load(); });
+document.getElementById('seg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;document.querySelectorAll('#seg button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');days=Number(b.dataset.d);load();});
+document.getElementById('refresh').addEventListener('click',function(){ if(SITES.length) load(); else boot(); });
+boot();
+</script>
+
+<style>
+.vpg-demo-badge{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(34,211,154,.14);color:#22d39a;border:1px solid rgba(34,211,154,.3);vertical-align:middle;}
+.vpg-portfolio{position:fixed;left:16px;bottom:16px;z-index:99999;display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:12px;background:rgba(19,23,31,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 30px rgba(0,0,0,.4);text-decoration:none;font-family:-apple-system,Segoe UI,Roboto,sans-serif;transition:transform .15s,border-color .15s;}
+.vpg-portfolio:hover{transform:translateY(-2px);border-color:rgba(77,141,255,.5);}
+.vpg-portfolio .dot2{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#4d8dff,#6c5cff);box-shadow:0 0 10px rgba(77,141,255,.7);}
+.vpg-portfolio .txt{line-height:1.25;}
+.vpg-portfolio .txt b{display:block;color:#fff;font-size:11.5px;font-weight:700;}
+.vpg-portfolio .txt span{display:block;color:#8a93a6;font-size:9.5px;letter-spacing:.3px;}
+.vpg-credit{position:fixed;right:14px;bottom:12px;z-index:99998;font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:10.5px;color:rgba(255,255,255,.34);letter-spacing:.3px;pointer-events:none;}
+@media(max-width:640px){.vpg-credit{display:none;}}
+</style>
+<a class="vpg-portfolio" href="https://debashishkumarbora.github.io" target="_blank" rel="noopener">
+  <span class="dot2"></span>
+  <span class="txt"><b>Debashish Kumar Bora</b><span>View portfolio</span></span>
+</a>
+<div class="vpg-credit">Concept and design by Debashish Kumar Bora</div>
+<script>
+(function(){try{
+  var el=document.querySelector('.sb-brand-txt span, .brand-sub, header h1, .topbar h1, .logo-sub');
+  if(el && !document.querySelector('.vpg-demo-badge')){
+    var b=document.createElement('span'); b.className='vpg-demo-badge'; b.textContent='Live Demo';
+    el.parentNode.appendChild(b);
+  }
+}catch(e){}})();
+</script>
+<script>
+/* phone layer: section bar, back button, wide tables */
+DKB_MOBILE({
+  tables: 'table'
+});
+</script>
+</body>
+</html>

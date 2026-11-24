@@ -802,43 +802,6 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .ba-range::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:64px; height:100%; cursor:ew-resize}
 .ba-range::-moz-range-thumb{width:64px; height:100%; border:0; background:transparent; cursor:ew-resize}
 @media(prefers-reduced-motion:reduce){ .ba-handle{animation:none} }
-
-/* ===== FLAGSHIP: Campaign Ops MCP ===== */
-#flagship{padding-top:clamp(56px,8vw,96px)}
-.fl-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,64px);align-items:center;padding:clamp(26px,4vw,48px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border);box-shadow:var(--card-shadow);overflow:hidden}
-.fl-wrap::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.55;pointer-events:none}
-.fl-tag{display:inline-flex;align-items:center;gap:8px;font:600 .78rem/1 var(--body);color:var(--emerald);background:rgba(52,211,153,.12);border-radius:999px;padding:7px 12px}
-.fl-tag i{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 4px rgba(52,211,153,.18)}
-.fl-copy h2{margin:16px 0 0;font-size:clamp(1.8rem,4.2vw,2.9rem);line-height:1.06;letter-spacing:-.03em}
-.fl-copy>p{margin:14px 0 0;color:var(--muted);font-size:1.02rem;line-height:1.6;max-width:58ch}
-.fl-points{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px}
-.fl-points li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;font-size:.95rem;line-height:1.5}
-.fl-points b{color:var(--text)}
-.fl-points span{color:var(--muted)}
-.fl-points svg{width:18px;height:18px;margin-top:2px;color:var(--emerald)}
-.fl-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
-.fl-cta .btn{min-height:46px}
-.fl-meta{margin:16px 0 0;font:500 .78rem/1.5 var(--mono);color:var(--faint)}
-.fl-art{position:relative}
-.fl-slip{position:relative;background:var(--surface2);border:1px solid var(--border2);border-left:4px solid var(--indigo);border-radius:14px;padding:22px 22px 18px;transform:rotate(-1deg)}
-.fl-slip-h{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--muted)}
-.fl-slip-h b{color:var(--text);font-variant-numeric:tabular-nums}
-.fl-slip-h em{margin-left:auto;font-style:normal;font-weight:700;color:var(--amber)}
-.fl-slip-t{margin:8px 0 0;font-weight:700;font-size:1.02rem}
-.fl-slip-f{margin:16px 0 2px;font-size:.74rem;color:var(--muted)}
-.fl-vals{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.fl-was{font-size:1.5rem;color:var(--faint);text-decoration:line-through;text-decoration-color:#F87171;text-decoration-thickness:2px;font-variant-numeric:tabular-nums}
-.fl-now{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
-.fl-delta{align-self:center;font-size:.78rem;font-weight:700;color:var(--indigo);background:rgba(109,94,248,.14);border-radius:999px;padding:3px 10px}
-.fl-checks{list-style:none;margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--border);display:grid;gap:6px;font-size:.84rem;color:var(--muted)}
-.fl-checks li::before{content:"\2713";color:var(--emerald);font-weight:800;margin-right:8px}
-.fl-checks li.x{color:#F87171}
-.fl-checks li.x::before{content:"\2715";color:#F87171}
-.fl-ok{margin:14px 0 0;font-weight:700;font-size:.86rem;color:var(--emerald)}
-.fl-blocked{position:absolute;right:-8px;bottom:-26px;max-width:270px;background:var(--surface);border:1px solid rgba(248,113,113,.4);border-radius:12px;padding:12px 14px;font-size:.8rem;line-height:1.45;color:var(--muted);box-shadow:var(--card-shadow);transform:rotate(1.5deg)}
-.fl-blocked b{display:block;color:#F87171;margin-bottom:3px}
-@media (max-width:900px){.fl-wrap{grid-template-columns:minmax(0,1fr)}.fl-art{margin-bottom:28px}.fl-blocked{right:0}}
-@media (max-width:520px){.fl-slip{transform:none}.fl-now{font-size:2.1rem}.fl-blocked{position:relative;right:auto;bottom:auto;margin-top:12px;max-width:none;transform:none}.fl-art{margin-bottom:0}.fl-cta .btn{width:100%}}
 </style>
 
 <style>
@@ -1374,7 +1337,6 @@ section{padding:44px 0}
   <nav class="nav wrap">
     <a href="#top" class="logo"><span class="mark">DKB</span> Debashish Bora</a>
     <div class="nav-links" id="navlinks">
-      <a href="#flagship">Flagship</a>
       <a href="#work">Work</a>
       <a href="#clients">Clients</a>
       <a href="#services">Services</a>
@@ -1438,7 +1400,7 @@ section{padding:44px 0}
   <div class="proof">
     <div class="stat reveal"><div class="big grad-text" data-count="3" data-prefix="£" data-suffix="M+">£0M+</div><div class="cap">Google Ads budget a year</div></div>
     <div class="stat reveal"><div class="big grad-text" data-count="100" data-suffix="+">0+</div><div class="cap">Ad accounts managed</div></div>
-    <div class="stat reveal"><div class="big grad-text" data-count="11" data-suffix="">0</div><div class="cap">Builds on this page</div></div>
+    <div class="stat reveal"><div class="big grad-text" data-count="12" data-suffix="">0</div><div class="cap">Builds on this page</div></div>
     <div class="stat reveal"><div class="big grad-text" data-count="4" data-suffix="+">0+</div><div class="cap">Years, US &amp; UK clients</div></div>
   </div>
 </section>
@@ -1449,40 +1411,6 @@ section{padding:44px 0}
     <span class="tb-k">Trusted by</span>
     <span class="tb-track"><span class="tb-row"><span>Southall Travel</span><i></i><span>Away Holidays</span><i></i><span>Advantage Rent A Car</span><i></i><span>Sail</span><i></i><span>QX Global Group</span><i></i><span>FlySharp</span><i></i><span>Travel Trolley</span><i></i><span>Programming.com</span><i></i></span><span class="tb-row" aria-hidden="true"><span>Southall Travel</span><i></i><span>Away Holidays</span><i></i><span>Advantage Rent A Car</span><i></i><span>Sail</span><i></i><span>QX Global Group</span><i></i><span>FlySharp</span><i></i><span>Travel Trolley</span><i></i><span>Programming.com</span><i></i></span></span>
   </a>
-</section>
-
-
-<!-- FLAGSHIP: Campaign Ops MCP -->
-<section class="wrap" id="flagship">
-  <div class="fl-wrap reveal">
-    <div class="fl-copy">
-      <span class="fl-tag"><i></i>Flagship build: AI agent engineering</span>
-      <h2>Campaign Ops: an AI media buyer that needs your signature.</h2>
-      <p>An MCP server that lets AI agents like Claude change real Google Ads accounts, safely. Every change is checked, dry-run, approved by a person, applied, verified and reversible. Google's own Google Ads MCP server can only read. This one writes, with guardrails.</p>
-      <ul class="fl-points">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Try it live.</b> The real guardrail engine runs in your browser. Approve the agent's fixes, then try to make it misbehave.</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Fair Housing built in.</b> It refuses to hide ads from protected groups and blocks copy like "adults only".</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span><b>Proven in Claude.</b> A real Claude Desktop session found $1,083 a month in waste and applied three fixes after approval.</span></li>
-      </ul>
-      <div class="fl-cta">
-        <a class="btn btn-primary" href="campaign-ops/">Try the live demo</a>
-        <a class="btn btn-ghost" href="campaign-ops/#replay">Watch the Claude session</a>
-        <a class="btn btn-ghost" href="https://github.com/debashishkumarbora/campaign-ops-mcp" target="_blank" rel="noopener">Code on GitHub</a>
-      </div>
-      <p class="fl-meta">TypeScript, Model Context Protocol, 13 tools, 28 tests, hash-chained audit log</p>
-    </div>
-    <div class="fl-art" aria-hidden="true">
-      <div class="fl-slip">
-        <div class="fl-slip-h"><b>P-0005</b><span>Budget change</span><em>Medium risk</em></div>
-        <p class="fl-slip-t">Northlight Lofts | Search | Generic</p>
-        <p class="fl-slip-f">Daily budget</p>
-        <div class="fl-vals"><span class="fl-was">$40.00</span><span class="fl-now">$50.00</span><span class="fl-delta">+25.0%</span></div>
-        <ul class="fl-checks"><li>Within the +30% step limit</li><li>Account total $235 of $400 per day</li><li>Dry run accepted by the platform</li></ul>
-        <p class="fl-ok">Approved by a person. Applied and verified.</p>
-      </div>
-      <div class="fl-blocked"><b>Stopped by guardrails</b>Excluding "wheelchair accessible apartments" could keep a protected group from seeing housing ads.</div>
-    </div>
-  </div>
 </section>
 
 <!-- WORK -->
@@ -1874,33 +1802,38 @@ const projects=[
    p:'Property clients wanted their own Google Ads results without seeing other clients or internal notes.',
    b:'One link with a different password per client, showing only that client: highlights, a swipeable recap, top campaign, best day, devices, live ads and top searches, with a PDF cover page.',
    r:'Client ready reports with no manual prep, where every comparison reads as true good news and dips are flagged to the team privately.'},
+  {k:'campaignops',s:'An AI agent that fixes Google Ads, but only after a person approves each change.',t:'Campaign Ops',shots:['shots/cops-1.webp','shots/cops-2.webp','shots/cops-3.webp','shots/cops-4.webp','shots/cops-5.webp','shots/cops-6.webp'],tool:'MCP + Claude',tag:['agent'],file:'shots/cops-1.webp',
+   live:'https://debashishkumarbora.github.io/campaign-ops/',repo:'https://github.com/DebashishKumarBora/campaign-ops-mcp',
+   p:'AI agents can read a Google Ads account, but no team would let one change budgets or ad copy without limits, a person approving it, and an undo.',
+   b:'A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo.',
+   r:'Tested in a real Claude session on a sandbox account: it found wasted spend and an ad that broke Fair Housing rules, waited for approval, then applied and verified three fixes.'},
   {k:'ads',s:'Sixteen Google Ads accounts in one web app, with a Claude analyst on top.',t:'AdCommand',shots:['shots/ads-1.webp','shots/ads-2.webp','shots/ads-3.webp','shots/ads-4.webp','shots/ads-5.webp','shots/ads-6.webp'],tool:'Google Ads API + Claude',tag:['app'],file:'shots/ads-1.webp',
-   live:'https://debashishkumarbora.github.io/ads-command-center',repo:'https://github.com/DebashishKumarBora/ads-command-center',
+   live:'https://script.google.com/macros/s/AKfycbxLdJehYqxPBmTLfTtMUhkcnE7OGgTpFx1iCNVaQD4TBOuvsmEN_n9KvrywxJ1Aq4dW/exec',repo:'https://github.com/DebashishKumarBora/ads-command-center',
    p:'Sixteen Google Ads accounts lived in sixteen browser tabs, with no single place to see what was working.',
    b:'A Google Ads command center on the live API: accounts, analytics, a geo view, search terms, keywords, ads, budget pacing and a Claude analyst with chat and voice.',
    r:'The whole portfolio in one web app, with the AI analyst flagging what to fix first.'},
   {k:'hub',s:'Ads, analytics, reviews, search and leasing data in one view, with an AI operator.',t:'Marketing Intelligence Hub',shots:['shots/hub-1.webp','shots/hub-2.webp','shots/hub-3.webp','shots/hub-4.webp','shots/hub-5.webp','shots/hub-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/hub-1.webp',
-   live:'https://debashishkumarbora.github.io/property-marketing-intelligence-hub',repo:'https://github.com/DebashishKumarBora/property-marketing-intelligence-hub',
+   live:'https://debashishkumarbora.github.io/demos/property-marketing-intelligence-hub/',repo:'https://github.com/DebashishKumarBora/property-marketing-intelligence-hub',
    p:'A marketing lead had spend, leads, occupancy and reviews scattered across six different tools.',
    b:'One control room unifying Google Ads, GA4, Business Profile, Search Console and leasing data, with an AI operator that answers questions in plain English.',
    r:'Every channel, community and alert in a single portfolio view, with wasted spend and occupancy strategy surfaced automatically.'},
   {k:'lease',s:'Prospect to signed lease, live from Snowflake, with an AI analyst grading health.',t:'Leasing Dashboard',shots:['shots/lease-1.webp','shots/lease-2.webp','shots/lease-3.webp','shots/lease-4.webp','shots/lease-5.webp','shots/lease-6.webp'],tool:'Apps Script + Snowflake',tag:['app'],file:'shots/lease-1.webp',
-   live:'https://debashishkumarbora.github.io/snowflake-leasing-dashboard',repo:'https://github.com/DebashishKumarBora/snowflake-leasing-dashboard',
+   live:'https://debashishkumarbora.github.io/demos/snowflake-leasing-dashboard/',repo:'https://github.com/DebashishKumarBora/snowflake-leasing-dashboard',
    p:'Leasing performance lived in raw Snowflake tables that no one on the team could read.',
    b:'A live funnel from prospect to signed lease, plus occupancy, renewals, speed to lead and an availability board matched against demand.',
    r:'The whole leasing operation in one view, with an AI analyst grading health and returning a prioritized plan.'},
   {k:'ga4',s:'Which channels and communities actually drive leads, across 16 communities.',t:'Analytics Dashboard (GA4)',shots:['shots/ga4-1.webp','shots/ga4-2.webp','shots/ga4-3.webp','shots/ga4-4.webp','shots/ga4-5.webp','shots/ga4-6.webp'],tool:'Apps Script + GA4',tag:['app'],file:'shots/ga4-1.webp',
-   live:'https://debashishkumarbora.github.io/ga4-analytics-dashboard',repo:'https://github.com/DebashishKumarBora/ga4-analytics-dashboard',
+   live:'https://debashishkumarbora.github.io/demos/ga4-analytics-dashboard/',repo:'https://github.com/DebashishKumarBora/ga4-analytics-dashboard',
    p:'The team could not tell which channels and which communities actually drove leads.',
    b:'A GA4-powered dashboard covering sessions, acquisition, engagement, conversions and audience across 16 communities.',
    r:'Cross-channel performance at a glance, with a conversion tracking break at one community caught by the AI analyst.'},
   {k:'gbp',s:'Rating, reviews and listing health across every Business Profile, with AI reply drafts.',t:'Reviews Dashboard (Business Profile)',shots:['shots/gbp-1.webp','shots/gbp-2.webp','shots/gbp-3.webp','shots/gbp-4.webp','shots/gbp-5.webp','shots/gbp-6.webp'],tool:'Apps Script + AI',tag:['app'],file:'shots/gbp-1.webp',
-   live:'https://debashishkumarbora.github.io/gbp-reviews-dashboard',repo:'https://github.com/DebashishKumarBora/gbp-reviews-dashboard',
+   live:'https://debashishkumarbora.github.io/demos/gbp-reviews-dashboard/',repo:'https://github.com/DebashishKumarBora/gbp-reviews-dashboard',
    p:'Dozens of Google Business Profiles with no single view of rating, reviews or profile health.',
    b:'A command center for listings audit, review management and performance, with an AI analyst that drafts replies and surfaces recurring themes.',
    r:'Rating, review velocity and health across every listing, with unanswered negatives caught fast.'},
   {k:'gsc',s:'Clicks, rankings and the exact queries and pages behind organic search.',t:'Search Console Dashboard',shots:['shots/gsc-1.webp','shots/gsc-2.webp','shots/gsc-3.webp','shots/gsc-4.webp','shots/gsc-5.webp'],tool:'Apps Script + Search Console',tag:['app'],file:'shots/gsc-1.webp',
-   live:'https://debashishkumarbora.github.io/search-console-dashboard',repo:'https://github.com/DebashishKumarBora/search-console-dashboard',
+   live:'https://debashishkumarbora.github.io/demos/search-console-dashboard/',repo:'https://github.com/DebashishKumarBora/search-console-dashboard',
    p:'Organic search data sat inside Search Console, unread and unactioned.',
    b:'A clean dashboard for clicks, impressions, CTR and average position, with top queries, top pages and a device split.',
    r:'Organic performance and the exact queries and pages driving it, in one trend-led view.'},
@@ -2128,7 +2061,7 @@ function respond(q){
   var x=' '+String(q).toLowerCase()+' ';
   if(/what does (he|deb|debashish) do|who is (he|deb|debashish)|about (him|deb)/.test(x)){ botSay("Deb is a data and automation analyst who started in marketing. He builds live dashboards with an AI layer, so a team sees what to do next and nobody builds the weekly report by hand.",QUICK,{topic:'about'}); return; }
   if(/result|number|proof|budget|roi|experience|client/.test(x)){ botSay("The short version: over <b>£3M a year</b> in Google Ads budget across two UK travel brands, <b>100+ ad accounts</b> and <b>8+ brands</b> in <b>4+ years</b>.",QUICK,{topic:'results'}); return; }
-  if(/work|dashboard|project|demo|portfolio|built|adcommand|agent|superdash/.test(x)){ botSay("Nine builds on this page run live in your browser: three <b>AI agents</b> and six dashboards. Pick one.",QUICK,{topic:'work'}); return; }
+  if(/work|dashboard|project|demo|portfolio|built|adcommand|agent|superdash/.test(x)){ botSay("Ten builds on this page run live in your browser: four <b>AI agents</b> and six dashboards. Pick one.",QUICK,{topic:'work'}); return; }
   if(/hire|contact|book|call|price|cost|rate|available|email|whatsapp/.test(x)){ botSay("The quickest route is a thirty minute intro call. Scope and pricing depend on the build, so he quotes after hearing what you need.",QUICK,{topic:'contact'}); return; }
   if(/tool|stack|skill|tech/.test(x)){ botSay("Looker Studio, Power BI, Google Apps Script, Snowflake, BigQuery, GA4, the Google Ads API, and Claude for the AI layers.",QUICK,{topic:'tools'}); return; }
   botSay("That one is outside what I can answer with confidence, and I would rather not guess. Here is what I can do for you right now.",QUICK,{topic:'welcome'});
@@ -2694,7 +2627,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 
 </script>
 <script src="assets/lab.js" defer></script>
-<script src="assets/jarvis-brain.js" defer></script>
+<script src="assets/jarvis-brain.js?v=9" defer></script>
 <script src="assets/jarvis.js" defer></script>
 <a href="m/" id="toMobile" class="to-mobile" hidden>📱 Back to mobile view</a>
 <style>

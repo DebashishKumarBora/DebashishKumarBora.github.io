@@ -15,7 +15,8 @@
   const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const money = (n) => `${n < 0 ? '-' : ''}$${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const money0 = (n) => `$${Math.round(n).toLocaleString('en-US')}`;
-  const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+  const embed = document.documentElement.classList.contains('embed');
+  const isMobile = () => embed || window.matchMedia('(max-width: 900px)').matches;
 
   const PERSON = 'you (visitor)';
   const AGENT = 'agent (demo)';
@@ -694,7 +695,7 @@
 
   function applyTabs() {
     const mobile = isMobile();
-    const view = mobile && S.mtab !== 'agent' ? S.mtab : S.stab;
+    const view = mobile && S.mtab !== 'agent' && S.mtab !== 'session' ? S.mtab : S.stab;
     $$('.view').forEach((v) => (v.hidden = v.dataset.pane !== view));
     $$('.side-tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.stab === view)));
     $$('.ws-tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.mtab === S.mtab)));
@@ -707,7 +708,7 @@
   }
 
   function goTab(tab) {
-    if (tab === 'agent') S.mtab = 'agent';
+    if (tab === 'agent' || tab === 'session') S.mtab = tab;
     else {
       S.stab = tab;
       if (isMobile()) S.mtab = tab;
@@ -846,6 +847,45 @@
     const el = ev.target;
     if (el.matches && el.matches('input[data-note]')) S.notes[el.dataset.note] = el.value;
   });
+
+  // App mode: the recorded Claude session becomes a fifth tab inside the workspace.
+  if (embed) {
+    const tab = document.createElement('button');
+    tab.setAttribute('role', 'tab');
+    tab.className = 'ws-tab';
+    tab.dataset.mtab = 'session';
+    tab.setAttribute('aria-selected', 'false');
+    tab.textContent = 'Replay';
+    $('.ws-tabs').appendChild(tab);
+    const pane = document.createElement('section');
+    pane.className = 'pane pane-session';
+    pane.setAttribute('aria-label', 'Recorded Claude Desktop session');
+    const intro = document.createElement('div');
+    intro.className = 'session-intro';
+    intro.innerHTML = '<p>A real Claude Desktop session from November 24, 2026, on the same sandbox account.</p>';
+    intro.appendChild($('#replayBtn'));
+    pane.appendChild(intro);
+    pane.appendChild($('.desk'));
+    $('.ws-body').appendChild(pane);
+  }
+
+  // Back button hook for host apps: close the top layer first, then go home.
+  window.DKB_DEMO = {
+    inApp: embed,
+    closeTop() {
+      if (S.confirm) {
+        S.confirm = null;
+        clearTimeout(S.confirmTimer);
+        renderApprovals();
+        return true;
+      }
+      if (isMobile() && S.mtab !== 'agent') {
+        goTab('agent');
+        return true;
+      }
+      return false;
+    },
+  };
 
   $$('.side-tab').forEach((t) => t.addEventListener('click', () => goTab(t.dataset.stab)));
   $$('.ws-tab').forEach((t) => t.addEventListener('click', () => goTab(t.dataset.mtab)));

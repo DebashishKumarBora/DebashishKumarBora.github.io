@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="../kit/mobile.js"></script>
+
+<script>
+/* Vertex Analytics Dashboard - demo data layer.
+   GA4 cross-channel analytics for 16 communities. Fictional sample data.
+   No backend, no credentials. Concept and design by Debashish Kumar Bora. */
+var GA4MOCK = (function(){
+  var _s=40217; function rnd(){_s=(_s*1103515245+12345)&0x7fffffff;return _s/0x7fffffff;}
+  function ri(a,b){return Math.floor(a+rnd()*(b-a+1));}
+  function rf(a,b){return a+rnd()*(b-a);}
+  // p flag: 'broken' = Kova (ads conversions but 0 GA4 leads), 'waste' = Lumi
+  var COMM=[
+    {name:'Maple Ridge',id:'451001',base:1.0},{name:'S\u014dl Lofts',id:'451002',base:0.8},
+    {name:'Elmwood Lakes',id:'451003',base:1.2},{name:'MetroLine',id:'451004',base:1.4,p:'push'},
+    {name:'Cedar Meadows',id:'451005',base:0.6},{name:'Alto',id:'451006',base:1.1},
+    {name:'Lumi',id:'451007',base:0.9,p:'waste'},{name:'Kova',id:'451008',base:1.0,p:'broken'},
+    {name:'Forma',id:'451009',base:0.7},{name:'Quinn',id:'451010',base:0.9},
+    {name:'Harbor Cove',id:'451011',base:1.1},{name:'Clearwater Pointe',id:'451012',base:0.8},
+    {name:'The Mercer',id:'451013',base:1.0},{name:'The Whitmore',id:'451014',base:0.7},
+    {name:'The Carver',id:'451015',base:0.5},{name:'The Seven',id:'451016',base:1.1}
+  ];
+  function fac(range){range=String(range||'30');var d=range==='7'?7:range==='90'?90:30;return d/30;}
+  function metrics(c,f){
+    var sessions=Math.round(1400*c.base*f*rf(0.9,1.1));
+    var users=Math.round(sessions*rf(0.72,0.85));
+    var leads=(c.p==='broken')?0:Math.round(sessions*rf(0.02,0.045));
+    var adsConversions=Math.round(sessions*rf(0.02,0.05));  // Ads-side conversions (Kova still has these)
+    var spend=Math.round((c.p==='waste'?2400:900)*c.base*f*rf(0.85,1.15));
+    var clicks=Math.round(spend/rf(1.8,3));
+    return { id:c.id, property:c.name, name:c.name, sessions:sessions, users:users, views:Math.round(sessions*rf(2,3.4)),
+      events:Math.round(sessions*rf(4,7)), leads:leads, conv:leads, engRate:rf(0.55,0.72), avgEng:Math.round(rf(50,140)),
+      adsConversions:adsConversions, spend:spend, clicks:clicks, impressions:Math.round(clicks/rf(0.03,0.06)),
+      costPerClick:spend/Math.max(1,clicks), costPerLead:leads>0?Math.round(spend/leads):null,
+      leadRatePct:sessions?(leads/sessions*100):0, trueLeads:leads, microEvents:Math.round(sessions*rf(0.1,0.2)),
+      matched:c.p!=='broken', total:sessions };
+  }
+  function series(f){
+    var days=Math.max(7,Math.round(f*30)); var out=[]; var d=new Date(); d.setDate(d.getDate()-days);
+    for(var i=0;i<days;i++){ d.setDate(d.getDate()+1); var wk=(d.getDay()===0||d.getDay()===6)?0.8:1;
+      var s=Math.round(1400*16*0.6*wk*rf(0.85,1.15)/30); out.push({date:d.toISOString().slice(0,10), sessions:s, users:Math.round(s*0.78), leads:Math.round(s*0.03), conv:Math.round(s*0.03)}); }
+    return out;
+  }
+  function channels(f){
+    var defs=[['Organic Search',.32,.9],['Paid Search',.24,1.1],['Direct',.18,.7],['Referral',.12,.8],['Organic Social',.09,.5],['Email',.05,1.0]];
+    return defs.map(function(d){ var s=Math.round(1400*16*0.6*f*d[1]); var leads=Math.round(s*0.03*d[2]); var paid=d[0]==='Paid Search'; var spend=paid?Math.round(s*rf(1.4,2.2)):0;
+      return {channel:d[0], name:d[0], sessions:s, leads:leads, conv:leads, trueLeads:leads, clicks:paid?Math.round(spend/2.3):0, spend:spend, costPerLead:leads&&spend?Math.round(spend/leads):null, leadRatePct:s?(leads/s*100):0, micro:Math.round(s*0.12), matched:true, total:s, weakOnSite:false}; })
+      .sort(function(a,b){return b.sessions-a.sessions;});
+  }
+  function base(range){
+    var f=fac(range); var pp=COMM.map(function(c){return metrics(c,f);});
+    var totals={sessions:0,users:0,leads:0,conv:0,spend:0,clicks:0,adsConversions:0,trueLeads:0,microEvents:0};
+    pp.forEach(function(m){ totals.sessions+=m.sessions; totals.users+=m.users; totals.leads+=m.leads; totals.conv+=m.leads; totals.spend+=m.spend; totals.clicks+=m.clicks; totals.adsConversions+=m.adsConversions; totals.trueLeads+=m.leads; totals.microEvents+=m.microEvents; });
+    totals.leadRatePct=totals.sessions?(totals.leads/totals.sessions*100):0;
+    totals.costPerLead=totals.leads?Math.round(totals.spend/totals.leads):null;
+    totals.costPerClick=totals.clicks?totals.spend/totals.clicks:0;
+    totals.engRate=rf(0.6,0.68); totals.avgEng=Math.round(rf(70,110)); totals.avgEngSec=Math.round(rf(70,110));
+    totals.impressions=Math.round(totals.clicks/0.045); totals.keyEvents=totals.leads; totals.micro=totals.microEvents;
+    return { updated:new Date().toISOString(), range:String(range||'30'), count:COMM.length, name:'All communities',
+      perProperty:pp, properties:pp, totals:totals, series:series(f), channels:channels(f),
+      sources:channels(f).map(function(c){return {name:c.name, k:c.name, sessions:c.sessions, leads:c.leads, n:c.sessions};}),
+      pages:[{path:'/',views:ri(8000,20000)},{path:'/floorplans',views:ri(3000,9000)},{path:'/contact',views:ri(1500,5000)},{path:'/apply',views:ri(800,3000)}],
+      leadRatePct:totals.leadRatePct, totalLeads:totals.leads, trueLeads:totals.leads, totalMicro:totals.microEvents,
+      adsConversions:totals.adsConversions, spend:totals.spend, clicks:totals.clicks, impressions:totals.impressions,
+      costPerClick:totals.costPerClick, costPerLead:totals.costPerLead,
+      events:[{name:'Contact form submit',count:Math.round(totals.leads*0.42),isKey:true},{name:'Apply now click',count:Math.round(totals.leads*0.3),isKey:true},{name:'Phone call',count:Math.round(totals.leads*0.18),isKey:true},{name:'Schedule a tour',count:Math.round(totals.leads*0.1),isKey:true},{name:'Floorplan view',count:totals.microEvents,isKey:false}],
+      microEvents:totals.microEvents };
+  }
+  function audience(){
+    return { updated:new Date().toISOString(),
+      cities:[['Minneapolis',34],['St. Paul',18],['Bloomington',9],['Edina',7],['Plymouth',6],['Woodbury',5],['Eagan',4],['Other',17]].map(function(x){return {name:x[0], city:x[0], sessions:Math.round(x[1]*180), pct:x[1]};}),
+      devices:[{device:'mobile',name:'mobile',sessions:Math.round(13440*.62),pct:62},{device:'desktop',name:'desktop',sessions:Math.round(13440*.33),pct:33},{device:'tablet',name:'tablet',sessions:Math.round(13440*.05),pct:5}],
+      newVsReturning:{'new':Math.round(13440*.68),returning:Math.round(13440*.32)},
+      d:series(1), x:series(1).map(function(s){return s.date;}), onset:null, priorAvg:0, zeroDays:0 };
+  }
+  function alerts(){
+    return { generatedAt:new Date().toISOString(), lookbackDays:14, scanned:16, alerts:[
+      { property:'Kova', propertyId:'451008', name:'Kova', category:'Conversion tracking', severity:'critical', sev:'critical',
+        symptom:'Kova has spent on ads and driven sessions but recorded 0 leads in GA4 for 9 days.',
+        cause:'The lead event stopped firing, most likely a Tag Manager change that was not republished.',
+        consequence:'Roughly 12 to 16 leads per week are invisible, so this community looks like it is failing when it is not.',
+        fix:'Republish the GTM container and confirm the lead event fires on the contact and apply forms.',
+        onsetText:'9 days ago', cr:0, lr:0, clicks:ri(400,700), conversions:0, spend:2400, t:'2026-08-01', b:'2026-07-23', cls:'crit' },
+      { property:'Lumi', propertyId:'451007', name:'Lumi', category:'Spend efficiency', severity:'high', sev:'high',
+        symptom:'Lumi cost per lead is about four times the portfolio median.',
+        cause:'A display campaign is serving a downtown area the property does not lease to.',
+        consequence:'Budget is being spent on unqualified traffic.',
+        fix:'Pause the display campaign and tighten geo targeting to a five mile radius.',
+        onsetText:'3 weeks ago', cr:1.1, lr:1.1, clicks:ri(300,600), conversions:ri(3,8), spend:3200, t:'', b:'', cls:'high' },
+      { property:'MetroLine', propertyId:'451004', name:'MetroLine', category:'Opportunity', severity:'info', sev:'info',
+        symptom:'MetroLine has the lowest cost per lead and the most vacant units.',
+        cause:'Strong funnel, small budget.',
+        consequence:'Leaving signed leases on the table.',
+        fix:'Raise the daily budget by about 25 percent.',
+        onsetText:'ongoing', cr:3.2, lr:3.2, clicks:ri(200,400), conversions:ri(10,20), spend:1200, t:'', b:'', cls:'info' }
+    ] };
+  }
+  var MODEL='claude-opus-4-6';
+  function aiAnalysis(mode,focus){
+    var obj={ healthScore:focus?76:83, grade:'B', headline:focus?('Focused read on '+focus):'Tracking is clean except at Kova; spend is efficient except at Lumi.',
+      summary:'Fifteen communities report leads cleanly. Kova has a conversion tracking break and Lumi is overspending on a geo mismatch. MetroLine is the best place to add budget.',
+      metrics:[{label:'Sessions',value:'13,440',status:'good'},{label:'Leads',value:'403',status:'good'},{label:'Lead rate',value:'3.0%',status:'good'},{label:'Zero-lead community',value:'Kova',status:'bad'}],
+      priorities:[
+        {severity:'high', title:'Fix Kova tracking', detail:'Kova drives sessions and ad spend but records 0 GA4 leads. Republish the GTM container and verify the lead event.', impact:'~12 to 16 leads per week recovered'},
+        {severity:'high', title:'Cut Lumi waste', detail:'Lumi cost per lead is about 4x median from a downtown display campaign. Pause it and tighten geo.', impact:'budget freed'},
+        {severity:'medium', title:'Fund MetroLine', detail:'Lowest cost per lead, most vacancy. Raise daily budget ~25%.', impact:'more leases'}
+      ],
+      opportunities:[{title:'Channel shift',detail:'Paid search converts above organic; shift budget toward it where cost per lead is low.'}],
+      wins:[{title:'S\u014dl Lofts',detail:'Above-median lead rate with clean tracking.'}] };
+    return { text: JSON.stringify(obj) };
+  }
+  function assist(a){
+    var last=''; try{ var h=JSON.parse(a[2]||'[]'); for(var i=h.length-1;i>=0;i--){ if(h[i].role==='user'){last=(h[i].content||'').toLowerCase();break;} } }catch(e){}
+    var body;
+    if(/kova|track|zero|missing/.test(last)) body='**Kova** shows sessions and ad spend but **0** GA4 leads for 9 days. That is a tracking break, not a dead community. Republish the GTM container and the leads reappear.';
+    else if(/channel|organic|paid/.test(last)) body='**Paid Search** and **Organic Search** drive the most sessions. Paid converts slightly better per lead, so it is the safer place to add budget.';
+    else if(/best|budget|where/.test(last)) body='Add budget at **MetroLine**: lowest cost per lead, most vacancy. Trim near-full communities like **Maple Ridge**.';
+    else body='Across 16 communities you have **13,440** sessions and about **403** leads. The one red flag is **Kova** (tracking break); the one waste is **Lumi**.';
+    return { text: body+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' };
+  }
+  function route(fn,a){
+    switch(fn){
+      case 'getProperties': return base(a[0]);
+      case 'getOverview': return base(a[0]);
+      case 'getAcquisition': return base(a[0]);
+      case 'getEngagement': return base(a[0]);
+      case 'getConversions': return base(a[0]);
+      case 'getCrossChannel': { var b=base(a[0]); b.communities=b.perProperty; b.generatedAt=new Date().toISOString(); b.unmatchedAds=[{name:'Kova',spend:2400,conversions:0}]; return b; }
+      case 'getHubSummary': { var b=base(a[0]); b.communities=b.perProperty; b.generatedAt=new Date().toISOString(); return b; }
+      case 'getCommunityDetail': return audience();
+      case 'getAudience': return audience();
+      case 'getAlerts': return alerts();
+      case 'getAIAnalysis': return aiAnalysis(a[0],a[1]);
+      case 'chatWithAI': case 'askAssist': return assist(a);
+      case 'explainAlert': { var al; try{al=JSON.parse(a[0]);}catch(e){al={};} return { text:'**'+(al.name||'This community')+'** '+(al.symptom||'')+' '+(al.fix||'')+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' }; }
+      case 'getApiKeyStatus': return {set:true, masked:'sk-ant-demo'};
+      case 'saveApiKey': return {ok:true};
+      case 'clearApiKey': return {ok:true};
+      default: return {};
+    }
+  }
+  return {route:route};
+})();
+
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vertex Analytics Dashboard - Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script>window.__DEEP__ = null; window.__CFG__ = {};</script>
+<style>
+:root{
+  /* Google dark (Material dark-mode) */
+  --bg:#161719; --bg2:#1c1d20; --panel:#202124; --panel2:#26272b; --panel3:#303134;
+  --border:#2c2e31; --border2:#3c4043;
+  --text:#e8eaed; --muted:#9aa0a6; --muted2:#bdc1c6;
+  --blue:#8ab4f8; --red:#f28b82; --yellow:#fdd663; --green:#81c995;
+  --purple:#c58af9; --teal:#78d9ec; --orange:#fcad70; --pink:#ff8bcb;
+  --blue-soft:rgba(138,180,248,.14); --green-soft:rgba(129,201,149,.15);
+  --yellow-soft:rgba(253,214,99,.15); --red-soft:rgba(242,139,130,.15);
+  --purple-soft:rgba(197,138,249,.15);
+  --primary:var(--blue); --on-primary:#202124;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.25);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.4);
+  --radius:12px; --radius-sm:8px;
+  --sans:'Roboto',-apple-system,Segoe UI,sans-serif;
+  --mono:'Roboto Mono',ui-monospace,monospace;
+}
+body.light{
+  --bg:#f6f8fc; --bg2:#ffffff; --panel:#ffffff; --panel2:#f8f9fa; --panel3:#f1f3f4;
+  --border:#e8eaed; --border2:#dadce0;
+  --text:#202124; --muted:#5f6368; --muted2:#3c4043;
+  --blue:#1a73e8; --red:#d93025; --yellow:#f9ab00; --green:#1e8e3e;
+  --purple:#9334e6; --teal:#12a4af; --orange:#e8710a; --pink:#d01884;
+  --on-primary:#ffffff;
+  --blue-soft:rgba(26,115,232,.1); --green-soft:rgba(30,142,62,.1);
+  --yellow-soft:rgba(249,171,0,.12); --red-soft:rgba(217,48,37,.1); --purple-soft:rgba(147,52,230,.1);
+  --shadow:0 1px 2px rgba(60,64,67,.12),0 1px 3px rgba(60,64,67,.1);
+  --shadow-lg:0 8px 24px rgba(60,64,67,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;font-size:14px;line-height:1.5}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:8px;border:3px solid var(--bg)}
+::-webkit-scrollbar-track{background:transparent}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+.shell{display:flex;height:100vh}
+.sidebar{width:248px;flex:0 0 248px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .2s ease;overflow:hidden}
+.sidebar.collapsed{width:74px;flex-basis:74px}
+.brand{display:flex;align-items:center;gap:13px;padding:20px 18px 16px}
+.brand-mark{width:38px;height:38px;flex:0 0 38px;border-radius:9px;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.brand-mark svg{width:22px;height:22px}
+.brand-txt{min-width:0}
+.brand-txt h1{font-size:15px;font-weight:500;white-space:nowrap;letter-spacing:.01em}
+.brand-txt p{font-size:10.5px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;margin-top:1px}
+.sidebar.collapsed .brand-txt{display:none}
+.nav{flex:1;padding:6px 12px;overflow-y:auto;overflow-x:hidden}
+.nav-sect{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:16px 14px 6px;font-weight:500}
+.sidebar.collapsed .nav-sect{opacity:0;height:14px}
+.nav-item{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:22px;color:var(--muted2);font-size:14px;font-weight:500;margin-bottom:2px;white-space:nowrap;transition:background .15s,color .15s}
+.nav-item svg{width:20px;height:20px;flex:0 0 20px;stroke:currentColor;fill:none;stroke-width:1.9}
+.nav-item:hover{background:var(--panel2);color:var(--text)}
+.nav-item.active{background:var(--blue-soft);color:var(--blue)}
+.nav-item.active svg{stroke:var(--blue)}
+.sidebar.collapsed .nav-label{display:none}
+.side-foot{padding:12px;border-top:1px solid var(--border)}
+.collapse-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;background:transparent;border:1px solid var(--border2);border-radius:22px;color:var(--muted);font-size:13px;font-weight:500}
+.collapse-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.collapse-btn:hover{background:var(--panel2);color:var(--text)}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;gap:16px;padding:16px 26px;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap}
+.topbar-title{flex:1;min-width:180px}
+.topbar-title h2{font-size:20px;font-weight:400;display:flex;align-items:center;gap:11px;letter-spacing:0}
+.topbar-title p{font-size:13px;color:var(--muted);margin-top:2px}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:0 0 9px}
+.status-dot.live{background:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sel{background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:10px 13px;color:var(--text);font-size:13.5px;font-family:inherit;max-width:230px;outline:none}
+.sel:focus{border-color:var(--blue)}
+.range{display:flex;background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:3px;gap:2px}
+.range button{padding:7px 13px;border:none;background:transparent;color:var(--muted);border-radius:6px;font-size:13px;font-weight:500}
+.range button.active{background:var(--blue);color:var(--on-primary)}
+.icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--border2);border-radius:8px;color:var(--muted2)}
+.icon-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2}
+.icon-btn:hover{color:var(--blue);border-color:var(--blue)}
+
+.scroll{flex:1;overflow-y:auto;padding:24px 26px}
+.page{display:none;animation:fade .32s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px}
+.card-head h3{font-size:16px;font-weight:500}
+.card-head .sub{font-size:12.5px;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.kpi-top{display:flex;align-items:center;justify-content:space-between}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:500}
+.kpi-ic{width:30px;height:30px;border-radius:8px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center}
+.kpi-ic svg{width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:2}
+.kpi-val{font-size:28px;font-weight:400;margin:10px 0 3px;letter-spacing:-.01em}
+.kpi-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.kpi-sub{font-size:12px;color:var(--muted)}
+.chip{font-size:11.5px;font-weight:500;padding:2.5px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:3px}
+.chip.up{background:var(--green-soft);color:var(--green)}
+.chip.down{background:var(--red-soft);color:var(--red)}
+.chip.flat{background:var(--panel3);color:var(--muted)}
+
+.chart-svg{width:100%;display:block}
+.pulse-toggle{display:flex;gap:4px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:3px}
+.pulse-toggle button{border:none;background:transparent;color:var(--muted);padding:6px 12px;border-radius:6px;font-size:12.5px;font-weight:500}
+.pulse-toggle button.active{background:var(--panel3);color:var(--text)}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:8px}
+.barrow{display:grid;grid-template-columns:135px 1fr 60px;align-items:center;gap:12px;margin:10px 0}
+.barrow.c4{grid-template-columns:135px 1fr 60px 58px}
+.barlab{font-size:13px;color:var(--muted2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bartrack{height:10px;background:var(--panel3);border-radius:20px;overflow:hidden}
+.barfill{height:100%;border-radius:20px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.barval{font-size:13px;text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
+.donut{width:132px;height:132px}
+.legend{display:flex;flex-direction:column;gap:10px}
+.legend-row{display:flex;align-items:center;gap:9px;font-size:13.5px}
+.legend-dot{width:11px;height:11px;border-radius:3px;flex:0 0 11px}
+.legend-val{margin-left:auto;font-weight:500;font-variant-numeric:tabular-nums}
+
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--panel);z-index:1}
+.tbl td{padding:12px;border-bottom:1px solid var(--border);font-size:13.5px}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:background .12s}
+.tbl tbody tr.clickable{cursor:pointer}
+.tbl tbody tr.clickable:hover td{background:var(--panel2)}
+.tbl .r{text-align:right;font-variant-numeric:tabular-nums}
+.tbl .name{font-weight:500}
+.mini-bar{height:5px;background:var(--panel3);border-radius:20px;overflow:hidden;margin-top:6px;max-width:150px}
+.mini-bar i{display:block;height:100%;background:var(--blue);border-radius:20px}
+.rowlink{display:inline-flex;align-items:center;gap:4px;color:var(--blue);font-size:12px;font-weight:500}
+.rowlink svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px}
+.pill.good{background:var(--green-soft);color:var(--green)}
+.pill.warn{background:var(--yellow-soft);color:var(--yellow)}
+.pill.bad{background:var(--red-soft);color:var(--red)}
+.pill.info{background:var(--blue-soft);color:var(--blue)}
+.pill.lead{background:var(--green-soft);color:var(--green)}
+.pill.micro{background:var(--panel3);color:var(--muted)}
+.path{font-family:var(--mono);font-size:12px;color:var(--teal)}
+
+.insight{border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:11px;border:1px solid var(--border);background:var(--panel2)}
+.insight.good{border-left:4px solid var(--green)}
+.insight.warn{border-left:4px solid var(--yellow)}
+.insight.bad{border-left:4px solid var(--red)}
+.insight.info{border-left:4px solid var(--blue)}
+.insight-title{font-weight:500;font-size:14px;margin-bottom:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.insight-body{font-size:13.5px;color:var(--muted2);line-height:1.6}
+.insight-actions{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.mini-btn{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--panel);color:var(--text)}
+.mini-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.mini-btn:hover{border-color:var(--blue);color:var(--blue)}
+.mini-btn.blue{background:var(--blue);color:var(--on-primary);border-color:transparent}
+.mini-btn.blue:hover{opacity:.9;color:var(--on-primary)}
+
+.ai-hero{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.score-ring{position:relative;width:118px;height:118px;flex:0 0 118px}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-ring .val b{font-size:32px;font-weight:400}
+.score-ring .val span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.grade{font-size:44px;font-weight:500;color:var(--blue);line-height:1}
+.mode-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.mode-tabs button{padding:9px 16px;border-radius:8px;border:1px solid var(--border2);background:var(--panel);color:var(--muted2);font-size:13.5px;font-weight:500}
+.mode-tabs button.active{background:var(--blue);color:var(--on-primary);border-color:transparent}
+.btn-run{background:var(--blue);color:var(--on-primary);border:none;border-radius:8px;padding:11px 22px;font-weight:500;font-size:14px}
+.btn-run:disabled{opacity:.6}
+.btn-ghost{background:var(--panel);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:11px 18px;font-weight:500;font-size:13.5px}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+
+.detail-head{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.back-btn{width:40px;height:40px;flex:0 0 40px;border-radius:8px;border:1px solid var(--border2);background:var(--panel);display:flex;align-items:center;justify-content:center;color:var(--text)}
+.back-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+.detail-title h2{font-size:24px;font-weight:400}
+.detail-title p{font-size:13px;color:var(--muted);margin-top:2px}
+
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 20px;gap:18px}
+.spin{width:42px;height:42px;border-radius:50%;border:3px solid var(--border2);border-top-color:var(--blue);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{color:var(--muted);font-size:13.5px}
+.empty{padding:34px;text-align:center;color:var(--muted);font-size:13.5px}
+.boot{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;z-index:50}
+.boot-mark{width:64px;height:64px;border-radius:16px;background:var(--blue);display:flex;align-items:center;justify-content:center;animation:float 2.6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.boot-mark svg{width:36px;height:36px}
+.boot h1{font-size:20px;font-weight:500}
+.boot p{color:var(--muted);font-size:13px}
+
+.fab{position:fixed;right:24px;bottom:24px;width:56px;height:56px;border-radius:16px;background:var(--blue);border:none;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:40}
+.fab svg{width:26px;height:26px;stroke:var(--on-primary);fill:none;stroke-width:2}
+.chat-panel{position:fixed;right:24px;bottom:92px;width:392px;max-width:calc(100vw - 48px);height:560px;max-height:calc(100vh - 130px);background:var(--panel);border:1px solid var(--border2);border-radius:16px;box-shadow:var(--shadow-lg);z-index:41;display:none;flex-direction:column;overflow:hidden}
+.chat-panel.open{display:flex}
+.chat-head{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.chat-head .m{width:32px;height:32px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.chat-head .m svg{width:17px;height:17px;stroke:var(--on-primary);fill:none;stroke-width:2}
+.chat-head h4{font-size:14.5px;font-weight:500}
+.chat-head p{font-size:11.5px;color:var(--muted)}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:86%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.55}
+.msg.u{align-self:flex-end;background:var(--blue);color:var(--on-primary);border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--panel3);border-bottom-left-radius:4px}
+.msg.a b{color:var(--blue)}
+.msg.a ul{margin:6px 0 2px 18px}
+.followups{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.followups button{text-align:left;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--muted2)}
+.followups button:hover{border-color:var(--blue);color:var(--blue)}
+.chat-input{padding:12px;border-top:1px solid var(--border);display:flex;gap:9px}
+.chat-input input{flex:1;background:var(--panel2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;color:var(--text);font-size:13.5px;font-family:inherit;outline:none}
+.chat-input input:focus{border-color:var(--blue)}
+.chat-input button{width:42px;flex:0 0 42px;border:none;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.chat-input button svg{width:18px;height:18px;stroke:var(--on-primary);fill:none;stroke-width:2}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:var(--panel3);border:1px solid var(--border2);color:var(--text);padding:12px 20px;border-radius:10px;font-size:13.5px;box-shadow:var(--shadow-lg);z-index:60;opacity:0;transition:.3s}
+.toast.show{transform:translate(-50%,0);opacity:1}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12.5px;color:var(--muted2);margin-bottom:7px;font-weight:500}
+.field input{width:100%;background:var(--panel2);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none}
+.field input:focus{border-color:var(--blue)}
+
+.split-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.split-card{background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:15px 17px}
+.split-card .l{font-size:12px;color:var(--muted);font-weight:500}
+.split-card .v{font-size:26px;font-weight:400;margin-top:6px}
+
+/* assistant dock (expert on every page) */
+.assist-host{margin-bottom:16px}
+.assist{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+.assist-h{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.assist-h .ai{width:32px;height:32px;flex:0 0 32px;border-radius:8px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center}
+.assist-h .ai svg{width:18px;height:18px;stroke:var(--blue);fill:none;stroke-width:2}
+.assist-h h4{font-size:14.5px;font-weight:500}
+.assist-h p{font-size:11.5px;color:var(--muted)}
+.assist-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.assist-chip{font-size:12.5px;font-weight:500;padding:7px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--panel2);color:var(--muted2);text-align:left}
+.assist-chip:hover{border-color:var(--blue);color:var(--blue)}
+.assist-thread{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.assist-thread:empty{margin-bottom:0}
+.assist-msg{font-size:13.5px;line-height:1.55;padding:11px 14px;border-radius:12px}
+.assist-msg.u{align-self:flex-end;background:var(--blue);color:var(--on-primary);border-bottom-right-radius:4px;max-width:82%}
+.assist-msg.a{align-self:flex-start;background:var(--panel2);border:1px solid var(--border);border-bottom-left-radius:4px;max-width:100%}
+.assist-msg.a b{color:var(--blue)}
+.assist-empty{font-size:12.5px;color:var(--muted);padding:0 2px 8px}
+.assist-input{display:flex;gap:9px}
+.assist-input input{flex:1;background:var(--panel2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;color:var(--text);font-size:13.5px;font-family:inherit;outline:none}
+.assist-input input:focus{border-color:var(--blue)}
+.assist-input button{width:44px;flex:0 0 44px;border:none;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.assist-input button svg{width:18px;height:18px;stroke:var(--on-primary);fill:none;stroke-width:2}
+/* alert center */
+.alert-card{background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.alert-card.crit{border-left-color:var(--red)}
+.alert-card.high{border-left-color:var(--orange)}
+.alert-card.med{border-left-color:var(--yellow)}
+.alert-card.info{border-left-color:var(--blue)}
+.alert-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.alert-title{font-size:16px;font-weight:500}
+.alert-meta{font-size:12px;color:var(--muted);margin:4px 0 14px}
+.alert-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;margin-bottom:14px}
+.alert-field .l{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.alert-field .v{font-size:13.5px;color:var(--text);line-height:1.55}
+.alert-fix{grid-column:1/-1}
+.alert-fix ol{margin:2px 0 0 18px}
+.alert-fix li{font-size:13.5px;margin:5px 0;line-height:1.5}
+.alert-deep{margin-top:14px;padding:15px 17px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13.5px;line-height:1.65}
+.alert-deep b{color:var(--blue)}
+.pill.crit{background:var(--red-soft);color:var(--red);border:1px solid var(--red)}
+@media(max-width:820px){
+  .grid[style*="grid-template-columns"]{grid-template-columns:1fr !important}
+  .alert-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .sidebar{position:fixed;z-index:45;height:100vh;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.mobile-open{transform:none}
+  .scroll{padding:16px}
+  .topbar{padding:14px 16px}
+}
+</style>
+<style id="dkb-phone">
+.dkb-strip{--dkb-strip-bg:var(--bg2);--dkb-strip-line:var(--border);--dkb-chip-line:var(--border2);--dkb-chip-fg:var(--muted);--dkb-chip-on-bg:var(--blue);--dkb-chip-on-fg:var(--on-primary);--dkb-chip-font:var(--sans)}
+@media (max-width:760px){
+  html,body{height:auto}
+  body{overflow:visible;overflow-x:hidden}
+  .shell{display:block;height:auto;min-height:100vh}
+  .sidebar{display:none!important}
+  .main{display:block;min-height:100vh}
+  .scroll{overflow:visible;padding:14px 14px 92px}
+  .topbar{padding:12px 14px 12px;gap:10px}
+  .topbar-title{flex:1 1 100%;min-width:0}
+  .topbar-title h2{font-size:18px;gap:9px}
+  .topbar-title p{font-size:12.5px;margin-top:1px}
+  .controls{flex:1 1 auto;width:calc(100% + 28px);flex-wrap:nowrap;overflow-x:auto;gap:8px;scrollbar-width:none;margin:0 -14px;padding:0 14px 2px}
+  .controls::-webkit-scrollbar{display:none}
+  .controls .sel{flex:1 0 auto;max-width:none;min-width:150px}
+  .controls .range,.controls .icon-btn{flex:none}
+  .card{padding:16px}
+  .card-head{flex-wrap:wrap}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .grid>*{min-width:0}
+  .grid[style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important}
+  .fab{right:14px;bottom:14px;width:52px;height:52px;border-radius:15px}
+  .chat-panel{top:0;right:0;bottom:0;left:0;width:auto;max-width:none;height:auto;max-height:none;border-radius:0;border:0}
+  .chat-head{padding:12px 14px}
+  .detail-head{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="boot" id="boot">
+  <div class="boot-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 15c2.5 0 2.5-6 5-6s2.5 6 5 6 2.5-6 5-6 2.5 6 3 6" stroke="#202124" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+  <h1>Vertex Analytics Command Center</h1>
+  <p id="boot-msg">Connecting to Google Analytics…</p>
+</div>
+
+<div class="shell" id="shell" style="visibility:hidden">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 15c2.5 0 2.5-6 5-6s2.5 6 5 6 2.5-6 5-6 2.5 6 3 6" stroke="#202124" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div class="brand-txt"><h1>Vertex Analytics</h1><p>Command Center</p></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-sect">Overview</div>
+      <div class="nav-item active" data-page="overview" onclick="go('overview')"><svg viewBox="0 0 24 24"><path d="M3 13h4l3 8 4-16 3 8h4"/></svg><span class="nav-label">Portfolio Pulse</span></div>
+      <div class="nav-sect">Reports</div>
+      <div class="nav-item" data-page="acquisition" onclick="go('acquisition')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg><span class="nav-label">Acquisition</span></div>
+      <div class="nav-item" data-page="engagement" onclick="go('engagement')"><svg viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="M8 14l3-3 3 3 4-6"/></svg><span class="nav-label">Engagement</span></div>
+      <div class="nav-item" data-page="conversions" onclick="go('conversions')"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span class="nav-label">Conversions</span></div>
+      <div class="nav-item" data-page="audience" onclick="go('audience')"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 6.2a3 3 0 0 1 0 5.6"/><path d="M17.5 20a6.5 6.5 0 0 0-3-5.5"/></svg><span class="nav-label">Audience</span></div>
+      <div class="nav-item" data-page="crosschannel" onclick="go('crosschannel')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg><span class="nav-label">Cross-Channel</span></div>
+      <div class="nav-sect">Intelligence</div>
+      <div class="nav-item" data-page="alerts" onclick="go('alerts')"><svg viewBox="0 0 24 24"><path d="M12 2L2 21h20z"/><path d="M12 10v4"/><path d="M12 18h.01"/></svg><span class="nav-label">Alerts</span></div>
+      <div class="nav-item" data-page="actions" onclick="go('actions')"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span class="nav-label">Action Center</span></div>
+      <div class="nav-item" data-page="insights" onclick="go('insights')"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1 1 2V17h6v-1.5c0-1 .3-1.4 1-2A6 6 0 0 0 12 3z"/><path d="M9.5 21h5"/></svg><span class="nav-label">AI Analysis</span></div>
+      <div class="nav-item" data-page="settings" onclick="go('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1l-.4-2.5h-4l-.4 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5c.06-.33.1-.66.1-1z"/></svg><span class="nav-label">Settings</span></div>
+    </nav>
+    <div class="side-foot">
+      <button class="collapse-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg><span class="nav-label">Collapse</span></button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">
+        <h2><span class="status-dot" id="dot"></span><span id="ptitle">Portfolio Pulse</span></h2>
+        <p id="psub">All communities at a glance</p>
+      </div>
+      <div class="controls">
+        <select class="sel" id="propSel" onchange="onProp()"><option value="">All communities</option></select>
+        <div class="range">
+          <button data-r="7" onclick="setRange('7',this)">7D</button>
+          <button data-r="30" class="active" onclick="setRange('30',this)">30D</button>
+          <button data-r="90" onclick="setRange('90',this)">90D</button>
+        </div>
+        <button class="icon-btn" onclick="refreshAll()" title="Refresh"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+        <button class="icon-btn" onclick="toggleTheme()" title="Theme"><svg id="themeIc" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <!-- OVERVIEW -->
+      <section class="page active" id="page-overview">
+        <div class="assist-host" id="assist-overview"></div>
+        <div class="grid kpis" id="ov-kpis"></div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div><h3>Portfolio Pulse</h3><div class="sub">Daily performance across the portfolio</div></div>
+            <div class="pulse-toggle" id="ov-pulse-toggle">
+              <button class="active" data-k="sessions" onclick="setPulse('sessions',this)">Sessions</button>
+              <button data-k="users" onclick="setPulse('users',this)">Users</button>
+              <button data-k="conv" onclick="setPulse('conv',this)">Key events</button>
+            </div>
+          </div>
+          <div id="ov-pulse"></div>
+        </div>
+        <div class="grid" style="grid-template-columns:1.7fr 1fr;align-items:start" id="ov-lower">
+          <div class="card">
+            <div class="card-head"><h3>Communities</h3><div class="sub">Click any row for the full breakdown</div></div>
+            <div style="max-height:470px;overflow-y:auto"><table class="tbl" id="ov-table"></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Needs attention</h3><div class="sub"><span class="rowlink" onclick="go('actions')">All actions</span></div></div>
+            <div id="ov-attention"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACQUISITION -->
+      <section class="page" id="page-acquisition"><div class="assist-host" id="assist-acquisition"></div><div id="acq-body"><div class="loader"><div class="spin"></div><p>Loading acquisition…</p></div></div></section>
+      <!-- ENGAGEMENT -->
+      <section class="page" id="page-engagement"><div class="assist-host" id="assist-engagement"></div><div id="eng-body"><div class="loader"><div class="spin"></div><p>Loading engagement…</p></div></div></section>
+      <!-- CONVERSIONS -->
+      <section class="page" id="page-conversions"><div class="assist-host" id="assist-conversions"></div><div id="conv-body"><div class="loader"><div class="spin"></div><p>Loading conversions…</p></div></div></section>
+      <!-- AUDIENCE -->
+      <section class="page" id="page-audience"><div class="assist-host" id="assist-audience"></div><div id="aud-body"><div class="loader"><div class="spin"></div><p>Loading audience…</p></div></div></section>
+      <!-- CROSS-CHANNEL -->
+      <section class="page" id="page-crosschannel"><div class="assist-host" id="assist-crosschannel"></div><div id="xchan-body"><div class="loader"><div class="spin"></div><p>Loading cross-channel…</p></div></div></section>
+      <!-- ALERTS -->
+      <section class="page" id="page-alerts"><div class="assist-host" id="assist-alerts"></div><div id="alert-body"><div class="loader"><div class="spin"></div><p>Scanning every community for problems…</p></div></div></section>
+      <!-- ACTION CENTER -->
+      <section class="page" id="page-actions"><div class="assist-host" id="assist-actions"></div><div id="act-body"><div class="loader"><div class="spin"></div><p>Analyzing the portfolio for actions…</p></div></div></section>
+
+      <!-- DETAIL -->
+      <section class="page" id="page-detail"><div id="detail-body"></div></section>
+
+      <!-- AI ANALYSIS -->
+      <section class="page" id="page-insights">
+        <div class="mode-tabs" id="ai-tabs">
+          <button class="active" data-m="overview" onclick="aiTab('overview',this)">Overview</button>
+          <button data-m="acquisition" onclick="aiTab('acquisition',this)">Acquisition</button>
+          <button data-m="engagement" onclick="aiTab('engagement',this)">Engagement</button>
+          <button data-m="conversions" onclick="aiTab('conversions',this)">Conversions</button>
+          <button data-m="audience" onclick="aiTab('audience',this)">Audience</button>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap">
+          <button class="btn-run" id="ai-run" onclick="runAnalysis()">Run AI analysis</button>
+          <span class="sub" style="color:var(--muted);font-size:12.5px" id="ai-scope">Analyzing all communities · last 30 days</span>
+        </div>
+        <div id="ai-out"><div class="empty">Pick a report above and run the analysis. Claude reads your live GA4 data and hands back a prioritized plan.</div></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings">
+        <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+          <div class="card">
+            <div class="card-head"><h3>Anthropic API key</h3></div>
+            <p class="sub" style="color:var(--muted);margin-bottom:16px;font-size:12.5px">Needed for the AI Analysis page and chat. Your key is stored securely in this project.</p>
+            <div id="key-status" style="margin-bottom:14px"></div>
+            <div class="field"><label>API key</label><input type="password" id="key-in" placeholder="sk-ant-..."></div>
+            <div style="display:flex;gap:10px"><button class="btn-run" onclick="saveKey()">Save key</button><button class="btn-ghost" onclick="clearKey()">Remove</button></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>About this dashboard</h3></div>
+            <div class="insight info"><div class="insight-title">Live GA4 data</div><div class="insight-body">Pulls directly from the Google Analytics Data API across every community property this account can see.</div></div>
+            <div class="insight good"><div class="insight-title">Properties connected</div><div class="insight-body" id="set-props">Loading…</div></div>
+            <div class="insight"><div class="insight-body" style="color:var(--muted)">Built by Debashish · Vertex Marketing Intelligence Suite</div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="toggleChat()" style="display:none"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+<div class="chat-panel" id="chat">
+  <div class="chat-head"><div class="m"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1 1 2V17h6v-1.5c0-1 .3-1.4 1-2A6 6 0 0 0 12 3z"/></svg></div><div><h4>Ask Claude</h4><p>Grounded in your live analytics</p></div></div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-input"><input id="chat-in" placeholder="Ask about your traffic…" onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ STATE ============ */
+var PROPS=[], curPage='overview', range='30', customStart='', customEnd='', propFilter='';
+var ovData=null, acqData=null, engData=null, convData=null, audData=null, actDone=false;
+var pulseKey='sessions', aiMode='overview', chatHist=[];
+var detailReturn='overview', curDetailId='';
+var PAGE_META={
+  overview:['Portfolio Pulse','All communities at a glance'],
+  acquisition:['Acquisition','Where your visitors come from'],
+  engagement:['Engagement','What visitors do on your sites'],
+  conversions:['Conversions','Key events and lead generation'],
+  audience:['Audience','Devices, cities and visitor types'],
+  crosschannel:['Cross-Channel','Google Ads spend meets GA4 leads'],
+  actions:['Action Center','What to fix, ranked by impact'],
+  alerts:['Alerts','Errors, causes, timing and fixes'],
+  insights:['AI Analysis','Claude reads your live data'],
+  settings:['Settings','Keys and configuration'],
+  detail:['Community detail','Single-community deep dive']
+};
+
+/* ============ HELPERS ============ */
+function gcall(fn){var a=[].slice.call(arguments,1);return new Promise(function(res){setTimeout(function(){res(GA4MOCK.route(fn,a));},120+Math.random()*150);});}
+function fmt(n){n=Number(n||0);return Math.round(n).toLocaleString('en-US');}
+function pct(v){return (Number(v||0)*100).toFixed(1)+'%';}
+function pct2(v){return (Number(v||0)*100).toFixed(2)+'%';}
+function dur(s){s=Math.round(Number(s||0));if(s<60)return s+'s';var m=Math.floor(s/60);return m+'m '+(s%60)+'s';}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function setStatus(live){document.getElementById('dot').className='status-dot'+(live?' live':'');}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.className='toast show';setTimeout(function(){t.className='toast';},3600);}
+function colorHex(k){return k==='users'?'#c58af9':k==='conv'?'#81c995':'#8ab4f8';}
+var CHART_PALETTE=['#8ab4f8','#f28b82','#fdd663','#81c995','#c58af9','#78d9ec','#fcad70','#ff8bcb'];
+function adsSlug(n){return String(n||'').replace(/\s*-?\s*ga4/ig,'').replace(/apartments?/ig,'').replace(/[^a-z0-9]/ig,'').toLowerCase();}
+function adsUrlFor(name){var base=(window.__CFG__&&window.__CFG__.adsUrl)||'';if(!base)return '';return base+'?p='+encodeURIComponent(adsSlug(name));}
+function openAds(name){var u=adsUrlFor(name);if(!u){toast('Ads dashboard link not set.');return;}window.open(u,'_blank');}
+function adsBtn(name){return '<button class="mini-btn" onclick="openAds(\''+esc(adsSlug(name))+'\')"><svg viewBox=\"0 0 24 24\"><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/><path d=\"M15 3h6v6\"/><path d=\"M10 14L21 3\"/></svg>Open in Google Ads</button>';}
+
+/* ============ CHARTS ============ */
+function svgArea(series, key, hex, h){
+  h=h||150;
+  if(!series||series.length<2)return '<div class="empty">Not enough data in this range yet.</div>';
+  var vals=series.map(function(p){return Number(p[key]||0);});
+  var max=Math.max.apply(null,vals)||1, n=vals.length, W=1000;
+  var pts=vals.map(function(v,i){var x=(i/(n-1))*W;var y=h-(v/max)*(h-18)-9;return [x,y];});
+  var line=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+  var area=line+' L'+W+' '+h+' L0 '+h+' Z';
+  var id='g'+Math.random().toString(36).slice(2,7);
+  var grid='';for(var g=1;g<4;g++){var gy=(h/4)*g;grid+='<line x1="0" y1="'+gy+'" x2="'+W+'" y2="'+gy+'" stroke="var(--border)" stroke-width="1" vector-effect="non-scaling-stroke"/>';}
+  return '<svg viewBox="0 0 '+W+' '+h+'" preserveAspectForma="none" class="chart-svg" style="height:'+h+'px">'
+    +'<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+hex+'" stop-opacity=".28"/><stop offset="1" stop-color="'+hex+'" stop-opacity="0"/></linearGradient></defs>'
+    +grid+'<path d="'+area+'" fill="url(#'+id+')"/><path d="'+line+'" fill="none" stroke="'+hex+'" stroke-width="2.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+function spark(vals, hex){
+  if(!vals||vals.length<2)return '';
+  var max=Math.max.apply(null,vals)||1,n=vals.length;
+  var pts=vals.map(function(v,i){var x=(i/(n-1))*100;var y=26-(v/max)*22-2;return x.toFixed(1)+','+y.toFixed(1);}).join(' ');
+  return '<svg viewBox="0 0 100 28" preserveAspectForma="none" style="width:100%;height:28px"><polyline points="'+pts+'" fill="none" stroke="'+hex+'" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>';
+}
+function barsH(items, valKey, labKey, opts){
+  opts=opts||{};
+  if(!items||!items.length)return '<div class="empty">No data.</div>';
+  var max=Math.max.apply(null,items.map(function(i){return Number(i[valKey]||0);}))||1;
+  return items.map(function(it,idx){
+    var w=(Number(it[valKey]||0)/max)*100;
+    var c=opts.colorByIndex?CHART_PALETTE[idx%CHART_PALETTE.length]:(opts.color||'var(--blue)');
+    var extra=opts.extra?('<div class="barval" style="color:var(--muted)">'+opts.extra(it)+'</div>'):'';
+    return '<div class="barrow'+(opts.extra?' c4':'')+'"><div class="barlab" title="'+esc(it[labKey])+'">'+esc(it[labKey])+'</div><div class="bartrack"><div class="barfill" style="width:'+w.toFixed(1)+'%;background:'+c+'"></div></div><div class="barval">'+fmt(it[valKey])+'</div>'+extra+'</div>';
+  }).join('');
+}
+function donut(segs){
+  var total=segs.reduce(function(a,s){return a+Number(s.value||0);},0)||1;
+  var r=52,c=2*Math.PI*r,off=0;
+  var arcs=segs.map(function(s){var len=(Number(s.value||0)/total)*c;var el='<circle cx="66" cy="66" r="'+r+'" fill="none" stroke="'+s.color+'" stroke-width="20" stroke-dasharray="'+len.toFixed(2)+' '+(c-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 66 66)"/>';off+=len;return el;}).join('');
+  return '<svg viewBox="0 0 132 132" class="donut">'+arcs+'</svg>';
+}
+function ringScore(score){
+  var r=52,c=2*Math.PI*r,fill=(Math.max(0,Math.min(100,score))/100)*c;
+  var hex=score>=75?'#81c995':score>=50?'#fdd663':'#f28b82';
+  return '<svg width="118" height="118" viewBox="0 0 118 118"><circle cx="59" cy="59" r="52" fill="none" stroke="var(--panel3)" stroke-width="10"/><circle cx="59" cy="59" r="52" fill="none" stroke="'+hex+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+fill.toFixed(1)+' '+c.toFixed(1)+'"/></svg>';
+}
+
+/* ============ NAV / CONTROLS ============ */
+function go(page){
+  curPage=page;
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.toggle('active',n.dataset.page===page);});
+  document.querySelectorAll('.page').forEach(function(p){p.classList.toggle('active',p.id==='page-'+page);});
+  var m=PAGE_META[page];document.getElementById('ptitle').textContent=m[0];document.getElementById('psub').textContent=m[1];
+  if(window.innerWidth<=760)document.getElementById('sidebar').classList.remove('mobile-open');
+  if(page==='acquisition')loadAcquisition();
+  else if(page==='engagement')loadEngagement();
+  else if(page==='conversions')loadConversions();
+  else if(page==='audience')loadAudience();
+  else if(page==='actions')loadActions();
+  else if(page==='crosschannel')loadCrossChannel();
+  else if(page==='alerts')loadAlerts();
+  else if(page==='insights')updateAiScope();
+  else if(page==='settings')loadSettings();
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('collapsed');}
+function setRange(r,el){if(range===r)return;range=r;document.querySelectorAll('.range button').forEach(function(b){b.classList.remove('active');});el.classList.add('active');clearCaches();refreshCurrent(true);}
+function onProp(){propFilter=document.getElementById('propSel').value;clearCaches();refreshCurrent(true);}
+function clearCaches(){ovData=null;acqData=null;engData=null;convData=null;audData=null;actDone=false;xchanData=null;}
+function refreshCurrent(reloadOv){
+  if(reloadOv)loadOverview();
+  if(curPage==='acquisition')loadAcquisition();
+  else if(curPage==='crosschannel')loadCrossChannel();
+  else if(curPage==='engagement')loadEngagement();
+  else if(curPage==='conversions')loadConversions();
+  else if(curPage==='audience')loadAudience();
+  else if(curPage==='actions')loadActions();
+  else if(curPage==='detail'&&curDetailId)openDetail(curDetailId);
+  else if(curPage==='insights')updateAiScope();
+}
+function refreshAll(){clearCaches();alertData=null;PROPS=[];toast('Refreshing live data…');boot(true);}
+function toggleTheme(){var l=document.body.classList.toggle('light');try{localStorage.setItem('sa_theme',l?'light':'dark');}catch(e){}if(ovData)renderOverview();}
+
+/* ============ BOOT ============ */
+function boot(isRefresh){
+  document.getElementById('boot-msg').textContent=isRefresh?'Refreshing…':'Discovering your community properties…';
+  if(isRefresh){document.getElementById('boot').style.display='flex';document.getElementById('shell').style.visibility='hidden';}
+  gcall('getProperties', isRefresh?true:false).then(function(res){
+    if(res&&res.error){document.getElementById('boot-msg').innerHTML='<span style="color:var(--red)">'+esc(res.error)+'</span>';}
+    PROPS=(res&&res.properties)||[];
+    fillPropSel();
+    var sp=document.getElementById('set-props');if(sp)sp.textContent=PROPS.length+' GA4 properties connected: '+PROPS.map(function(p){return p.name;}).slice(0,25).join(', ');
+    document.getElementById('boot-msg').textContent='Loading portfolio data across '+PROPS.length+' communities…';
+    return loadOverview();
+  }).then(function(){
+    document.getElementById('boot').style.display='none';
+    document.getElementById('shell').style.visibility='visible';
+    document.getElementById('fab').style.display='flex';
+    applyDeep();
+  }).catch(function(e){document.getElementById('boot-msg').innerHTML='<span style="color:var(--red)">Could not load: '+esc(e&&e.message||e)+'</span>';});
+}
+function fillPropSel(){
+  var s=document.getElementById('propSel');var o='<option value="">All communities ('+PROPS.length+')</option>';
+  PROPS.forEach(function(p){o+='<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>';});
+  s.innerHTML=o;s.value=propFilter;
+}
+
+/* ============ OVERVIEW ============ */
+function loadOverview(){
+  setStatus(false);
+  return gcall('getOverview',range,customStart,customEnd,propFilter).then(function(res){
+    ovData=res;setStatus(true);renderOverview();
+    if(!convData){gcall('getConversions',range,customStart,customEnd,propFilter).then(function(c){convData=c;if(curPage==='overview')renderOverview();});}
+  });
+}
+function convMap(){var m={};if(convData&&convData.perProperty){convData.perProperty.forEach(function(p){m[p.name]=p;});}return m;}
+function seriesHalves(series,key){if(!series||series.length<4)return null;var mid=Math.floor(series.length/2);var a=0,b=0;series.slice(0,mid).forEach(function(p){a+=Number(p[key]||0);});series.slice(mid).forEach(function(p){b+=Number(p[key]||0);});if(a<=0)return null;return (b-a)/a;}
+function deltaChip(series,key){var d=seriesHalves(series,key);if(d===null)return '<span class="chip flat">–</span>';var up=d>=0;return '<span class="chip '+(up?'up':'down')+'">'+(up?'▲':'▼')+' '+Math.abs(d*100).toFixed(0)+'%</span>';}
+function renderOverview(){
+  if(!ovData)return;var t=ovData.totals,s=ovData.series;var cm=convMap();var hasLeads=convData&&convData.perProperty;
+  var ic={u:'<circle cx="9" cy="8" r="3.2"/><path d="M2.5 19a6.5 6.5 0 0 1 13 0"/>',s:'<path d="M3 13h4l3 8 4-16 3 8h4"/>',c:'<path d="M20 6L9 17l-5-5"/>',lead:'<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>',e:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',p:'<path d="M4 4v16h16"/><path d="M8 14l3-3 3 3 4-6"/>'};
+  function kpi(label,val,sub,icon,chip,sk){return '<div class="kpi"><div class="kpi-top"><span class="kpi-label">'+label+'</span><span class="kpi-ic"><svg viewBox="0 0 24 24">'+icon+'</svg></span></div><div class="kpi-val num">'+val+'</div><div class="kpi-foot"><span class="kpi-sub">'+sub+'</span>'+(chip||'')+'</div>'+(sk?('<div style="margin-top:8px">'+sk+'</div>'):'')+'</div>';}
+  var totLeads=hasLeads?convData.totalLeads:null;
+  document.getElementById('ov-kpis').innerHTML=
+    kpi('Sessions',fmt(t.sessions),ovRangeLabel(),ic.s,deltaChip(s,'sessions'),spark(s.map(function(p){return p.sessions;}),'#8ab4f8'))+
+    kpi('Active users',fmt(t.users),fmt(t.newUsers)+' new',ic.u,deltaChip(s,'users'),spark(s.map(function(p){return p.users;}),'#c58af9'))+
+    kpi('Key events',fmt(t.conv),'All conversions',ic.c,deltaChip(s,'conv'),spark(s.map(function(p){return p.conv;}),'#81c995'))+
+    kpi('True leads',hasLeads?fmt(totLeads):'…','Forms, tours, calls',ic.lead,'')+
+    kpi('Lead rate',hasLeads&&t.sessions>0?pct2(totLeads/t.sessions):'…','Real leads ÷ sessions',ic.e,'')+
+    kpi('Engagement',pct(t.engRate),'Engaged sessions',ic.p,'');
+  setPulseRender();
+  var rows=ovData.properties;var maxS=Math.max.apply(null,rows.map(function(r){return r.sessions;}))||1;
+  var th='<thead><tr><th>Community</th><th class="r">Sessions</th><th class="r">Users</th><th class="r">Key events</th><th class="r">Leads</th><th class="r">Lead rate</th></tr></thead>';
+  var tb='<tbody>'+rows.map(function(r){
+    var c=cm[r.name];var leads=c?c.leads:null;var lr=(leads!=null&&r.sessions>0)?leads/r.sessions:null;
+    return '<tr class="clickable" onclick="openDetail(\''+esc(r.id)+'\')"><td class="name">'+esc(r.name)+'<div class="mini-bar"><i style="width:'+((r.sessions/maxS)*100).toFixed(1)+'%"></i></div></td>'+
+      '<td class="r">'+fmt(r.sessions)+'</td><td class="r">'+fmt(r.users)+'</td><td class="r">'+fmt(r.conv)+'</td>'+
+      '<td class="r">'+(leads!=null?fmt(leads):'…')+'</td><td class="r">'+(lr!=null?pct2(lr):'…')+'</td></tr>';
+  }).join('')+'</tbody>';
+  document.getElementById('ov-table').innerHTML=th+tb;
+  // attention (uses real leads when available)
+  var att=[];
+  rows.forEach(function(r){
+    var c=cm[r.name];
+    if(r.sessions>=80&&r.conv===0){att.push({cls:'bad',t:r.name+' has no key events',b:fmt(r.sessions)+' sessions but zero conversions tracked. Set up key events on this site.'});return;}
+    if(c&&r.sessions>=80&&c.leads===0&&c.total>0){att.push({cls:'bad',t:r.name+' tracks no real leads',b:'All '+fmt(c.total)+' key events are micro-events (clicks, views). No form, tour or call events are firing.'});return;}
+    if(c&&r.sessions>=120&&(c.leads/r.sessions)<0.005){att.push({cls:'warn',t:r.name+' converts poorly',b:'Real lead rate is just '+pct2(c.leads/r.sessions)+' on '+fmt(r.sessions)+' sessions. Review the landing pages and forms.'});return;}
+    if(c&&c.total>0&&c.micro>c.leads*4&&c.leads>0){att.push({cls:'info',t:r.name+"'s numbers are inflated",b:fmt(c.total)+' key events but only '+fmt(c.leads)+' real leads. Report leads, not raw key events.'});}
+  });
+  if(hasLeads){var best=rows.map(function(r){var c=cm[r.name];return {name:r.name,sessions:r.sessions,lr:(c&&r.sessions>0)?c.leads/r.sessions:0,leads:c?c.leads:0};}).filter(function(x){return x.sessions>=80&&x.leads>0;}).sort(function(a,b){return b.lr-a.lr;})[0];
+    if(best)att.unshift({cls:'good',t:best.name+' is the top converter',b:'Real lead rate '+pct2(best.lr)+' on '+fmt(best.sessions)+' sessions. Study what works here.'});}
+  document.getElementById('ov-attention').innerHTML=att.length?att.slice(0,6).map(function(a){return '<div class="insight '+a.cls+'"><div class="insight-title">'+esc(a.t)+'</div><div class="insight-body">'+esc(a.b)+'</div></div>';}).join(''):'<div class="empty">'+(hasLeads?'Everything looks healthy.':'Loading lead data…')+'</div>';
+  mountAssist('assist-overview','overview','the portfolio overview',chipSet('overview'));
+}
+function setPulse(k,el){pulseKey=k;document.querySelectorAll('#ov-pulse-toggle button').forEach(function(b){b.classList.remove('active');});el.classList.add('active');setPulseRender();}
+function setPulseRender(){if(!ovData)return;document.getElementById('ov-pulse').innerHTML=svgArea(ovData.series,pulseKey,colorHex(pulseKey),170)+ovAxis(ovData.series);}
+function ovAxis(s){if(!s||s.length<2)return '';function d(x){return x.slice(4,6)+'/'+x.slice(6,8);}return '<div class="axis"><span>'+d(s[0].date)+'</span><span>'+d(s[s.length-1].date)+'</span></div>';}
+function ovRangeLabel(){return range==='7'?'Last 7 days':range==='90'?'Last 90 days':'Last 30 days';}
+
+/* ============ COMMUNITY DETAIL (drill-down) ============ */
+function openDetail(id){
+  detailReturn=(curPage==='detail')?detailReturn:curPage;curDetailId=id;curPage='detail';
+  document.querySelectorAll('.page').forEach(function(p){p.classList.toggle('active',p.id==='page-detail');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('ptitle').textContent='Community detail';document.getElementById('psub').textContent='Single-community deep dive';
+  var body=document.getElementById('detail-body');body.innerHTML='<div class="loader"><div class="spin"></div><p>Loading community detail…</p></div>';
+  gcall('getCommunityDetail',id,range,customStart,customEnd).then(function(d){if(d.error){body.innerHTML='<div class="insight bad"><div class="insight-title">Could not load</div><div class="insight-body">'+esc(d.error)+'</div></div>';return;}renderDetail(d);}).catch(function(e){body.innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});
+}
+function backFromDetail(){go(detailReturn||'overview');}
+function renderDetail(d){
+  var m=d.metrics||{};
+  var ic={s:'<path d="M3 13h4l3 8 4-16 3 8h4"/>',u:'<circle cx="9" cy="8" r="3.2"/><path d="M2.5 19a6.5 6.5 0 0 1 13 0"/>',c:'<path d="M20 6L9 17l-5-5"/>',lead:'<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>',e:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',p:'<path d="M4 4v16h16"/><path d="M8 14l3-3 3 3 4-6"/>'};
+  function kpi(label,val,sub,icon){return '<div class="kpi"><div class="kpi-top"><span class="kpi-label">'+label+'</span><span class="kpi-ic"><svg viewBox="0 0 24 24">'+icon+'</svg></span></div><div class="kpi-val num">'+val+'</div><div class="kpi-foot"><span class="kpi-sub">'+sub+'</span></div></div>';}
+  var kpis=kpi('Sessions',fmt(m.sessions),ovRangeLabel(),ic.s)+kpi('Active users',fmt(m.users),fmt(m.newUsers)+' new',ic.u)+kpi('Key events',fmt(m.conv),'All conversions',ic.c)+kpi('True leads',fmt(d.leads),fmt(d.micro)+' micro-events',ic.lead)+kpi('Lead rate',pct2(d.leadRate),'Real leads ÷ sessions',ic.e)+kpi('Engagement',pct(m.engRate),dur(m.avgEng)+' avg',ic.p);
+  var chSeg=(d.channels||[]).slice(0,7).map(function(c,i){return {label:c.channel,value:c.sessions,color:CHART_PALETTE[i%CHART_PALETTE.length]};});
+  var chLegend=chSeg.map(function(s){return '<div class="legend-row"><span class="legend-dot" style="background:'+s.color+'"></span>'+esc(s.label)+'<span class="legend-val">'+fmt(s.value)+'</span></div>';}).join('');
+  var devColors={desktop:'#8ab4f8',mobile:'#81c995',tablet:'#fdd663',smart_tv:'#c58af9'};
+  var devSeg=(d.devices||[]).map(function(x){return {label:x.device,value:x.sessions,color:devColors[x.device]||'#9aa0a6'};});
+  var devLegend=devSeg.map(function(s){return '<div class="legend-row"><span class="legend-dot" style="background:'+s.color+'"></span>'+esc(s.label)+'<span class="legend-val">'+fmt(s.value)+'</span></div>';}).join('');
+  var recs=detailRecs(d);
+  var html=''+
+  '<div class="detail-head"><button class="back-btn" onclick="backFromDetail()"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>'+
+    '<div class="detail-title" style="flex:1"><h2>'+esc(d.name)+(d.isTest?' <span class="pill info" style="vertical-align:middle">looks like a test</span>':'')+'</h2><p>'+esc(d.account||'')+'</p></div>'+adsBtn(d.name)+'</div>'+
+  (recs?'<div class="card" style="margin-bottom:16px"><div class="card-head"><h3>What to do for '+esc(d.name)+'</h3></div>'+recs+'</div>':'')+
+  '<div class="grid kpis">'+kpis+'</div>'+
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><h3>Traffic trend</h3><div class="sub">Daily sessions</div></div>'+svgArea(d.series,'sessions','#8ab4f8',160)+ovAxis(d.series)+'</div>'+
+  '<div class="grid" style="grid-template-columns:1fr 1fr;align-items:stretch;margin-bottom:16px">'+
+    '<div class="card"><div class="card-head"><h3>Channels</h3><div class="sub">Sessions and conversions</div></div>'+
+      (d.channels&&d.channels.length?barsH(d.channels.slice(0,8),'sessions','channel',{extra:function(it){return it.sessions>0?pct(it.conv/it.sessions):'0%';}}):'<div class="empty">No channel data.</div>')+'</div>'+
+    '<div class="card"><div class="card-head"><h3>Devices</h3></div><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><div>'+donut(devSeg)+'</div><div class="legend" style="flex:1;min-width:130px">'+devLegend+'</div></div></div>'+
+  '</div>'+
+  '<div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start;margin-bottom:16px">'+
+    '<div class="card"><div class="card-head"><h3>Top pages</h3></div><table class="tbl"><thead><tr><th>Page</th><th class="r">Views</th><th class="r">Avg. engaged</th><th class="r">Key events</th></tr></thead><tbody>'+
+      ((d.pages||[]).length?d.pages.map(function(p){return '<tr><td class="path" title="'+esc(p.path)+'">'+esc(p.path.length>38?p.path.slice(0,38)+'…':p.path)+'</td><td class="r">'+fmt(p.views)+'</td><td class="r">'+dur(p.avgEng)+'</td><td class="r">'+fmt(p.conv)+'</td></tr>';}).join(''):'<tr><td colspan="4"><div class="empty">No page data.</div></td></tr>')+'</tbody></table></div>'+
+    '<div class="card"><div class="card-head"><h3>Key events</h3><div class="sub">Leads vs micro-events</div></div>'+
+      ((d.events||[]).length?d.events.map(function(e){return '<div class="barrow" style="grid-template-columns:1fr auto auto;gap:10px"><div class="barlab" style="white-space:normal">'+esc(e.name)+'</div><span class="pill '+(e.isLead?'lead':'micro')+'">'+(e.isLead?'lead':'micro')+'</span><div class="barval">'+fmt(e.count)+'</div></div>';}).join(''):'<div class="empty">No key events.</div>')+'</div>'+
+  '</div>';
+  html+='<div class="assist-host" id="assist-detail"></div>';
+  document.getElementById('detail-body').innerHTML=html;
+  lastDetail=d;
+  mountAssist('assist-detail','community:'+d.id,d.name,chipSet('detail'));
+}
+function detailRecs(d){
+  var out=[];var m=d.metrics||{};
+  if(m.sessions>=60&&m.conv===0)out.push(['bad','No conversion tracking','This site has '+fmt(m.sessions)+' sessions but zero key events. Set up key events (form submit, tour request, call) in GA4 so leads are measured.']);
+  else if(m.sessions>=60&&d.leads===0&&d.micro>0)out.push(['bad','Tracking clicks, not leads','All '+fmt(d.micro)+' key events here are micro-events. No form, tour or call events fire. Add real lead events.']);
+  else if(m.sessions>=80&&d.leadRate<0.005)out.push(['warn','Low real lead rate','Only '+pct2(d.leadRate)+' of sessions become real leads. Review the landing page and form placement.']);
+  if(d.micro>d.leads*4&&d.leads>0)out.push(['info','Inflated key-event count',fmt(m.conv)+' key events but only '+fmt(d.leads)+' true leads. When reporting to leadership, use the lead number.']);
+  if(m.sessions>=80&&m.engRate<0.4)out.push(['warn','Weak engagement',pct(m.engRate)+' engagement rate. Visitors leave quickly. Check page speed and above-the-fold content.']);
+  if(d.isTest)out.push(['info','Possible test property','The name suggests this is a test or duplicate GA4 property. Confirm before including it in leadership reports.']);
+  if(!out.length)return '';
+  return out.map(function(r){return '<div class="insight '+r[0]+'"><div class="insight-title"><span class="pill '+r[0]+'">'+r[0].toUpperCase()+'</span>'+esc(r[1])+'</div><div class="insight-body">'+esc(r[2])+'</div></div>';}).join('');
+}
+
+/* ============ ACTION CENTER ============ */
+function loadActions(){
+  var body=document.getElementById('act-body');
+  var jobs=[];
+  if(!ovData)jobs.push(loadOverview());
+  if(!convData)jobs.push(gcall('getConversions',range,customStart,customEnd,propFilter).then(function(r){convData=r;}));
+  if(actDone&&ovData&&convData){renderActions();return;}
+  body.innerHTML='<div class="loader"><div class="spin"></div><p>Analyzing the portfolio for actions…</p></div>';
+  Promise.all(jobs).then(function(){actDone=true;renderActions();}).catch(function(e){body.innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});
+}
+function renderActions(){
+  if(!ovData){return;}
+  var cm=convMap();var rows=ovData.properties;
+  var recs=[];
+  rows.forEach(function(r){
+    var c=cm[r.name];var leads=c?c.leads:0;var micro=c?c.micro:0;var total=c?c.total:r.conv;var lr=r.sessions>0?leads/r.sessions:0;
+    if(r.sessions>=80&&total===0){recs.push({sev:0,cls:'bad',id:r.id,name:r.name,t:'Set up conversion tracking on '+r.name,b:fmt(r.sessions)+' sessions in the last '+({7:'7',30:'30',90:'90'}[range])+' days but zero key events. GA4 is not recording any conversions for this site.',act:'Configure key events (form_submit, tour request, click-to-call) in GA4 Admin, then mark them as key events.'});return;}
+    if(r.sessions>=80&&leads===0&&total>0){recs.push({sev:0,cls:'bad',id:r.id,name:r.name,t:r.name+' tracks micro-events but no real leads',b:'All '+fmt(total)+' key events are clicks and views (e.g. ApplicantClick, Amenities). No form, tour or call event fires.',act:'Add true lead events so you can measure actual inquiries, not page interactions.'});return;}
+    if(r.sessions>=120&&lr<0.005){recs.push({sev:1,cls:'warn',id:r.id,name:r.name,t:r.name+' converts poorly',b:'Real lead rate is '+pct2(lr)+' on '+fmt(r.sessions)+' sessions ('+fmt(leads)+' leads).',act:'Review the landing page, form length and mobile layout. Compare against the top converter below.'});}
+    if(total>0&&micro>leads*4&&leads>0){recs.push({sev:2,cls:'info',id:r.id,name:r.name,t:r.name+"'s conversion number is inflated",b:fmt(total)+' key events but only '+fmt(leads)+' are real leads ('+pct2(r.sessions>0?leads/r.sessions:0)+' true lead rate vs the '+pct(r.sessions>0?total/r.sessions:0)+' the raw number implies).',act:'Report the lead number to leadership. Consider un-marking micro-events as key events in GA4.'});}
+  });
+  // test/duplicate properties
+  rows.forEach(function(r){var c=cm[r.name];if(/test|demo|ga4|copy|dup|backup|\(\d+\)/i.test(r.name)){recs.push({sev:3,cls:'info',id:r.id,name:r.name,t:r.name+' looks like a test property',b:'The name suggests a test or duplicate GA4 property. It is padding your portfolio totals.',act:'Confirm, then we can hide it from the dashboard so the portfolio matches your real 16 communities.'});}});
+  // top performer
+  var best=rows.map(function(r){var c=cm[r.name];return {name:r.name,id:r.id,sessions:r.sessions,leads:c?c.leads:0,lr:(c&&r.sessions>0)?c.leads/r.sessions:0};}).filter(function(x){return x.sessions>=80&&x.leads>0;}).sort(function(a,b){return b.lr-a.lr;})[0];
+  if(best)recs.push({sev:4,cls:'good',id:best.id,name:best.name,t:best.name+' is your model to copy',b:'Best real lead rate at '+pct2(best.lr)+' on '+fmt(best.sessions)+' sessions.',act:'Use its landing page, forms and channel mix as the template for the underperformers above.'});
+  recs.sort(function(a,b){return a.sev-b.sev;});
+  var totLeads=convData?convData.totalLeads:0,totMicro=convData?convData.totalMicro:0,totSess=ovData.totals.sessions;
+  var summary='<div class="split-summary">'+
+    '<div class="split-card"><div class="l">True leads</div><div class="v num" style="color:var(--green)">'+fmt(totLeads)+'</div></div>'+
+    '<div class="split-card"><div class="l">Micro-events</div><div class="v num" style="color:var(--muted2)">'+fmt(totMicro)+'</div></div>'+
+    '<div class="split-card"><div class="l">Real lead rate</div><div class="v num">'+(totSess>0?pct2(totLeads/totSess):'–')+'</div></div>'+
+    '<div class="split-card"><div class="l">Reported "conv." rate</div><div class="v num" style="color:var(--muted)">'+(totSess>0?pct2((totLeads+totMicro)/totSess):'–')+'</div></div>'+
+  '</div>';
+  var body='<div class="card" style="margin-bottom:16px"><div class="card-head"><h3>Portfolio reality check</h3><div class="sub">Leads vs micro-events, last '+({7:'7',30:'30',90:'90'}[range])+' days</div></div>'+summary+
+    '<div class="insight info"><div class="insight-body">Your headline conversion numbers count every marked key event. Only the <b style="color:var(--green)">true lead</b> figure reflects real inquiries (forms, tours, calls). The gap between the two rates above is why some communities appear to convert at 50%+.</div></div></div>';
+  body+='<div class="card"><div class="card-head"><h3>Recommended actions</h3><div class="sub">'+recs.length+' items, most urgent first</div></div>'+
+    (recs.length?recs.map(function(r){return '<div class="insight '+r.cls+'"><div class="insight-title"><span class="pill '+r.cls+'">'+({bad:'HIGH',warn:'MEDIUM',info:'REVIEW',good:'WIN'}[r.cls])+'</span>'+esc(r.t)+'</div><div class="insight-body">'+esc(r.b)+'<br><b style="color:var(--blue)">Do this:</b> '+esc(r.act)+'</div><div class="insight-actions"><button class="mini-btn" onclick="openDetail(\''+esc(r.id)+'\')"><svg viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M21 21l-4-4\"/></svg>View community</button>'+adsBtn(r.name)+'</div></div>';}).join(''):'<div class="empty">No issues found. The portfolio looks healthy.</div>')+'</div>';
+  document.getElementById('act-body').innerHTML=body;
+  mountAssist('assist-actions','actions','the Action Center',chipSet('actions'));
+}
+
+/* ============ ACQUISITION ============ */
+function loadAcquisition(){if(acqData){renderAcquisition();return;}document.getElementById('acq-body').innerHTML='<div class="loader"><div class="spin"></div><p>Loading acquisition…</p></div>';gcall('getAcquisition',range,customStart,customEnd,propFilter).then(function(res){acqData=res;renderAcquisition();}).catch(function(e){document.getElementById('acq-body').innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});}
+function renderAcquisition(){
+  var d=acqData;var ch=d.channels||[];var totalS=ch.reduce(function(a,c){return a+c.sessions;},0)||1;
+  var segs=ch.slice(0,7).map(function(c,i){return {label:c.channel,value:c.sessions,color:CHART_PALETTE[i%CHART_PALETTE.length]};});
+  var legend=segs.map(function(s){return '<div class="legend-row"><span class="legend-dot" style="background:'+s.color+'"></span>'+esc(s.label)+'<span class="legend-val">'+fmt(s.value)+'</span></div>';}).join('');
+  var chRows=ch.map(function(c){return {channel:c.channel,sessions:c.sessions,cr:c.sessions>0?c.conv/c.sessions:0,conv:c.conv};});
+  var html=''+
+  '<div class="grid" style="grid-template-columns:1fr 1.35fr;align-items:stretch;margin-bottom:16px">'+
+    '<div class="card" style="display:flex;flex-direction:column"><div class="card-head"><h3>Channel mix</h3><div class="sub">Sessions by channel</div></div>'+
+      '<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;flex:1;justify-content:center"><div style="position:relative">'+donut(segs)+'<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><b class="num" style="font-size:20px">'+fmt(totalS)+'</b><span style="font-size:10px;color:var(--muted)">SESSIONS</span></div></div><div class="legend" style="flex:1;min-width:150px">'+legend+'</div></div></div>'+
+    '<div class="card"><div class="card-head"><h3>Which channels convert</h3><div class="sub">Conversion rate by channel</div></div>'+
+      barsH(chRows.slice().sort(function(a,b){return b.cr-a.cr;}),'conv','channel',{extra:function(it){return pct(it.cr);}})+'</div>'+
+  '</div>'+
+  '<div class="card"><div class="card-head"><h3>Top sources</h3><div class="sub">Source / medium across the portfolio</div></div>'+
+    '<table class="tbl"><thead><tr><th>Source / medium</th><th class="r">Sessions</th><th class="r">Key events</th><th class="r">Conv. rate</th></tr></thead><tbody>'+
+    (d.sources||[]).map(function(s){var cr=s.sessions>0?s.conv/s.sessions:0;return '<tr><td class="name">'+esc(s.source)+'</td><td class="r">'+fmt(s.sessions)+'</td><td class="r">'+fmt(s.conv)+'</td><td class="r">'+pct(cr)+'</td></tr>';}).join('')+
+    '</tbody></table></div>';
+  document.getElementById('acq-body').innerHTML=html;
+  mountAssist('assist-acquisition','acquisition','the Acquisition report',chipSet('acquisition'));
+}
+
+/* ============ ENGAGEMENT ============ */
+function loadEngagement(){if(engData){renderEngagement();return;}document.getElementById('eng-body').innerHTML='<div class="loader"><div class="spin"></div><p>Finding your top pages…</p></div>';gcall('getEngagement',range,customStart,customEnd,propFilter).then(function(res){engData=res;renderEngagement();}).catch(function(e){document.getElementById('eng-body').innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});}
+function renderEngagement(){
+  var pages=engData.pages||[];
+  var html='<div class="card"><div class="card-head"><h3>Top pages</h3><div class="sub">Most viewed pages across all communities</div></div>'+
+    '<table class="tbl"><thead><tr><th>Page</th><th>Community</th><th class="r">Views</th><th class="r">Sessions</th><th class="r">Avg. engaged</th><th class="r">Key events</th></tr></thead><tbody>'+
+    (pages.length?pages.map(function(p){return '<tr><td class="path" title="'+esc(p.path)+'">'+esc(p.path.length>42?p.path.slice(0,42)+'…':p.path)+'</td><td>'+esc(p.property)+'</td><td class="r">'+fmt(p.views)+'</td><td class="r">'+fmt(p.sessions)+'</td><td class="r">'+dur(p.avgEng)+'</td><td class="r">'+fmt(p.conv)+'</td></tr>';}).join(''):'<tr><td colspan="6"><div class="empty">No page data.</div></td></tr>')+
+    '</tbody></table></div>';
+  document.getElementById('eng-body').innerHTML=html;
+  mountAssist('assist-engagement','engagement','the Engagement report',chipSet('engagement'));
+}
+
+/* ============ CONVERSIONS ============ */
+function loadConversions(){if(convData){renderConversions();return;}document.getElementById('conv-body').innerHTML='<div class="loader"><div class="spin"></div><p>Tallying key events…</p></div>';gcall('getConversions',range,customStart,customEnd,propFilter).then(function(res){convData=res;renderConversions();}).catch(function(e){document.getElementById('conv-body').innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});}
+function renderConversions(){
+  var d=convData;var ev=d.events||[];var pp=d.perProperty||[];var totalConv=ev.reduce(function(a,e){return a+e.count;},0);
+  var summary='<div class="split-summary">'+
+    '<div class="split-card"><div class="l">True leads</div><div class="v num" style="color:var(--green)">'+fmt(d.totalLeads)+'</div></div>'+
+    '<div class="split-card"><div class="l">Micro-events</div><div class="v num" style="color:var(--muted2)">'+fmt(d.totalMicro)+'</div></div>'+
+    '<div class="split-card"><div class="l">Total key events</div><div class="v num">'+fmt(totalConv)+'</div></div>'+
+  '</div>';
+  var html=''+
+  '<div class="card" style="margin-bottom:16px"><div class="card-head"><h3>Leads vs micro-events</h3><div class="sub">The number that matters is on the left</div></div>'+summary+
+    '<div class="insight info"><div class="insight-body">Events tagged <span class="pill lead">lead</span> are real inquiries (forms, tours, calls). Events tagged <span class="pill micro">micro</span> are clicks and page interactions marked as key events. Both count toward your GA4 "key events," which is why headline conversion rates look high.</div></div></div>'+
+  '<div class="grid" style="grid-template-columns:1fr 1.3fr;align-items:start">'+
+    '<div class="card"><div class="card-head"><h3>Key events</h3><div class="sub">'+fmt(totalConv)+' total</div></div>'+
+      (ev.length?ev.map(function(e){var max=ev[0].count||1;var w=(e.count/max)*100;return '<div class="barrow c4"><div class="barlab" title="'+esc(e.name)+'">'+esc(e.name)+'</div><div class="bartrack"><div class="barfill" style="width:'+w.toFixed(1)+'%;background:'+(e.isLead?'var(--green)':'var(--border2)')+'"></div></div><span class="pill '+(e.isLead?'lead':'micro')+'">'+(e.isLead?'lead':'micro')+'</span><div class="barval">'+fmt(e.count)+'</div></div>';}).join(''):'<div class="empty">No key events recorded.</div>')+'</div>'+
+    '<div class="card"><div class="card-head"><h3>By community</h3><div class="sub">Leads vs total key events</div></div>'+
+      '<table class="tbl"><thead><tr><th>Community</th><th class="r">Leads</th><th class="r">Key events</th><th>Top event</th></tr></thead><tbody>'+
+      pp.map(function(p){var top=p.events&&p.events[0]?p.events[0].name:'-';return '<tr class="clickable" onclick="openDetail(\''+esc(p.id)+'\')"><td class="name">'+esc(p.name)+'</td><td class="r" style="color:var(--green)">'+fmt(p.leads)+'</td><td class="r">'+fmt(p.total)+'</td><td><span class="path">'+esc(top)+'</span></td></tr>';}).join('')+
+      '</tbody></table></div>'+
+  '</div>';
+  document.getElementById('conv-body').innerHTML=html;
+  mountAssist('assist-conversions','conversions','the Conversions report',chipSet('conversions'));
+}
+
+/* ============ AUDIENCE ============ */
+function loadAudience(){if(audData){renderAudience();return;}document.getElementById('aud-body').innerHTML='<div class="loader"><div class="spin"></div><p>Loading audience…</p></div>';gcall('getAudience',range,customStart,customEnd,propFilter).then(function(res){audData=res;renderAudience();}).catch(function(e){document.getElementById('aud-body').innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});}
+function renderAudience(){
+  var d=audData;var dev=d.devices||[];var nvr=d.newVsReturning||{};var cities=d.cities||[];
+  var devColors={desktop:'#8ab4f8',mobile:'#81c995',tablet:'#fdd663',smart_tv:'#c58af9'};
+  var devSegs=dev.map(function(x){return {label:x.device,value:x.sessions,color:devColors[x.device]||'#9aa0a6'};});
+  var devLegend=devSegs.map(function(s){return '<div class="legend-row"><span class="legend-dot" style="background:'+s.color+'"></span>'+esc(s.label)+'<span class="legend-val">'+fmt(s.value)+'</span></div>';}).join('');
+  var nSeg=[{label:'New',value:nvr['new']||0,color:'#8ab4f8'},{label:'Returning',value:nvr['returning']||0,color:'#c58af9'}];
+  var nLegend=nSeg.map(function(s){return '<div class="legend-row"><span class="legend-dot" style="background:'+s.color+'"></span>'+esc(s.label)+'<span class="legend-val">'+fmt(s.value)+'</span></div>';}).join('');
+  var html=''+
+  '<div class="grid" style="grid-template-columns:1fr 1fr;align-items:stretch;margin-bottom:16px">'+
+    '<div class="card"><div class="card-head"><h3>Devices</h3><div class="sub">Sessions by device</div></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><div>'+donut(devSegs)+'</div><div class="legend" style="flex:1;min-width:140px">'+devLegend+'</div></div></div>'+
+    '<div class="card"><div class="card-head"><h3>New vs returning</h3></div><div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><div>'+donut(nSeg)+'</div><div class="legend" style="flex:1;min-width:140px">'+nLegend+'</div></div></div>'+
+  '</div>'+
+  '<div class="card"><div class="card-head"><h3>Top cities</h3><div class="sub">Where your visitors are</div></div>'+(cities.length?barsH(cities,'sessions','city',{}):'<div class="empty">No city data.</div>')+'</div>';
+  document.getElementById('aud-body').innerHTML=html;
+  mountAssist('assist-audience','audience','the Audience report',chipSet('audience'));
+}
+
+/* ============ AI ANALYSIS ============ */
+function aiTab(m,el){aiMode=m;document.querySelectorAll('#ai-tabs button').forEach(function(b){b.classList.remove('active');});el.classList.add('active');updateAiScope();}
+function updateAiScope(){var who=propFilter?(PROPS.filter(function(p){return String(p.id)===String(propFilter);})[0]||{}).name||'one community':'all communities';document.getElementById('ai-scope').textContent='Analyzing '+who+' · '+ovRangeLabel().toLowerCase();}
+function ensureData(mode){var jobs=[];if(!ovData)jobs.push(loadOverview());if(mode==='acquisition'&&!acqData)jobs.push(gcall('getAcquisition',range,customStart,customEnd,propFilter).then(function(r){acqData=r;}));if(mode==='engagement'&&!engData)jobs.push(gcall('getEngagement',range,customStart,customEnd,propFilter).then(function(r){engData=r;}));if((mode==='conversions'||mode==='overview')&&!convData)jobs.push(gcall('getConversions',range,customStart,customEnd,propFilter).then(function(r){convData=r;}));if(mode==='audience'&&!audData)jobs.push(gcall('getAudience',range,customStart,customEnd,propFilter).then(function(r){audData=r;}));return Promise.all(jobs);}
+function buildContext(mode){
+  var ctx={range:ovRangeLabel(),scope:propFilter?'single community':'all communities'};
+  if(ovData){ctx.portfolioTotals=ovData.totals;var cm=convMap();ctx.communities=ovData.properties.map(function(p){var c=cm[p.name];return {name:p.name,sessions:p.sessions,users:p.users,keyEvents:p.conv,trueLeads:c?c.leads:null,microEvents:c?c.micro:null,leadRate:c&&p.sessions>0?+((c.leads/p.sessions)*100).toFixed(2):null,engagementRate:+(p.engRate*100).toFixed(1),avgEngageSec:Math.round(p.avgEng)};});}
+  if(convData){ctx.portfolioLeads=convData.totalLeads;ctx.portfolioMicroEvents=convData.totalMicro;}
+  if(mode==='acquisition'&&acqData){ctx.channels=acqData.channels;ctx.topSources=acqData.sources;}
+  if(mode==='engagement'&&engData){ctx.topPages=engData.pages.slice(0,40);}
+  if(mode==='conversions'&&convData){ctx.keyEvents=convData.events;ctx.perCommunity=convData.perProperty;}
+  if(mode==='audience'&&audData){ctx.devices=audData.devices;ctx.newVsReturning=audData.newVsReturning;ctx.cities=audData.cities;}
+  return ctx;
+}
+function runAnalysis(){
+  var btn=document.getElementById('ai-run');btn.disabled=true;btn.textContent='Claude is reading your data…';
+  var out=document.getElementById('ai-out');out.innerHTML='<div class="loader"><div class="spin"></div><p>Claude is analyzing '+esc(aiMode)+' across your communities…</p></div>';
+  var focus=propFilter?((PROPS.filter(function(p){return String(p.id)===String(propFilter);})[0]||{}).name||''):'';
+  ensureData(aiMode).then(function(){return gcall('getAIAnalysis',aiMode,focus,JSON.stringify(buildContext(aiMode)));}).then(function(res){
+    btn.disabled=false;btn.textContent='Run AI analysis';
+    if(res.error){out.innerHTML='<div class="insight bad"><div class="insight-title">Analysis failed</div><div class="insight-body">'+esc(res.error)+'</div></div>';return;}
+    var data;try{data=JSON.parse(res.text.replace(/```json|```/g,'').trim());}catch(e){out.innerHTML='<div class="insight warn"><div class="insight-title">Could not read the response</div><div class="insight-body">'+esc(res.text.slice(0,400))+'</div></div>';return;}
+    renderAnalysis(data);
+  }).catch(function(e){btn.disabled=false;btn.textContent='Run AI analysis';out.innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});
+}
+function renderAnalysis(d){
+  function sev(s){return s==='high'?'bad':s==='medium'?'warn':'info';}
+  var m=(d.metrics||[]).map(function(x){var c=x.status==='good'?'good':x.status==='bad'?'bad':'warn';return '<div class="kpi"><div class="kpi-top"><span class="kpi-label">'+esc(x.label)+'</span><span class="pill '+c+'">'+(x.status||'').toUpperCase()+'</span></div><div class="kpi-val num" style="font-size:22px">'+esc(x.value)+'</div></div>';}).join('');
+  var pr=(d.priorities||[]).map(function(p){return '<div class="insight '+sev(p.severity)+'"><div class="insight-title"><span class="pill '+sev(p.severity)+'">'+(p.severity||'').toUpperCase()+'</span>'+esc(p.title)+'</div><div class="insight-body">'+esc(p.detail)+(p.impact?'<br><b style="color:var(--blue)">Impact:</b> '+esc(p.impact):'')+'</div></div>';}).join('');
+  var op=(d.opportunities||[]).map(function(o){return '<div class="insight info"><div class="insight-title">'+esc(o.title)+'</div><div class="insight-body">'+esc(o.detail)+'</div></div>';}).join('');
+  var wn=(d.wins||[]).map(function(w){return '<div class="insight good"><div class="insight-title">'+esc(w.title)+'</div><div class="insight-body">'+esc(w.detail)+'</div></div>';}).join('');
+  var html=''+
+  '<div class="card" style="margin-bottom:16px"><div class="ai-hero"><div class="score-ring">'+ringScore(d.healthScore||0)+'<div class="val"><b class="num">'+(d.healthScore||0)+'</b><span>Health</span></div></div>'+
+    '<div style="flex:1;min-width:200px"><div style="display:flex;align-items:center;gap:14px;margin-bottom:8px"><span class="grade">'+esc(d.grade||'–')+'</span><span style="font-size:16px;font-weight:500">'+esc(d.headline||'')+'</span></div><p style="color:var(--muted2);font-size:13.5px;line-height:1.6">'+esc(d.summary||'')+'</p></div></div>'+
+    (m?'<div class="grid kpis" style="margin-top:18px;margin-bottom:0">'+m+'</div>':'')+'</div>'+
+  (pr?'<div class="card" style="margin-bottom:16px"><div class="card-head"><h3>Priorities</h3><div class="sub">Most urgent first</div></div>'+pr+'</div>':'')+
+  '<div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">'+
+    (op?'<div class="card"><div class="card-head"><h3>Opportunities</h3></div>'+op+'</div>':'')+
+    (wn?'<div class="card"><div class="card-head"><h3>What is working</h3></div>'+wn+'</div>':'')+
+  '</div>';
+  document.getElementById('ai-out').innerHTML=html;
+}
+
+/* ============ CHAT ============ */
+var chatGreeted=false;
+function toggleChat(){var c=document.getElementById('chat');c.classList.toggle('open');if(c.classList.contains('open')&&!chatGreeted){chatGreeted=true;addMsg('a','Hey, I have your whole portfolio loaded. Ask me which community needs attention, where leads are leaking, anything. I will keep it straight.');}}
+function addMsg(role,text){var b=document.getElementById('chat-body');var d=document.createElement('div');d.className='msg '+role;d.innerHTML=mdLite(text);b.appendChild(d);b.scrollTop=b.scrollHeight;return d;}
+function mdLite(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^- (.+)$/gm,'• $1').replace(/\n/g,'<br>');}
+function sendChat(){
+  var inp=document.getElementById('chat-in');var q=inp.value.trim();if(!q)return;inp.value='';addMsg('u',q);chatHist.push({role:'user',content:q});
+  var loading=addMsg('a','…');
+  gcall('askAssist','the whole portfolio',JSON.stringify(ctxFor('overview')),JSON.stringify(chatHist)).then(function(res){
+    loading.remove();if(res.error){addMsg('a','⚠️ '+res.error);return;}
+    var parts=res.text.split('___FOLLOWUPS___');var ans=parts[0].trim();chatHist.push({role:'assistant',content:ans});var el=addMsg('a',ans);
+    if(parts[1]){var fs=parts[1].split('|').map(function(x){return x.trim();}).filter(Boolean).slice(0,3);if(fs.length){var wrap=document.createElement('div');wrap.className='followups';fs.forEach(function(f){var b=document.createElement('button');b.textContent=f;b.onclick=function(){document.getElementById('chat-in').value=f;sendChat();};wrap.appendChild(b);});el.appendChild(wrap);document.getElementById('chat-body').scrollTop=9e9;}}
+  }).catch(function(e){loading.remove();addMsg('a','⚠️ '+(e&&e.message||e));});
+}
+
+/* ============ SETTINGS ============ */
+function loadSettings(){gcall('getApiKeyStatus').then(function(s){document.getElementById('key-status').innerHTML=s.set?('<div class="insight good"><div class="insight-body">Key is set ('+esc(s.masked)+'). AI features are ready.</div></div>'):'<div class="insight warn"><div class="insight-body">No API key yet. Add one to enable AI Analysis and chat.</div></div>';});}
+function saveKey(){var k=document.getElementById('key-in').value;if(!k){toast('Paste your key first.');return;}gcall('saveApiKey',k).then(function(r){if(r.error){toast(r.error);}else{document.getElementById('key-in').value='';toast('API key saved.');loadSettings();}});}
+function clearKey(){gcall('clearApiKey').then(function(){toast('Key removed.');loadSettings();});}
+
+/* ============ DEEP LINK ============ */
+function applyDeep(){
+  var D=window.__DEEP__;if(!D)return;
+  if(D.p){var found=PROPS.filter(function(p){return String(p.id)===String(D.p)||adsSlug(p.name)===adsSlug(D.p);})[0];if(found){propFilter=found.id;document.getElementById('propSel').value=found.id;clearCaches();loadOverview();}}
+  if(D.only){document.querySelectorAll('.nav-item[data-page="settings"]').forEach(function(n){n.style.display='none';});}
+  if(D.view&&PAGE_META[D.view])go(D.view);
+}
+
+/* ============ PAGE ASSISTANT (expert on every page) ============ */
+var assistThreads={}, lastDetail=null, alertData=null, xchanData=null;
+var ASSIST_ICON='<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1 1 2V17h6v-1.5c0-1 .3-1.4 1-2A6 6 0 0 0 12 3z"/><path d="M9.5 21h5"/></svg>';
+function chipSet(scope){
+  var cm=convMap();
+  function weakest(){var rows=(ovData&&ovData.properties)||[],best=null;rows.forEach(function(r){var c=cm[r.name];if(c&&r.sessions>=120&&c.leads>=0){var lr=c.leads/r.sessions;if(best===null||lr<best.lr)best={name:r.name,lr:lr};}});return best;}
+  if(scope==='overview'){var w=weakest();var a=["What's the single biggest problem right now?","Which community should I worry about most?","Where are we wasting the most traffic?"];if(w)a.push('Why is '+w.name+' converting so poorly?');return a;}
+  if(scope==='acquisition')return ["Which channel gives me the best real leads?","Am I too reliant on one channel?","Where is traffic coming in but not converting?","What should I change?"];
+  if(scope==='engagement')return ["Which pages are losing people?","What should I fix on-site first?","Which community has the weakest engagement?"];
+  if(scope==='conversions')return ["Which conversion numbers look inflated?","Where are real leads lowest?","What events should I actually be tracking?"];
+  if(scope==='audience')return ["Is mobile converting worse than desktop?","Which city should we target harder?","What does new vs returning tell me?"];
+  if(scope==='actions')return ["What should I do first?","Which fix has the biggest payoff?","Summarize everything that's wrong."];
+  if(scope==='crosschannel')return ["Where am I spending but not getting leads?","What's my worst cost per lead?","Which community deserves more ad budget?","Where is the site, not the ads, the problem?"];
+  if(scope==='alerts')return ["Which alert is most urgent?","What could cause several of these at once?","Give me a plan to clear these."];
+  if(scope.indexOf('community:')===0)return ["What's wrong with this community?","How do I get more leads here?","Is the traffic quality good?","What's the one thing to change?"];
+  return ["What's the biggest problem right now?","What should I change?"];
+}
+function ctxFor(scope){
+  var cm=convMap();
+  function comms(){return (ovData?ovData.properties:[]).map(function(p){var c=cm[p.name];return {name:p.name,sessions:p.sessions,users:p.users,keyEvents:p.conv,trueLeads:c?c.leads:null,microEvents:c?c.micro:null,leadRate:c&&p.sessions>0?+((c.leads/p.sessions)*100).toFixed(2):null,engagementRate:+(p.engRate*100).toFixed(1),avgEngageSec:Math.round(p.avgEng)};});}
+  var base={range:ovRangeLabel(),portfolioTotals:ovData?ovData.totals:null,portfolioTrueLeads:convData?convData.totalLeads:null,portfolioMicroEvents:convData?convData.totalMicro:null,communities:comms()};
+  if(scope==='acquisition'&&acqData){base.channels=acqData.channels;base.topSources=acqData.sources;}
+  if(scope==='engagement'&&engData){base.topPages=engData.pages.slice(0,40);}
+  if(scope==='conversions'&&convData){base.keyEvents=convData.events;base.perCommunity=convData.perProperty;}
+  if(scope==='audience'&&audData){base.devices=audData.devices;base.newVsReturning=audData.newVsReturning;base.cities=audData.cities;}
+  if(scope==='alerts'&&alertData){base.alerts=(alertData.alerts||[]).map(function(a){return {property:a.property,severity:a.severity,title:a.title,symptom:a.symptom,started:a.onsetText};});}
+  if(scope==='crosschannel'&&xchanData){base.crossChannel={totals:xchanData.totals,communities:xchanData.communities,unmatchedAds:xchanData.unmatchedAds};}
+  if(scope.indexOf('community:')===0&&lastDetail){base.community=lastDetail;}
+  return base;
+}
+function mountAssist(hostId,scope,label,chips){
+  var host=document.getElementById(hostId);if(!host)return;
+  if(host.dataset.built===scope)return;
+  host.dataset.built=scope;host.dataset.label=label;
+  var chipHtml=(chips||[]).map(function(c){return '<button class="assist-chip" onclick="assistChip(\''+hostId+'\',\''+scope+'\',this)">'+esc(c)+'</button>';}).join('');
+  host.innerHTML='<div class="assist"><div class="assist-h"><span class="ai">'+ASSIST_ICON+'</span><div><h4>Ask about '+esc(label)+'</h4><p>Your analyst, looking at this screen with you</p></div></div><div class="assist-chips">'+chipHtml+'</div><div class="assist-thread" id="'+hostId+'-thread"></div><div class="assist-input"><input id="'+hostId+'-in" placeholder="Ask anything about this…" onkeydown="if(event.key===\'Enter\')assistSend(\''+hostId+'\',\''+scope+'\')"><button onclick="assistSend(\''+hostId+'\',\''+scope+'\')"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></div></div>';
+  renderAssistThread(hostId,scope);
+}
+function assistChip(hostId,scope,el){document.getElementById(hostId+'-in').value=el.textContent;assistSend(hostId,scope);}
+function assistSend(hostId,scope){
+  var inp=document.getElementById(hostId+'-in');var q=(inp.value||'').trim();if(!q)return;inp.value='';
+  var thread=assistThreads[scope]||(assistThreads[scope]=[]);
+  thread.push({role:'user',text:q});
+  var li=thread.push({role:'assistant',text:'…',loading:true})-1;renderAssistThread(hostId,scope);
+  var history=thread.filter(function(m){return !m.loading;}).map(function(m){return {role:m.role,content:m.text};});
+  var host=document.getElementById(hostId);var label=host?host.dataset.label:scope;
+  gcall('askAssist',label,JSON.stringify(ctxFor(scope)),JSON.stringify(history)).then(function(res){
+    thread.splice(li,1);
+    if(res.error){thread.push({role:'assistant',text:'⚠️ '+res.error});renderAssistThread(hostId,scope);return;}
+    var parts=res.text.split('___FOLLOWUPS___');var ans=parts[0].trim();
+    var fs=parts[1]?parts[1].split('|').map(function(x){return x.trim();}).filter(Boolean).slice(0,3):[];
+    thread.push({role:'assistant',text:ans,followups:fs});renderAssistThread(hostId,scope);
+  }).catch(function(e){thread.splice(li,1);thread.push({role:'assistant',text:'⚠️ '+(e&&e.message||e)});renderAssistThread(hostId,scope);});
+}
+function renderAssistThread(hostId,scope){
+  var wrap=document.getElementById(hostId+'-thread');if(!wrap)return;var thread=assistThreads[scope]||[];
+  if(!thread.length){wrap.innerHTML='<div class="assist-empty">Tap a question above or type your own. I already have this screen\'s numbers loaded.</div>';return;}
+  var html=thread.map(function(m){return '<div class="assist-msg '+(m.role==='user'?'u':'a')+'">'+(m.loading?'…':mdLite(m.text))+'</div>';}).join('');
+  var last=thread[thread.length-1];
+  if(last&&last.role==='assistant'&&last.followups&&last.followups.length){html+='<div class="assist-chips">'+last.followups.map(function(f){return '<button class="assist-chip" onclick="assistChip(\''+hostId+'\',\''+scope+'\',this)">'+esc(f)+'</button>';}).join('')+'</div>';}
+  wrap.innerHTML=html;
+}
+
+/* ============ CROSS-CHANNEL (Ads spend + GA4 leads) ============ */
+function loadCrossChannel(){
+  if(xchanData){renderCrossChannel();return;}
+  document.getElementById('xchan-body').innerHTML='<div class="loader"><div class="spin"></div><p>Pulling live Google Ads spend and joining it to your GA4 leads…</p></div>';
+  gcall('getCrossChannel',range,customStart,customEnd).then(function(res){xchanData=res;renderCrossChannel();mountAssist('assist-crosschannel','crosschannel','Cross-Channel',chipSet('crosschannel'));}).catch(function(e){document.getElementById('xchan-body').innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});
+}
+function renderCrossChannel(){
+  var X=xchanData, C=X.communities||[], t=X.totals||{};
+  var err=X.adsError?'<div class="insight warn"><div class="insight-title">Google Ads data unavailable</div><div class="insight-body">'+esc(X.adsError)+' Your GA4 numbers below are still live.</div></div>':'';
+  var summary='<div class="split-summary">'+
+    '<div class="split-card"><div class="l">Ad spend ('+ovRangeLabel()+')</div><div class="v">$'+fmt(t.spend||0)+'</div></div>'+
+    '<div class="split-card"><div class="l">True leads</div><div class="v" style="color:var(--green)">'+fmt(t.trueLeads||0)+'</div></div>'+
+    '<div class="split-card"><div class="l">Ad clicks</div><div class="v">'+fmt(t.clicks||0)+'</div></div>'+
+    '<div class="split-card"><div class="l">Blended cost / real lead</div><div class="v" style="color:var(--blue)">'+(t.costPerLead!=null?'$'+fmt(t.costPerLead):'-')+'</div></div></div>';
+  var rows=C.map(function(c){
+    var flag=c.weakOnSite?'<span class="pill bad">SPENDING, WEAK ON-SITE</span>':(c.matched?'':'<span class="pill" style="background:var(--panel2);color:var(--muted);border:1px solid var(--border2)">no ad account</span>');
+    var cpl=c.costPerLead!=null?'$'+fmt(c.costPerLead):(c.spend!=null&&c.trueLeads===0?'<span style="color:var(--red)">$'+fmt(c.spend)+' / 0</span>':'-');
+    return '<tr onclick="openDetail(\''+esc(pidByName(c.name))+'\')" style="cursor:pointer">'+
+      '<td><b>'+esc(c.name)+'</b> '+flag+'</td>'+
+      '<td class="r">'+fmt(c.sessions)+'</td>'+
+      '<td class="r" style="color:var(--green)">'+fmt(c.trueLeads)+'</td>'+
+      '<td class="r">'+c.leadRatePct.toFixed(2)+'%</td>'+
+      '<td class="r">'+(c.spend!=null?'$'+fmt(c.spend):'-')+'</td>'+
+      '<td class="r">'+(c.clicks!=null?fmt(c.clicks):'-')+'</td>'+
+      '<td class="r">'+cpl+'</td></tr>';
+  }).join('');
+  var table='<div class="card"><div class="card-head"><h3>Community by community</h3><div class="sub">Live Google Ads spend joined to live GA4 leads. Click a row to open the community.</div></div>'+
+    '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Community</th><th class="r">Sessions</th><th class="r">True leads</th><th class="r">Lead rate</th><th class="r">Ad spend</th><th class="r">Clicks</th><th class="r">Cost / lead</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  var extra='';
+  if((X.unmatchedAds||[]).length){
+    extra='<div class="card" style="margin-top:16px"><div class="card-head"><h3>Ad accounts with no matched community</h3><div class="sub">These are spending in Google Ads but did not auto-map to a GA4 property. Usually a name mismatch or a property that is not in GA4.</div></div>'+
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Ad account</th><th class="r">Spend</th><th class="r">Clicks</th><th class="r">Ads conv.</th></tr></thead><tbody>'+
+      X.unmatchedAds.map(function(a){return '<tr><td>'+esc(a.name)+'</td><td class="r">$'+fmt(a.spend)+'</td><td class="r">'+fmt(a.clicks)+'</td><td class="r">'+fmt(a.conversions)+'</td></tr>';}).join('')+
+      '</tbody></table></div></div>';
+  }
+  document.getElementById('xchan-body').innerHTML=err+summary+table+extra;
+}
+function pidByName(name){var p=(ovData?ovData.properties:[]).filter(function(x){return x.name===name;})[0];return p?p.id:'';}
+
+/* ============ ALERT CENTER ============ */
+function loadAlerts(){
+  if(alertData){renderAlerts();return;}
+  document.getElementById('alert-body').innerHTML='<div class="loader"><div class="spin"></div><p>Scanning every community for problems (last 120 days)…</p></div>';
+  gcall('getAlerts',120).then(function(res){alertData=res;renderAlerts();mountAssist('assist-alerts','alerts','these alerts',chipSet('alerts'));}).catch(function(e){document.getElementById('alert-body').innerHTML='<div class="insight bad"><div class="insight-body">'+esc(e&&e.message||e)+'</div></div>';});
+}
+function sevClass(s){return s==='critical'?'crit':s==='high'?'high':s==='medium'?'med':'info';}
+function sevPill(s){return '<span class="pill '+(s==='critical'?'crit':s==='high'?'bad':s==='medium'?'warn':'info')+'">'+s.toUpperCase()+'</span>';}
+function alertField(label,icon,val){return '<div class="alert-field"><div class="l"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2">'+icon+'</svg>'+label+'</div><div class="v">'+esc(val)+'</div></div>';}
+function renderAlerts(){
+  var A=alertData.alerts||[];
+  var counts={critical:0,high:0,medium:0,info:0};A.forEach(function(a){counts[a.severity]=(counts[a.severity]||0)+1;});
+  var summary='<div class="split-summary">'+
+    '<div class="split-card"><div class="l">Critical</div><div class="v num" style="color:var(--red)">'+counts.critical+'</div></div>'+
+    '<div class="split-card"><div class="l">High</div><div class="v num" style="color:var(--orange)">'+counts.high+'</div></div>'+
+    '<div class="split-card"><div class="l">Medium</div><div class="v num" style="color:var(--yellow)">'+counts.medium+'</div></div>'+
+    '<div class="split-card"><div class="l">Info</div><div class="v num" style="color:var(--blue)">'+counts.info+'</div></div></div>';
+  var head='<div class="card" style="margin-bottom:16px"><div class="card-head"><h3>Alert Center</h3><div class="sub">Scanned '+alertData.scanned+' properties over the last '+alertData.lookbackDays+' days</div></div>'+summary+(A.length?'<div class="insight info"><div class="insight-body">Each alert shows what is wrong, the likely cause, when it started, what it costs you, and how to fix it. Hit <b>Go deeper with Claude</b> on any alert for a full root-cause diagnosis.</div></div>':'<div class="insight good"><div class="insight-body">No problems detected. Every community is tracking and trending normally.</div></div>')+'</div>';
+  var icS='<circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/>';
+  var icC='<path d="M9.5 2h5l-1 7h3l-8 13 2-9H5z"/>';
+  var icT='<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
+  var icX='<path d="M12 2L2 22h20z"/><path d="M12 9v5"/><path d="M12 17h.01"/>';
+  var cards=A.map(function(a,i){
+    return '<div class="alert-card '+sevClass(a.severity)+'" id="alert-'+i+'">'+
+      '<div class="alert-top"><div class="alert-title">'+esc(a.title)+'</div>'+sevPill(a.severity)+'</div>'+
+      '<div class="alert-meta">'+esc(a.property)+' · '+esc(a.category)+'</div>'+
+      '<div class="alert-grid">'+
+        alertField('Symptom',icS,a.symptom)+
+        alertField('Likely cause',icC,a.cause)+
+        alertField('Started',icT,a.onsetText||'No clear start date; this looks ongoing or chronic.')+
+        alertField('If ignored',icX,a.consequence)+
+        '<div class="alert-field alert-fix"><div class="l"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2"><path d="M20 6L9 17l-5-5"/></svg>How to fix</div><ol>'+[].concat(a.fix||[]).map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ol></div>'+
+      '</div>'+
+      '<div class="insight-actions"><button class="mini-btn blue" onclick="alertDeep('+i+')"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-4 10.5c.7.6 1 1 1 2V17h6v-1.5c0-1 .3-1.4 1-2A6 6 0 0 0 12 3z"/></svg>Go deeper with Claude</button>'+
+        '<button class="mini-btn" onclick="openDetail(\''+esc(a.propertyId)+'\')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>View community</button>'+adsBtn(a.property)+'</div>'+
+      '<div class="alert-deep" id="alert-deep-'+i+'" style="display:none"></div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('alert-body').innerHTML=head+cards;
+}
+function alertDeep(i){
+  var box=document.getElementById('alert-deep-'+i);var a=alertData.alerts[i];
+  box.style.display='block';box.innerHTML='<div style="display:flex;align-items:center;gap:10px;color:var(--muted)"><div class="spin" style="width:20px;height:20px;border-width:2px"></div>Claude is digging into '+esc(a.property)+'…</div>';
+  gcall('explainAlert',JSON.stringify(a)).then(function(res){if(res.error){box.innerHTML='⚠️ '+esc(res.error);return;}box.innerHTML=mdLite(res.text);}).catch(function(e){box.innerHTML='⚠️ '+esc(e&&e.message||e);});
+}
+
+/* ============ INIT ============ */
+(function(){try{if(localStorage.getItem('sa_theme')!=='dark')document.body.classList.add('light');}catch(e){document.body.classList.add('light');}window.addEventListener('load',function(){boot(false);});})();
+</script>
+
+<style>
+.vpg-demo-badge{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(34,211,154,.14);color:#22d39a;border:1px solid rgba(34,211,154,.3);vertical-align:middle;}
+.vpg-portfolio{position:fixed;left:16px;bottom:16px;z-index:99999;display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:12px;background:rgba(19,23,31,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 30px rgba(0,0,0,.4);text-decoration:none;font-family:-apple-system,Segoe UI,Roboto,sans-serif;transition:transform .15s,border-color .15s;}
+.vpg-portfolio:hover{transform:translateY(-2px);border-color:rgba(77,141,255,.5);}
+.vpg-portfolio .dot2{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#4d8dff,#6c5cff);box-shadow:0 0 10px rgba(77,141,255,.7);}
+.vpg-portfolio .txt{line-height:1.25;}
+.vpg-portfolio .txt b{display:block;color:#fff;font-size:11.5px;font-weight:700;}
+.vpg-portfolio .txt span{display:block;color:#8a93a6;font-size:9.5px;letter-spacing:.3px;}
+.vpg-credit{position:fixed;right:14px;bottom:12px;z-index:99998;font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:10.5px;color:rgba(255,255,255,.34);letter-spacing:.3px;pointer-events:none;}
+@media(max-width:640px){.vpg-credit{display:none;}}
+</style>
+<a class="vpg-portfolio" href="https://debashishkumarbora.github.io" target="_blank" rel="noopener">
+  <span class="dot2"></span>
+  <span class="txt"><b>Debashish Kumar Bora</b><span>View portfolio</span></span>
+</a>
+<div class="vpg-credit">Concept and design by Debashish Kumar Bora</div>
+<script>
+(function(){try{
+  var el=document.querySelector('.sb-brand-txt span, .brand-sub, header h1, .topbar h1, .logo-sub');
+  if(el && !document.querySelector('.vpg-demo-badge')){
+    var b=document.createElement('span'); b.className='vpg-demo-badge'; b.textContent='Live Demo';
+    el.parentNode.appendChild(b);
+  }
+}catch(e){}})();
+</script>
+<script>
+/* phone layer: section bar, back button, wide tables */
+DKB_MOBILE({
+  nav: { items: '.sidebar .nav-item[data-page]', label: '.nav-label', after: '.topbar',
+         skip: function (el) { return el.getAttribute('data-page') === 'settings'; } },
+  tables: '.tbl',
+  closers: [{ into: '#chat .chat-head', close: function () { toggleChat(); } }],
+  layers: [
+    { open: '#chat.open', close: function () { toggleChat(); } },
+    { open: function () { return curPage === 'detail'; }, close: function () { backFromDetail(); } }
+  ],
+  home: { is: function () { return curPage === 'overview'; }, go: function () { go('overview'); } },
+  wrap: ['go', 'openDetail']
+});
+</script>
+</body>
+</html>

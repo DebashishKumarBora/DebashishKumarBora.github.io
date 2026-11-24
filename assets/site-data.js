@@ -49,7 +49,13 @@ window.SITE={
    "repo": null,
    "p": "A team running 16 Google Ads accounts paid for reporting tools and still worked out what to fix by hand.",
    "b": "A Claude-style chat over every account, plus nine tools (ad copy, sitelinks, recaps, why did it change, search term themes, a heatmap, negatives, budget pacing, landing page checks), daily alerts and a 24 check audit. Read only, with Fair Housing guardrails.",
-   "r": "Plain English questions answered with tables, charts and a fix list, with every number traced to the query behind it."
+   "r": "Plain English questions answered with tables, charts and a fix list, with every number traced to the query behind it.",
+   "mshots": [
+    "mshots/adsintel-1.webp",
+    "mshots/adsintel-2.webp",
+    "mshots/adsintel-3.webp",
+    "mshots/adsintel-4.webp"
+   ]
   },
   {
    "k": "perf",
@@ -72,7 +78,13 @@ window.SITE={
    "repo": null,
    "p": "A year over year Google Ads review across 16 communities meant days of exports, pivots and slides.",
    "b": "A review that builds itself for any period and comparison: at a glance, spend, results, what went well, limited results, recommendations, every community side by side, a context log and a next year ideas board.",
-   "r": "One click Present mode turns it into slides, exportable as PDF, with written findings that never point blame at a person."
+   "r": "One click Present mode turns it into slides, exportable as PDF, with written findings that never point blame at a person.",
+   "mshots": [
+    "mshots/perf-1.webp",
+    "mshots/perf-2.webp",
+    "mshots/perf-3.webp",
+    "mshots/perf-4.webp"
+   ]
   },
   {
    "k": "clients",
@@ -95,7 +107,42 @@ window.SITE={
    "repo": null,
    "p": "Property clients wanted their own Google Ads results without seeing other clients or internal notes.",
    "b": "One link with a different password per client, showing only that client: highlights, a swipeable recap, top campaign, best day, devices, live ads and top searches, with a PDF cover page.",
-   "r": "Client ready reports with no manual prep, where every comparison reads as true good news and dips are flagged to the team privately."
+   "r": "Client ready reports with no manual prep, where every comparison reads as true good news and dips are flagged to the team privately.",
+   "mshots": [
+    "mshots/clients-1.webp",
+    "mshots/clients-2.webp",
+    "mshots/clients-3.webp",
+    "mshots/clients-4.webp"
+   ]
+  },
+  {
+   "k": "campaignops",
+   "s": "An AI agent that fixes Google Ads, but only after a person approves each change.",
+   "t": "Campaign Ops",
+   "shots": [
+    "shots/cops-1.webp",
+    "shots/cops-2.webp",
+    "shots/cops-3.webp",
+    "shots/cops-4.webp",
+    "shots/cops-5.webp",
+    "shots/cops-6.webp"
+   ],
+   "tool": "MCP + Claude",
+   "tag": [
+    "agent"
+   ],
+   "file": "shots/cops-1.webp",
+   "live": "https://debashishkumarbora.github.io/campaign-ops/",
+   "repo": "https://github.com/DebashishKumarBora/campaign-ops-mcp",
+   "p": "AI agents can read a Google Ads account, but no team would let one change budgets or ad copy without limits, a person approving it, and an undo.",
+   "b": "A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo.",
+   "r": "Tested in a real Claude session on a sandbox account: it found wasted spend and an ad that broke Fair Housing rules, waited for approval, then applied and verified three fixes.",
+   "mshots": [
+    "mshots/campaignops-1.webp",
+    "mshots/campaignops-2.webp",
+    "mshots/campaignops-3.webp",
+    "mshots/campaignops-4.webp"
+   ]
   },
   {
    "k": "ads",
@@ -114,7 +161,7 @@ window.SITE={
     "app"
    ],
    "file": "shots/ads-1.webp",
-   "live": "https://debashishkumarbora.github.io/ads-command-center",
+   "live": "https://script.google.com/macros/s/AKfycbxLdJehYqxPBmTLfTtMUhkcnE7OGgTpFx1iCNVaQD4TBOuvsmEN_n9KvrywxJ1Aq4dW/exec",
    "repo": "https://github.com/DebashishKumarBora/ads-command-center",
    "p": "Sixteen Google Ads accounts lived in sixteen browser tabs, with no single place to see what was working.",
    "b": "A Google Ads command center on the live API: accounts, analytics, a geo view, search terms, keywords, ads, budget pacing and a Claude analyst with chat and voice.",
@@ -137,11 +184,17 @@ window.SITE={
     "app"
    ],
    "file": "shots/hub-1.webp",
-   "live": "https://debashishkumarbora.github.io/property-marketing-intelligence-hub",
+   "live": "https://debashishkumarbora.github.io/demos/property-marketing-intelligence-hub/",
    "repo": "https://github.com/DebashishKumarBora/property-marketing-intelligence-hub",
    "p": "A marketing lead had spend, leads, occupancy and reviews scattered across six different tools.",
    "b": "One control room unifying Google Ads, GA4, Business Profile, Search Console and leasing data, with an AI operator that answers questions in plain English.",
-   "r": "Every channel, community and alert in a single portfolio view, with wasted spend and occupancy strategy surfaced automatically."
+   "r": "Every channel, community and alert in a single portfolio view, with wasted spend and occupancy strategy surfaced automatically.",
+   "mshots": [
+    "mshots/hub-1.webp",
+    "mshots/hub-2.webp",
+    "mshots/hub-3.webp",
+    "mshots/hub-4.webp"
+   ]
   },
   {
    "k": "lease",
@@ -160,11 +213,17 @@ window.SITE={
     "app"
    ],
    "file": "shots/lease-1.webp",
-   "live": "https://debashishkumarbora.github.io/snowflake-leasing-dashboard",
+   "live": "https://debashishkumarbora.github.io/demos/snowflake-leasing-dashboard/",
    "repo": "https://github.com/DebashishKumarBora/snowflake-leasing-dashboard",
    "p": "Leasing performance lived in raw Snowflake tables that no one on the team could read.",
    "b": "A live funnel from prospect to signed lease, plus occupancy, renewals, speed to lead and an availability board matched against demand.",
-   "r": "The whole leasing operation in one view, with an AI analyst grading health and returning a prioritized plan."
+   "r": "The whole leasing operation in one view, with an AI analyst grading health and returning a prioritized plan.",
+   "mshots": [
+    "mshots/lease-1.webp",
+    "mshots/lease-2.webp",
+    "mshots/lease-3.webp",
+    "mshots/lease-4.webp"
+   ]
   },
   {
    "k": "ga4",
@@ -183,11 +242,17 @@ window.SITE={
     "app"
    ],
    "file": "shots/ga4-1.webp",
-   "live": "https://debashishkumarbora.github.io/ga4-analytics-dashboard",
+   "live": "https://debashishkumarbora.github.io/demos/ga4-analytics-dashboard/",
    "repo": "https://github.com/DebashishKumarBora/ga4-analytics-dashboard",
    "p": "The team could not tell which channels and which communities actually drove leads.",
    "b": "A GA4-powered dashboard covering sessions, acquisition, engagement, conversions and audience across 16 communities.",
-   "r": "Cross-channel performance at a glance, with a conversion tracking break at one community caught by the AI analyst."
+   "r": "Cross-channel performance at a glance, with a conversion tracking break at one community caught by the AI analyst.",
+   "mshots": [
+    "mshots/ga4-1.webp",
+    "mshots/ga4-2.webp",
+    "mshots/ga4-3.webp",
+    "mshots/ga4-4.webp"
+   ]
   },
   {
    "k": "gbp",
@@ -206,11 +271,17 @@ window.SITE={
     "app"
    ],
    "file": "shots/gbp-1.webp",
-   "live": "https://debashishkumarbora.github.io/gbp-reviews-dashboard",
+   "live": "https://debashishkumarbora.github.io/demos/gbp-reviews-dashboard/",
    "repo": "https://github.com/DebashishKumarBora/gbp-reviews-dashboard",
    "p": "Dozens of Google Business Profiles with no single view of rating, reviews or profile health.",
    "b": "A command center for listings audit, review management and performance, with an AI analyst that drafts replies and surfaces recurring themes.",
-   "r": "Rating, review velocity and health across every listing, with unanswered negatives caught fast."
+   "r": "Rating, review velocity and health across every listing, with unanswered negatives caught fast.",
+   "mshots": [
+    "mshots/gbp-1.webp",
+    "mshots/gbp-2.webp",
+    "mshots/gbp-3.webp",
+    "mshots/gbp-4.webp"
+   ]
   },
   {
    "k": "gsc",
@@ -228,11 +299,17 @@ window.SITE={
     "app"
    ],
    "file": "shots/gsc-1.webp",
-   "live": "https://debashishkumarbora.github.io/search-console-dashboard",
+   "live": "https://debashishkumarbora.github.io/demos/search-console-dashboard/",
    "repo": "https://github.com/DebashishKumarBora/search-console-dashboard",
    "p": "Organic search data sat inside Search Console, unread and unactioned.",
    "b": "A clean dashboard for clicks, impressions, CTR and average position, with top queries, top pages and a device split.",
-   "r": "Organic performance and the exact queries and pages driving it, in one trend-led view."
+   "r": "Organic performance and the exact queries and pages driving it, in one trend-led view.",
+   "mshots": [
+    "mshots/gsc-1.webp",
+    "mshots/gsc-2.webp",
+    "mshots/gsc-3.webp",
+    "mshots/gsc-4.webp"
+   ]
   },
   {
    "t": "Client Campaign Performance",

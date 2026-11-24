@@ -1,0 +1,1053 @@
+<!DOCTYPE html><html lang="en"><head>
+<script src="../kit/mobile.js"></script>
+
+<script>
+/* Vertex Reviews Dashboard - demo data layer.
+   Google Business Profile listings, reviews, and profile health for 16
+   communities. Fictional sample data. No backend, no credentials.
+   Concept and design by Debashish Kumar Bora. */
+var GBPMOCK = (function(){
+  var _s=56415; function rnd(){_s=(_s*1103515245+12345)&0x7fffffff;return _s/0x7fffffff;}
+  function ri(a,b){return Math.floor(a+rnd()*(b-a+1));}
+  function rf(a,b){return a+rnd()*(b-a);}
+  var COMM=[
+    {name:'Maple Ridge',city:'Minneapolis'},{name:'S\u014dl Lofts',city:'St. Paul'},{name:'Elmwood Lakes',city:'Bloomington'},
+    {name:'MetroLine',city:'Minneapolis'},{name:'Cedar Meadows',city:'Edina'},{name:'Alto',city:'Richfield'},
+    {name:'Lumi',city:'Minneapolis'},{name:'Kova',city:'Plymouth'},{name:'Forma',city:'St. Paul'},
+    {name:'Quinn',city:'Maple Grove'},{name:'Harbor Cove',city:'Woodbury'},{name:'Clearwater Pointe',city:'Eagan'},
+    {name:'The Mercer',city:'Minneapolis'},{name:'The Whitmore',city:'Roseville'},{name:'The Carver',city:'Shakopee'},{name:'The Seven',city:'Burnsville'}
+  ];
+  function slug(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'');}
+  var POS=['Great location and the staff were super responsive.','Maintenance fixed my request same day. Love it here.','Quiet building, clean common areas, friendly neighbors.','Leasing team made move-in easy. Highly recommend.','Amenities are well kept and the gym is great.'];
+  var NEG=['Parking has been a headache lately.','Took a while to get a callback about my application.','Hallway lighting could be better at night.','Rent went up more than I expected at renewal.'];
+  function reviews(n, avg, answeredRate){
+    var out=[];
+    for(var i=0;i<n;i++){ var neg=rnd()>(avg-2.6); var stars=neg?ri(1,3):ri(4,5); var pool=stars>=4?POS:NEG;
+      var replied=rnd()<answeredRate; out.push({ reviewer:['Jordan','Alex','Sam','Taylor','Casey','Morgan','Avery','Jamie'][ri(0,7)]+' '+['B.','K.','M.','R.','S.','T.'][ri(0,5)],
+        stars:stars, ageDays:ri(1,120), comment:pool[ri(0,pool.length-1)], replied:replied, replyComment:replied?'Thanks for the feedback. Please reach out to the office so we can help.':'' }); }
+    out.sort(function(a,b){return a.ageDays-b.ageDays;}); return out;
+  }
+  function listing(c, idx){
+    var poor = (c.name==='Kova'||c.name==='Lumi');
+    var score = poor?ri(52,68):ri(78,96);
+    var grade = score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
+    var issues=[];
+    if(poor){ if(c.name==='Kova'){ issues.push('Category is Apartment building, which hides the hours editor. Change to Apartment complex.'); issues.push('4 reviews from the last month are unanswered.'); }
+              else { issues.push('Only 6 photos. Listings with 20 or more get more calls.'); issues.push('No business description set.'); } }
+    else if(rnd()<0.4){ issues.push('Last post was '+ri(35,80)+' days ago. Post at least monthly.'); }
+    var avg=poor?rf(3.4,3.9):rf(4.2,4.8);
+    var revCount=ri(18,140);
+    var answeredRate=poor?rf(0.4,0.6):rf(0.8,0.96);
+    var revs=reviews(Math.min(12,revCount), avg, answeredRate);
+    return { id:'loc-'+idx, title:c.name+' Apartments', name:c.name, address:ri(100,9999)+' Main St, '+c.city+', MN', phone:'(612) 555-'+String(1000+idx).slice(-4),
+      website:'https://'+slug(c.name)+'apts.com', category:(c.name==='Kova')?'Apartment building':'Apartment complex', status:'OPEN',
+      grade:grade, score:score, issues:issues, mapsUri:'https://maps.google.com/?q='+slug(c.name),
+      photoCount:poor&&c.name==='Lumi'?6:ri(14,60), postDays:ri(3,80), hasDesc:!(poor&&c.name==='Lumi'), hoursCovered:c.name!=='Kova', specialHours:false,
+      rating:Math.round(avg*10)/10, reviewCount:revCount, unanswered:Math.round(revCount*(1-answeredRate)), reviews:revs };
+  }
+  function dashboard(){
+    var listings=COMM.map(function(c,i){return listing(c,i);});
+    var totalReviews=listings.reduce(function(a,l){return a+l.reviewCount;},0);
+    var negOpen=listings.reduce(function(a,l){return a+l.reviews.filter(function(r){return r.stars<=3 && !r.replied;}).length;},0);
+    var unanswered=listings.reduce(function(a,l){return a+l.unanswered;},0);
+    var portfolioRating=Math.round(listings.reduce(function(a,l){return a+l.rating;},0)/listings.length*10)/10;
+    var summary={ total:listings.length, avgScore:Math.round(listings.reduce(function(a,l){return a+l.score;},0)/listings.length),
+      critical:listings.filter(function(l){return l.grade==='D'||l.grade==='F';}).length,
+      warning:listings.filter(function(l){return l.grade==='C';}).length,
+      healthy:listings.filter(function(l){return l.grade==='A'||l.grade==='B';}).length,
+      negOpen:negOpen, portfolioRating:portfolioRating, totalReviews:totalReviews, unanswered:unanswered };
+    var alerts=[]; listings.forEach(function(l){ if(l.grade==='D'||l.grade==='F') alerts.push({property:l.name, severity:'high', text:l.issues[0]||'Profile needs attention.'}); });
+    return { summary:summary, accounts:2, updated:new Date().toISOString(), listings:listings, alerts:alerts, reviewApi:true, enableLink:'' };
+  }
+  function profileWatch(){
+    var d=dashboard();
+    var communities=d.listings.map(function(l){ return { name:l.name, rating:l.rating, reviews:l.reviewCount, totalReviews:l.reviewCount, unanswered:l.unanswered,
+      responseRate:Math.round((1-l.unanswered/Math.max(1,l.reviewCount))*100), negOpen:l.reviews.filter(function(r){return r.stars<=3&&!r.replied;}).length,
+      recentNeg:l.reviews.filter(function(r){return r.stars<=3;}).slice(0,3), score:l.score, status:l.grade, stale:l.postDays>45 }; });
+    return { updated:new Date().toISOString(), portfolioRating:d.summary.portfolioRating, avg:d.summary.portfolioRating,
+      totalReviews:d.summary.totalReviews, unanswered:d.summary.unanswered, negOpen:d.summary.negOpen,
+      responseRate:Math.round((1-d.summary.unanswered/Math.max(1,d.summary.totalReviews))*100),
+      communities:communities, reviews:communities, recentNeg:communities.slice(0,5), score:d.summary.avgScore, status:'ok', reviewApi:true, name:'All communities' };
+  }
+  function perf(){
+    var rows=COMM.map(function(c){ return { title:c.name+' Apartments', views:ri(800,6000), viewsTrend:+rf(-15,35).toFixed(1), calls:ri(10,120), callsTrend:+rf(-20,40).toFixed(1), clicks:ri(40,400), clicksTrend:+rf(-10,30).toFixed(1), directions:ri(20,260), dirTrend:+rf(-12,28).toFixed(1) }; });
+    rows.sort(function(a,b){return b.views-a.views;});
+    return { rows:rows, range:'Last 30 days', totals:{views:rows.reduce(function(a,r){return a+r.views;},0), calls:rows.reduce(function(a,r){return a+r.calls;},0), clicks:rows.reduce(function(a,r){return a+r.clicks;},0), directions:rows.reduce(function(a,r){return a+r.directions;},0), viewsTrend:+(rows.reduce(function(a,r){return a+r.viewsTrend;},0)/rows.length).toFixed(1), callsTrend:+(rows.reduce(function(a,r){return a+r.callsTrend;},0)/rows.length).toFixed(1), clicksTrend:+(rows.reduce(function(a,r){return a+r.clicksTrend;},0)/rows.length).toFixed(1), dirTrend:+(rows.reduce(function(a,r){return a+r.dirTrend;},0)/rows.length).toFixed(1)} };
+  }
+  var MODEL='claude-opus-4-6';
+  function themes(){
+    return { title:'Review themes', status:'ok', source:'reviews', flaggedCount:3, pending:2, locId:'', mapsUri:'',
+      highlights:['Responsive maintenance is the most praised theme.','Location and cleanliness come up often in 5 star reviews.'],
+      praise:[{theme:'Maintenance response',count:42},{theme:'Location',count:31},{theme:'Cleanliness',count:24},{theme:'Leasing staff',count:19}],
+      complaints:[{theme:'Parking',count:14},{theme:'Slow callback',count:9},{theme:'Renewal increases',count:7}],
+      googleDiffs:[], enableLink:'' };
+  }
+  function aiAnalysis(mode,focus){
+    var obj={ healthScore:79, grade:'B', headline:'Profiles are healthy except Kova and Lumi.',
+      summary:'Fourteen of sixteen listings grade B or better. Kova is losing the hours editor to a category error and has unanswered reviews. Lumi is thin on photos and has no description.',
+      metrics:[{label:'Portfolio rating',value:'4.4',status:'good'},{label:'Unanswered reviews',value:'openings',status:'warn'},{label:'Listings graded D or F',value:'2',status:'bad'},{label:'Total reviews',value:'many',status:'good'}],
+      priorities:[
+        {severity:'high',title:'Fix Kova category',detail:'Kova is set to Apartment building, which removes the standard hours editor and pulls wrong hours from aggregators. Change it to Apartment complex.',impact:'restores hours control'},
+        {severity:'high',title:'Answer Kova reviews',detail:'Four reviews from the last month are unanswered. Reply within 48 hours to protect the rating.',impact:'higher response rate'},
+        {severity:'medium',title:'Add Lumi photos and description',detail:'Lumi has only 6 photos and no description. Add 20 or more photos and a full description.',impact:'more calls and clicks'}
+      ],
+      opportunities:[{title:'Post monthly',detail:'Several listings have not posted in over a month. A monthly post keeps profiles active.'}],
+      wins:[{title:'Strong response rate',detail:'Most communities answer reviews quickly, which supports the 4.4 portfolio rating.'}],
+      complaints:themes().complaints, praise:themes().praise, sentiment:{positive:78,neutral:14,negative:8}, recommendations:['Fix Kova category','Answer open reviews','Enrich Lumi profile'] };
+    return { text: JSON.stringify(obj) };
+  }
+  function chat(a){
+    var last=''; try{ var h=JSON.parse(a[1]||'[]'); for(var i=h.length-1;i>=0;i--){ if(h[i].role==='user'){last=(h[i].content||'').toLowerCase();break;} } }catch(e){}
+    var body;
+    if(/kova|hours|category/.test(last)) body='**Kova** is set to *Apartment building*, which hides the standard hours editor so Google pulls hours from aggregators. Switch it to *Apartment complex* and the hours editor comes back.';
+    else if(/review|answer|respond|negative/.test(last)) body='You have open negative reviews at **Kova** and **Lumi**. Reply within 48 hours. I can draft responses for each if you want.';
+    else if(/photo|lumi|description/.test(last)) body='**Lumi** has only 6 photos and no description. Add 20 or more photos and a full description to lift calls and clicks.';
+    else body='Across 16 listings the portfolio rating is about **4.4**. The two that need work are **Kova** (category and unanswered reviews) and **Lumi** (photos and description).';
+    return { text: body+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' };
+  }
+  function route(fn,a){
+    switch(fn){
+      case 'getDashboardData': return dashboard();
+      case 'getPerformanceData': return perf();
+      case 'getProfileWatch': return profileWatch();
+      case 'diagnoseProfile': return profileWatch();
+      case 'getReviewThemes': return themes();
+      case 'getAIAnalysis': return aiAnalysis(a[0],a[1]);
+      case 'chatWithAI': return chat(a);
+      case 'draftReviewReply': return { ok:true, draft:'Thank you for taking the time to share this. We are sorry to hear about the experience and would like to make it right. Please reach out to the leasing office at your convenience so we can help directly.', text:'Thank you for taking the time to share this. Please reach out to the office so we can help.' };
+      case 'postReviewReply': return { ok:true };
+      case 'getApiKeyStatus': return {set:true, masked:'sk-ant-demo'};
+      case 'saveApiKey': return {ok:true};
+      case 'clearApiKey': return {ok:true};
+      case 'getLocationAttributes': return { attributes:[], ok:true };
+      default: return {};
+    }
+  }
+  return {route:route};
+})();
+
+// ---- google.script.run shim (Proxy chain) ----
+(function(){
+  function makeRunner(){
+    var state={succ:null,fail:null};
+    var proxy=new Proxy(function(){},{ get:function(t,prop){
+      if(prop==='withSuccessHandler')return function(f){state.succ=f;return proxy;};
+      if(prop==='withFailureHandler')return function(f){state.fail=f;return proxy;};
+      if(prop==='withUserObject')return function(){return proxy;};
+      return function(){ var args=[].slice.call(arguments); setTimeout(function(){ try{var r=GBPMOCK.route(prop,args); if(state.succ)state.succ(r);}catch(e){ if(state.fail)state.fail(e); } },130+Math.random()*160); };
+    }});
+    return proxy;
+  }
+  window.google=window.google||{}; window.google.script=window.google.script||{};
+  Object.defineProperty(window.google.script,'run',{configurable:true,get:function(){return makeRunner();}});
+  window.google.script.host=window.google.script.host||{close:function(){},setHeight:function(){}};
+})();
+
+</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c11;--bg2:#0d1017;--surface:#13171f;--surface2:#1a1f2a;--surface3:#222837;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--accent:#4d8dff;--accent-soft:rgba(77,141,255,0.14);--accent-line:rgba(77,141,255,0.5);--emerald:#22d39a;--emerald-soft:rgba(34,211,154,0.14);--amber:#f5b13d;--amber-soft:rgba(245,177,61,0.14);--red:#f55a72;--red-soft:rgba(245,90,114,0.14);--text:#f1f3f8;--muted:#737c90;--muted2:#9aa3b6;--sidebar:250px;}
+body.light{--bg:#eef1f6;--bg2:#e7ebf2;--surface:#ffffff;--surface2:#f4f6fa;--surface3:#e9edf3;--border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.14);--text:#1b2233;--muted:#6b7385;--muted2:#3f4858;}
+*{box-sizing:border-box;margin:0;padding:0;}html,body{height:100%;}
+body{background:var(--bg);color:var(--text);font-family:"Hanken Grotesk",sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background-color .25s,color .25s;}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-0.01em;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:10;}
+.sb-brand{display:flex;align-items:center;gap:12px;padding:22px 22px 20px;border-bottom:1px solid var(--border);}
+.sb-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(150deg,var(--accent),#7b5cff);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 4px 18px rgba(77,141,255,0.35);}
+.sb-brand-txt b{font-family:"Bricolage Grotesque";font-weight:700;font-size:15px;letter-spacing:-0.2px;display:block;}
+.sb-brand-txt span{font-family:"JetBrains Mono";font-size:10px;color:var(--muted);letter-spacing:0.5px;}
+.sb-nav{padding:14px 12px;flex:1;display:flex;flex-direction:column;gap:3px;}
+.sb-sec{font-family:"JetBrains Mono";font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding:14px 12px 7px;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:var(--muted2);cursor:pointer;font-size:13.5px;font-weight:500;border:1px solid transparent;position:relative;transition:all .15s;}
+.nav-item:hover{background:var(--surface);color:var(--text);}
+.nav-item.active{background:var(--accent-soft);color:#cfe0ff;border-color:var(--accent-line);}
+body.light .nav-item.active{color:#1d4ed8;}
+.nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;}
+.sb-foot{padding:14px;border-top:1px solid var(--border);}
+.sb-status{display:flex;align-items:center;gap:9px;font-family:"JetBrains Mono";font-size:11px;color:var(--muted2);padding:8px 10px;background:var(--surface);border-radius:9px;border:1px solid var(--border);}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 8px var(--emerald);}
+.main{flex:1;margin-left:var(--sidebar);padding:26px 32px 60px;position:relative;overflow:hidden;}
+.main::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 100% at 80% 0,rgba(77,141,255,0.10),transparent);}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;position:relative;flex-wrap:wrap;gap:12px;}
+.page-title{font-family:"Bricolage Grotesque";font-weight:700;font-size:22px;letter-spacing:-0.4px;}
+.page-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.tb-actions{display:flex;gap:9px;align-items:center;}
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border2);color:var(--muted2);border-radius:9px;padding:9px 14px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;}
+.btn:hover{background:var(--surface2);color:var(--text);}
+.btn.primary{background:var(--accent);color:#fff;border-color:transparent;}.btn.primary:hover{background:#3d7bf0;}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;position:relative;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:18px 20px;}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.kpi-label{font-family:"JetBrains Mono";font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
+.kpi-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);}
+.kpi-ic svg{width:15px;height:15px;stroke:var(--accent);fill:var(--accent);stroke-width:0;}
+.kpi-ic.green{background:var(--emerald-soft);}.kpi-ic.green svg{stroke:var(--emerald);fill:var(--emerald);}
+.kpi-ic.amber{background:var(--amber-soft);}.kpi-ic.amber svg{stroke:var(--amber);fill:var(--amber);}
+.kpi-ic.red{background:var(--red-soft);}.kpi-ic.red svg{stroke:var(--red);fill:var(--red);}
+.kpi-ic.blue svg{stroke:var(--accent);fill:var(--accent);}
+.kpi-val{font-family:"Bricolage Grotesque";font-weight:700;font-size:30px;letter-spacing:-0.5px;}
+.kpi-meta{font-size:11.5px;color:var(--muted);margin-top:3px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;position:relative;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.card-title{font-family:"Bricolage Grotesque";font-weight:600;font-size:16px;}
+.filters{display:flex;gap:7px;flex-wrap:wrap;}
+.fbtn{padding:7px 13px;font-family:"JetBrains Mono";font-size:11px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);border-radius:8px;cursor:pointer;transition:all .15s;}
+.fbtn:hover{color:var(--text);}.fbtn.active{background:var(--accent);color:#fff;border-color:transparent;}
+.search{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:11px 15px;color:var(--text);font-family:inherit;font-size:14px;margin-bottom:16px;}
+.search::placeholder{color:var(--muted);}.search:focus{outline:none;border-color:var(--accent-line);}
+.tbl{width:100%;}
+.th{display:grid;grid-template-columns:2.4fr 1.6fr 0.9fr 0.8fr 1fr 1fr;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);font-family:"JetBrains Mono";font-size:10px;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);}
+.tr{display:grid;grid-template-columns:2.4fr 1.6fr 0.9fr 0.8fr 1fr 1fr;gap:12px;padding:14px 12px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .12s;border-radius:8px;}
+.tr:hover{background:var(--surface2);}
+.th.th-rev,.tr.rev{grid-template-columns:2.2fr 0.8fr 0.9fr 1fr 1.1fr 1fr;}
+.th.th-perf,.tr.perf{grid-template-columns:2.4fr 1.3fr 1.1fr 1.2fr 1.2fr;}
+.tr.perf{cursor:default;}
+.name{font-weight:600;font-size:14px;letter-spacing:-0.2px;}
+.cat{font-size:12px;color:var(--muted2);}
+.sub{font-family:"JetBrains Mono";font-size:12px;color:var(--muted2);}
+.sub .sub{font-size:11px;}
+.ok{color:var(--emerald);font-family:"JetBrains Mono";font-size:12.5px;font-weight:600;}
+.warn{color:var(--amber);font-family:"JetBrains Mono";font-size:12.5px;font-weight:600;}
+.bad{color:var(--red);font-family:"JetBrains Mono";font-size:12.5px;font-weight:600;}
+.pill{display:inline-block;font-family:"JetBrains Mono";font-size:9.5px;padding:3px 9px;border-radius:6px;letter-spacing:0.4px;text-transform:uppercase;}
+.pill.green{background:var(--emerald-soft);color:var(--emerald);}.pill.amber{background:var(--amber-soft);color:var(--amber);}.pill.red{background:var(--red-soft);color:var(--red);}.pill.blue{background:var(--accent-soft);color:var(--accent);}
+.stars{display:inline-flex;gap:1px;}.star{color:var(--surface3);font-size:14px;line-height:1;}.star.on{color:var(--amber);}
+.trend{font-family:"JetBrains Mono";font-size:11px;font-weight:500;margin-left:4px;}
+.trend.up{color:var(--emerald);}.trend.down{color:var(--red);}
+.score-wrap{display:flex;align-items:center;gap:9px;}
+.score-bar{flex:1;height:6px;border-radius:4px;background:var(--surface3);overflow:hidden;}
+.score-fill{height:100%;border-radius:4px;}
+.score-num{font-family:"Bricolage Grotesque";font-weight:700;font-size:15px;min-width:26px;}
+.empty{color:var(--muted);font-family:"JetBrains Mono";font-size:12px;padding:26px 0;text-align:center;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mini{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;border-left:3px solid var(--muted);}
+.mini.good{border-left-color:var(--emerald);}.mini.warn{border-left-color:var(--amber);}.mini.bad{border-left-color:var(--red);}
+.mini-v{font-family:"Bricolage Grotesque";font-weight:700;font-size:22px;}
+.mini-l{font-size:11px;color:var(--muted);font-family:"JetBrains Mono";margin-top:2px;}
+.distbar{display:flex;height:14px;border-radius:8px;overflow:hidden;margin-bottom:14px;background:var(--surface3);}
+.distbar div{height:100%;}
+.distlegend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted2);}
+.distlegend span{display:flex;align-items:center;gap:6px;}.distlegend i{width:9px;height:9px;border-radius:3px;display:inline-block;}
+.bigscore{font-family:"Bricolage Grotesque";font-weight:800;font-size:44px;margin-top:16px;letter-spacing:-1px;}
+.bigscore span{font-size:14px;color:var(--muted);font-weight:500;margin-left:4px;}
+.alert-row{display:flex;align-items:center;gap:12px;padding:13px 12px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:8px;transition:background .12s;}
+.alert-row:hover{background:var(--surface2);}.alert-row:last-child{border-bottom:none;}
+.alert-sev{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.alert-sev.high{background:var(--red);box-shadow:0 0 8px var(--red);}.alert-sev.medium{background:var(--amber);}.alert-sev.low{background:var(--accent);}
+.alert-body{flex:1;min-width:0;}
+.alert-title{font-size:13.5px;font-weight:600;}
+.alert-prop{color:var(--muted);font-weight:400;font-size:12px;}
+.alert-detail{font-size:12px;color:var(--muted2);margin-top:2px;}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:70px 0;gap:16px;}
+.spin{width:40px;height:40px;border:3px solid var(--surface3);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;}@keyframes sp{to{transform:rotate(360deg);}}
+.loading p{color:var(--muted2);font-size:13.5px;}
+.err-card{background:var(--red-soft);border:1px solid rgba(245,90,114,0.3);border-radius:14px;padding:20px 22px;}
+.err-card h4{color:var(--red);font-family:"Bricolage Grotesque";font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.err-card h4 svg{width:18px;height:18px;stroke:var(--red);fill:none;stroke-width:2;}
+.err-card p{font-size:13px;color:var(--muted2);line-height:1.6;}.err-card a{color:var(--accent);text-decoration:none;font-weight:600;}.err-card a:hover{text-decoration:underline;}
+.drawer-mask{position:fixed;inset:0;background:rgba(4,6,10,0.6);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;}
+.drawer-mask.open{opacity:1;pointer-events:auto;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:460px;max-width:94vw;background:var(--bg2);border-left:1px solid var(--border2);transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:41;display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,0.5);}
+.drawer.open{transform:translateX(0);}
+#drawerInner{display:flex;flex-direction:column;height:100%;min-height:0;}
+.dr-head{padding:24px 26px 18px;border-bottom:1px solid var(--border);position:relative;flex-shrink:0;}
+.dr-close{position:absolute;top:20px;right:22px;width:32px;height:32px;border-radius:9px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.dr-close:hover{color:var(--text);}.dr-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+.dr-name{font-family:"Bricolage Grotesque";font-weight:700;font-size:20px;letter-spacing:-0.3px;padding-right:40px;}
+.dr-addr{font-size:12.5px;color:var(--muted2);margin-top:5px;}
+.dr-scorebox{display:flex;align-items:center;gap:16px;margin-top:18px;}
+.dr-ring{position:relative;width:78px;height:78px;flex-shrink:0;}.dr-ring svg{width:78px;height:78px;}
+.dr-ring .rn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.dr-ring .rn b{font-family:"Bricolage Grotesque";font-size:22px;line-height:1;}.dr-ring .rn span{font-family:"JetBrains Mono";font-size:9px;color:var(--muted);letter-spacing:1px;}
+.dr-quick{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;}
+.dr-quick .q{display:flex;justify-content:space-between;font-size:12px;}.dr-quick .q .k{color:var(--muted);}.dr-quick .q .v{font-family:"JetBrains Mono";font-size:11.5px;}
+.dr-links{display:flex;gap:8px;margin-top:14px;}
+.dr-link{flex:1;text-align:center;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:9px;font-size:12px;color:var(--muted2);text-decoration:none;transition:all .15s;}
+.dr-link:hover{color:var(--text);border-color:var(--accent);}
+.dr-body{flex:1;min-height:0;overflow-y:auto;padding:20px 26px 40px;}
+.dr-sec{font-family:"JetBrains Mono";font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:6px 0 12px;}
+.issue{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;border-left:3px solid var(--muted);}
+.issue.high{border-left-color:var(--red);}.issue.medium{border-left-color:var(--amber);}.issue.low{border-left-color:var(--accent);}
+.issue-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap;}
+.issue-title{font-weight:600;font-size:13.5px;}
+.pillar{font-family:"JetBrains Mono";font-size:9px;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);border:1px solid var(--border2);border-radius:5px;padding:2px 6px;}
+.issue-detail{font-size:12.5px;color:var(--muted2);line-height:1.6;margin-bottom:8px;}
+.issue-fix{font-family:"JetBrains Mono";font-size:11px;color:var(--emerald);display:flex;align-items:center;gap:6px;}
+.issue-fix svg{width:13px;height:13px;stroke:var(--emerald);fill:none;stroke-width:2;}
+.dr-perfect{text-align:center;padding:30px 0;color:var(--emerald);}
+.dr-perfect svg{width:44px;height:44px;stroke:var(--emerald);fill:none;stroke-width:1.6;margin-bottom:10px;}
+.ai-wrap{display:flex;flex-direction:column;gap:16px;}
+.ai-controls{padding:18px 20px;}
+.ai-ctl-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.ai-modes{display:flex;gap:6px;flex-wrap:wrap;}
+.ai-mode{padding:9px 14px;font-size:12.5px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);border-radius:9px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.ai-mode:hover{color:var(--text);}.ai-mode.active{background:var(--accent);color:#fff;border-color:transparent;}
+.msel{background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:"JetBrains Mono";font-size:12px;padding:9px 12px;cursor:pointer;}
+.msel:focus{outline:none;border-color:var(--accent-line);}
+.ai-key{margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:"JetBrains Mono";font-size:11px;color:var(--muted);}
+.ai-key-input{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:"JetBrains Mono";font-size:12px;padding:7px 10px;width:200px;}
+.ai-key-input:focus{outline:none;border-color:var(--accent-line);}
+.ai-empty{text-align:center;padding:50px 20px;}
+.ai-empty-ic{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--accent),#6c5cff);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 26px rgba(77,141,255,0.4);}
+.ai-empty-ic svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:1.7;}
+.ai-empty h3{font-family:"Bricolage Grotesque";font-size:18px;margin-bottom:6px;}.ai-empty p{color:var(--muted);font-size:13px;max-width:420px;margin:0 auto;line-height:1.6;}
+.ai-loading{text-align:center;padding:50px 0;}.ai-loading p{color:var(--muted2);margin-top:12px;font-size:13.5px;}
+.ai-typing{display:inline-flex;gap:4px;}.ai-typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:typing 1.2s infinite;}.ai-typing span:nth-child(2){animation-delay:.2s;}.ai-typing span:nth-child(3){animation-delay:.4s;}@keyframes typing{0%,60%,100%{opacity:.3;transform:translateY(0);}30%{opacity:1;transform:translateY(-4px);}}
+.ai-report-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 26px;}
+.ai-hero{display:flex;gap:26px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.ai-score{position:relative;width:130px;height:130px;flex-shrink:0;}.ai-score svg{width:130px;height:130px;}
+.ai-score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ai-score-num .sn{font-size:38px;font-weight:800;font-family:"Bricolage Grotesque";line-height:1;}.ai-score-num .sl{font-size:10px;letter-spacing:2px;color:var(--muted);margin-top:4px;font-family:"JetBrains Mono";}
+.ai-hero-txt{flex:1;min-width:240px;}
+.ai-grade{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:20px;margin-bottom:10px;font-family:"JetBrains Mono";}
+.ai-headline{font-family:"Bricolage Grotesque";font-size:21px;font-weight:600;line-height:1.3;margin-bottom:8px;}
+.ai-summary{font-size:14px;color:var(--muted2);line-height:1.65;}
+.ai-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:6px;}
+.ai-metric{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:16px 18px;}
+.ai-metric-v{font-size:22px;font-weight:700;font-family:"Bricolage Grotesque";letter-spacing:-0.3px;}
+.ai-metric-l{font-size:11.5px;color:var(--muted);margin-top:3px;font-family:"JetBrains Mono";text-transform:uppercase;letter-spacing:0.5px;}
+.ai-sec-title{display:flex;align-items:center;gap:9px;font-family:"Bricolage Grotesque";font-size:16px;font-weight:600;margin:22px 0 12px;}
+.ai-sec-title svg{width:19px;height:19px;stroke:var(--amber);fill:none;stroke-width:1.8;}.ai-sec-title.green svg{stroke:var(--emerald);}.ai-sec-title.blue svg{stroke:var(--accent);}
+.ai-chat{padding:0;overflow:hidden;}
+.ai-chat-head{padding:16px 20px;border-bottom:1px solid var(--border);font-family:"Bricolage Grotesque";font-weight:600;font-size:15px;}
+.ai-chat-body{max-height:360px;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:12px;}
+.chat-hint2{color:var(--muted);font-family:"JetBrains Mono";font-size:11px;text-align:center;padding:10px;}
+.chat-row{display:flex;}.chat-row.user{justify-content:flex-end;}
+.chat-msg{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;}
+.chat-row.user .chat-msg{background:linear-gradient(135deg,var(--accent),#5b78ff);color:#fff;border-top-right-radius:4px;}
+.chat-row.ai .chat-msg{background:var(--surface2);border:1px solid var(--border);border-top-left-radius:4px;color:var(--muted2);}
+.chat-msg b{color:var(--text);font-weight:600;}.chat-row.user .chat-msg b{color:#fff;}
+.chat-msg ul{margin:6px 0;padding-left:18px;}.chat-msg li{margin:3px 0;}.chat-msg h4{margin:8px 0 4px;color:var(--accent);font-family:"Bricolage Grotesque";font-size:13.5px;}.chat-msg p{margin:5px 0;}.chat-msg p:first-child{margin-top:0;}
+.ai-chat-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);align-items:center;}
+.ai-chat-input input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:13.5px;}
+.ai-chat-input input:focus{outline:none;border-color:var(--accent-line);}
+.chat-send{width:40px;height:40px;border-radius:10px;border:none;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-send:hover{background:#5b78ff;}.chat-send svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr);}.two-col{grid-template-columns:1fr;}.sidebar{display:none;}.main{margin-left:0;padding:20px;}.th .hide,.tr .hide{display:none;}.th,.tr,.th.th-rev,.tr.rev{grid-template-columns:2fr 1fr 1fr 1fr;}.th.th-perf,.tr.perf{grid-template-columns:2fr 1fr 1fr;}}
+.rangesel{padding:9px 12px;cursor:pointer;font-family:"JetBrains Mono";font-size:12px;}
+.range-custom{display:none;align-items:center;gap:6px;}
+.range-custom.show{display:flex;}
+.range-custom input[type=date]{background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:"JetBrains Mono";font-size:11.5px;padding:8px 10px;color-scheme:dark;}
+body.light .range-custom input[type=date]{color-scheme:light;}
+.rdist{margin-bottom:6px;}
+.rdist-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-family:"JetBrains Mono";font-size:11.5px;color:var(--muted2);}
+.rdist-row .rk{width:34px;flex-shrink:0;}
+.rdist-bar{flex:1;height:8px;border-radius:5px;background:var(--surface3);overflow:hidden;}
+.rdist-bar div{height:100%;border-radius:5px;background:var(--amber);}
+.rdist-row .rc{width:34px;text-align:right;flex-shrink:0;}
+.rev-filter{display:flex;gap:6px;margin:14px 0 10px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.sort-toggle{display:flex;gap:6px;}
+.batch-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:10px 12px;margin-bottom:12px;}
+.rev-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+.rev-item.unanswered{border-left:3px solid var(--red);}
+.rev-item.answered{border-left:3px solid var(--emerald);}
+.rev-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;}
+.rev-who{font-weight:600;font-size:13.5px;}
+.rev-when{font-family:"JetBrains Mono";font-size:10.5px;color:var(--muted);}
+.rev-comment{font-size:13px;color:var(--muted2);line-height:1.6;margin:6px 0;}
+.rev-reply{background:var(--surface2);border-radius:9px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:var(--muted2);line-height:1.55;border-left:2px solid var(--emerald);}
+.rev-reply b{color:var(--emerald);font-size:10px;font-family:"JetBrains Mono";letter-spacing:0.5px;text-transform:uppercase;display:block;margin-bottom:3px;}
+.rev-actions{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;}
+.rbtn{font-family:"JetBrains Mono";font-size:11px;padding:7px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.rbtn:hover{color:var(--text);}
+.rbtn.ai{border-color:var(--accent-line);color:var(--accent);}
+.rbtn.post{background:var(--emerald);color:#04120d;border-color:transparent;font-weight:600;}
+.rbtn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+.rdraft{margin-top:10px;}
+.rdraft textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;padding:11px 13px;resize:vertical;min-height:84px;line-height:1.55;}
+.rdraft textarea:focus{outline:none;border-color:var(--accent-line);}
+.rmsg{font-family:"JetBrains Mono";font-size:11px;margin-left:4px;}
+.theme-panel{margin-top:2px;}
+.sentiment{display:flex;height:12px;border-radius:7px;overflow:hidden;margin:4px 0 6px;background:var(--surface3);}
+.sentiment div{height:100%;}
+.slegend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muted2);font-family:"JetBrains Mono";margin-bottom:4px;}
+.slegend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:5px;}
+.theme-count{font-family:"JetBrains Mono";font-size:10px;color:var(--muted);border:1px solid var(--border2);border-radius:20px;padding:2px 8px;margin-left:auto;}
+.theme-eg{font-size:11.5px;color:var(--muted);font-style:italic;margin-top:6px;padding-left:10px;border-left:2px solid var(--border2);}
+/* ===== PROFILE WATCH ===== */
+/* ===== PROFILE WATCH ===== */
+.page-sub{font-size:12.5px;color:var(--muted);}
+.wcard{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:15px 17px;margin-bottom:11px;border-left:3px solid var(--muted);cursor:pointer;}
+.wcard.review{border-left-color:var(--red);}
+.wcard.pending{border-left-color:var(--amber);}
+.wcard-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.wtitle{font-weight:600;font-size:14.5px;}
+.wdiffs{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.wdiff{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;}
+.wdf{font-family:"JetBrains Mono";font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.wdv{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;}
+.wmine{color:var(--muted2);}
+.wgoogle{color:var(--red);font-weight:600;}
+.warr{color:var(--muted);}
+.wpending{font-family:"JetBrains Mono";font-size:11.5px;color:var(--amber);margin-bottom:10px;}
+.wactions{display:flex;gap:8px;flex-wrap:wrap;}
+.wrow{display:flex;align-items:center;gap:14px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;border-radius:8px;flex-wrap:wrap;}
+.wrow:hover{background:var(--surface2);}
+.wname{font-weight:600;font-size:13.5px;min-width:150px;}
+.wchips{display:flex;flex-wrap:wrap;gap:6px;flex:1;}
+.wchip{font-family:"JetBrains Mono";font-size:10.5px;padding:3px 9px;border-radius:6px;background:var(--surface3);color:var(--muted2);}
+.wchip.risky{background:var(--amber-soft);color:var(--amber);font-weight:600;}
+a.rbtn{text-decoration:none;display:inline-flex;align-items:center;}
+.wp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;}
+.wp-item{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;font-size:13px;}
+.wp-item.on{border-color:var(--accent-line);background:var(--accent-soft);}
+.wp-item input{width:15px;height:15px;accent-color:var(--accent);flex:0 0 auto;}
+.wp-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+</style><title>Vertex Reviews Dashboard - Demo</title><style id="dkb-phone">
+.dkb-strip{--dkb-strip-bg:var(--bg);--dkb-strip-line:var(--border);--dkb-chip-line:var(--border2);--dkb-chip-fg:var(--muted2);--dkb-chip-on-fg:#fff;--dkb-x-bg:var(--panel2,rgba(255,255,255,.08));--dkb-chip-on-bg:var(--accent);--dkb-chip-font:"Hanken Grotesk",sans-serif}
+@media (max-width:1000px){
+  .main{min-width:0;overflow:visible;overflow-x:clip}
+  .dkb-strip{margin:0 -20px 18px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi,.card,.two-col>*{min-width:0}
+  .two-col{grid-template-columns:minmax(0,1fr)}
+  .th.th-rev,.tr.rev{grid-template-columns:minmax(0,2fr) repeat(4,minmax(0,1fr))}
+  .th.th-perf,.tr.perf{grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .main{padding:14px 14px 90px}
+  .topbar{margin-bottom:0;padding-bottom:12px;gap:10px}
+  .topbar>div:first-child{flex:1 1 100%;min-width:0}
+  .page-title{font-size:20px}
+  .page-sub{font-size:12px}
+  .tb-actions{flex:1 1 auto;width:calc(100% + 28px);display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:8px;margin:0 -14px;padding:0 14px 2px}
+  .tb-actions::-webkit-scrollbar{display:none}
+  .tb-actions>*{flex:none}
+  .dkb-strip{margin:0 -14px 14px}
+  .kpis{gap:10px}
+  .kpi{padding:14px 15px}
+  .card{padding:16px}
+  .dkb-tw>.tbl{min-width:560px}
+  .drawer{width:100%;max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-brand"><div class="sb-logo">S</div><div class="sb-brand-txt"><b>Vertex GBP</b><span>COMMAND CENTER</span></div></div>
+<nav class="sb-nav">
+<div class="sb-sec">Manage</div>
+<div class="nav-item active" data-view="overview"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Overview</div>
+<div class="nav-item" data-view="listings"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Listings</div>
+<div class="nav-item" data-view="reviews"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews</div>
+<div class="nav-item" data-view="performance"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Performance</div>
+<div class="nav-item" data-view="alerts"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Alerts</div>
+<div class="nav-item" data-view="watch"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><circle cx="12" cy="11" r="2.4"/></svg>Profile Watch</div>
+<div class="sb-sec">Intelligence</div>
+<div class="nav-item" data-view="ai"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4 2.5 5.2.8.8 1.5 1.5 1.5 2.8h6c0-1.3.7-2 1.5-2.8C18.7 13 20 11.5 20 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>AI Analyst</div>
+</nav>
+<div class="sb-foot"><div class="sb-status"><span class="dot"></span><span>Live · reviews-456415</span></div></div>
+</aside>
+<main class="main">
+<div class="topbar">
+<div><div class="page-title">GBP Command Center</div><div class="page-sub" id="subline">Loading Business Profile portfolio...</div></div>
+<div class="tb-actions">
+<select class="btn rangesel" id="rangeSel"><option value="30">Last 30 days</option><option value="90" selected>Last 90 days</option><option value="custom">Custom range</option></select>
+<span class="range-custom" id="rangeCustom"><input type="date" id="rangeStart"><input type="date" id="rangeEnd"><button class="fbtn" id="rangeApply">Apply</button></span>
+<button class="btn" id="themeBtn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>Theme</button>
+<button class="btn primary" id="refreshBtn"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh</button>
+</div>
+</div>
+<div id="content"><div class="loading"><div class="spin"></div><p>Loading Business Profile portfolio...</p></div></div>
+</main>
+</div>
+<div class="drawer-mask" id="drawerMask"></div>
+<div class="drawer" id="drawer"><div id="drawerInner"></div></div>
+<script>
+/* ================= STATE ================= */
+var DATA=null, PERF=null, VIEW='overview', FILTER='all', QUERY='', FOCUS='', AISTATE={report:null,loading:false,mode:'overview'}, CHAT=[];
+var WATCH=null;
+var RANGE={mode:'preset',days:90};
+var REVDRAWER=null, THEMES=null, THEMEFOCUS='';
+function rangeLabel(){if(RANGE.mode==='custom')return RANGE.start+' to '+RANGE.end;return 'last '+RANGE.days+'d';}
+function velKey(){if(RANGE.mode==='custom')return 'last90';if(RANGE.days===30)return 'last30';if(RANGE.days===60)return 'last60';return 'last90';}
+function velLabel(){return 'last '+velKey().replace('last','')+'d';}
+function velOf(r){if(!r)return 0;var k=velKey();return (r[k]!==undefined?r[k]:(r.last90||0));}
+function sVel(s){var m={last30:'reviewsLast30',last60:'reviewsLast60',last90:'reviewsLast90'};return s[m[velKey()]]||0;}
+function rangeJson(){return JSON.stringify(RANGE.mode==='custom'?{mode:'custom',start:RANGE.start,end:RANGE.end}:{mode:'preset',days:RANGE.days});}
+
+/* ================= HELPERS ================= */
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fmt(n){n=Number(n||0);return n.toLocaleString();}
+function scoreColor(s){if(s>=80)return'var(--emerald)';if(s>=60)return'var(--amber)';return'var(--red)';}
+function gradeFor(s){if(s>=90)return'A';if(s>=80)return'B';if(s>=70)return'C';if(s>=60)return'D';return'F';}
+function pctv(a,b){return b?Math.round(a/b*100):0;}
+function statusPill(st){if(st==='healthy')return'<span class="pill green">Healthy</span>';if(st==='warning')return'<span class="pill amber">Warning</span>';return'<span class="pill red">Critical</span>';}
+function sevPill(s){if(s==='high')return'<span class="pill red">High</span>';if(s==='medium')return'<span class="pill amber">Medium</span>';return'<span class="pill blue">Low</span>';}
+function stars(n){n=Math.round(n||0);var o='';for(var i=1;i<=5;i++){o+='<span class="star'+(i<=n?' on':'')+'">*</span>';}return '<span class="stars">'+o+'</span>';}
+function trend(p){if(p===null||p===undefined)return'';var up=p>=0;var cls=up?'up':'down';var ar=up?'&#9650;':'&#9660;';return '<span class="trend '+cls+'">'+ar+' '+Math.abs(p)+'%</span>';}
+
+/* ================= LOAD ================= */
+function boot(){
+  bindNav();
+  document.getElementById('refreshBtn').addEventListener('click',function(){PERF=null;THEMES=null;WATCH=null;load(true);});
+  document.getElementById('themeBtn').addEventListener('click',function(){document.body.classList.toggle('light');try{localStorage.setItem('gbp_theme',document.body.classList.contains('light')?'light':'dark');}catch(e){}});
+  try{if(localStorage.getItem('gbp_theme')!=='dark')document.body.classList.add('light');}catch(e){document.body.classList.add('light');}
+  document.getElementById('drawerMask').addEventListener('click',closeDrawer);
+  bindRange();
+  load(false);
+}
+function bindRange(){
+  var sel=document.getElementById('rangeSel');var cust=document.getElementById('rangeCustom');
+  var end=new Date();end.setDate(end.getDate()-2);var start=new Date(end);start.setDate(start.getDate()-89);
+  document.getElementById('rangeEnd').value=end.toISOString().slice(0,10);
+  document.getElementById('rangeStart').value=start.toISOString().slice(0,10);
+  sel.addEventListener('change',function(){
+    if(this.value==='custom'){cust.classList.add('show');}
+    else{cust.classList.remove('show');RANGE={mode:'preset',days:parseInt(this.value,10)};onRangeChange();}
+  });
+  document.getElementById('rangeApply').addEventListener('click',function(){
+    var s=document.getElementById('rangeStart').value,e=document.getElementById('rangeEnd').value;
+    if(!s||!e){return;}if(s>e){var t=s;s=e;e=t;}
+    RANGE={mode:'custom',start:s,end:e};onRangeChange();
+  });
+}
+function onRangeChange(){
+  PERF=null;
+  if(VIEW==='performance')renderPerformance();
+  else if(VIEW==='reviews')renderReviews();
+  else if(VIEW==='overview')renderOverview();
+}
+function load(force){
+  setLoading('Auditing every listing: reviews, photos, hours, categories, posts...');
+  google.script.run.withSuccessHandler(onData).withFailureHandler(onFail).getDashboardData(!!force);
+}
+function onFail(e){document.getElementById('content').innerHTML=errCard('Something went wrong',(e&&e.message)?e.message:String(e),null);}
+function onData(d){
+  DATA=d;
+  if(d.error){document.getElementById('content').innerHTML=errCard('Could not load listings',d.error,d.enableLink);setSub('Error loading data');return;}
+  var s=d.summary||{};
+  setSub(s.total+' listings · '+d.accounts+' account(s) · '+(s.totalReviews||0)+' reviews · updated '+new Date(d.updated).toLocaleTimeString());
+  renderView();
+}
+function setLoading(msg){document.getElementById('content').innerHTML='<div class="loading"><div class="spin"></div><p>'+esc(msg)+'</p></div>';}
+function setSub(t){document.getElementById('subline').textContent=t;}
+function errCard(title,msg,link){var l=link?'<p style="margin-top:10px">Fix: <a href="'+esc(link)+'" target="_blank">enable the required API &#8594;</a> then hit Refresh.</p>':'';return '<div class="err-card"><h4><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+esc(title)+'</h4><p>'+esc(msg)+'</p>'+l+'</div>';}
+
+/* ================= NAV / ROUTER ================= */
+function bindNav(){
+  var items=document.querySelectorAll('.nav-item[data-view]');
+  Array.prototype.forEach.call(items,function(el){el.addEventListener('click',function(){setView(el.getAttribute('data-view'));});});
+}
+function setView(v){
+  VIEW=v;
+  Array.prototype.forEach.call(document.querySelectorAll('.nav-item[data-view]'),function(n){n.classList.toggle('active',n.getAttribute('data-view')===v);});
+  renderView();
+}
+function renderView(){
+  if(!DATA){return;}
+  if(VIEW==='overview')renderOverview();
+  else if(VIEW==='listings')renderListings();
+  else if(VIEW==='reviews')renderReviews();
+  else if(VIEW==='performance')renderPerformance();
+  else if(VIEW==='alerts')renderAlerts();
+  else if(VIEW==='watch')renderWatch();
+  else if(VIEW==='ai')renderAI();
+}
+
+/* ================= KPI CARD ================= */
+function kpi(label,val,meta,cls,icon){return '<div class="kpi"><div class="kpi-top"><span class="kpi-label">'+esc(label)+'</span><span class="kpi-ic '+cls+'"><svg viewBox="0 0 24 24">'+icon+'</svg></span></div><div class="kpi-val num">'+val+'</div><div class="kpi-meta">'+meta+'</div></div>';}
+var IC={home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',pulse:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',warn:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',check:'<polyline points="20 6 9 17 4 12"/>',chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',cursor:'<path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51z"/>',map:'<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>'};
+
+/* ================= OVERVIEW ================= */
+function renderOverview(){
+  var s=DATA.summary||{};
+  var rating=(s.portfolioRating!==null&&s.portfolioRating!==undefined)?s.portfolioRating.toFixed(2):'--';
+  var html='<div class="kpis">'
+    +kpi('Total Listings',fmt(s.total),'across portfolio','blue',IC.home)
+    +kpi('Avg Health',s.avgScore,gradeFor(s.avgScore)+' grade · '+s.healthy+' healthy','green',IC.pulse)
+    +kpi('Portfolio Rating',rating,fmt(s.totalReviews)+' reviews total','amber',IC.star)
+    +kpi('Open Review Actions',fmt(s.unanswered),s.negOpen+' unanswered negatives','red',IC.warn)
+    +'</div>';
+  var dist=distBar(s);
+  var vel=sVel(s);
+  var rev='<div class="card"><div class="card-title" style="margin-bottom:14px">Review Snapshot</div>'
+    +'<div class="mini-grid">'
+    +miniStat('Reviews ('+velLabel()+')',fmt(vel),vel>0?'good':'warn')
+    +miniStat('Unanswered (recent)',fmt(s.unanswered),s.unanswered===0?'good':(s.unanswered>5?'bad':'warn'))
+    +miniStat('Negatives open',fmt(s.negOpen),s.negOpen===0?'good':'bad')
+    +miniStat('Avg rating',rating,(s.portfolioRating>=4?'good':(s.portfolioRating>=3.5?'warn':'bad')))
+    +'</div></div>';
+  html+='<div class="two-col">'+dist+rev+'</div>';
+  var alerts=(DATA.alerts||[]).slice(0,7);
+  var feed='';
+  if(!alerts.length){feed='<div class="empty">No high or medium priority actions. Nice.</div>';}
+  else{alerts.forEach(function(a){feed+=alertRow(a);});}
+  html+='<div class="card" style="margin-top:16px"><div class="card-head"><div class="card-title">Priority Actions</div><button class="fbtn" onclick="setView(\'alerts\')">View all &#8594;</button></div>'+feed+'</div>';
+  document.getElementById('content').innerHTML=html;
+}
+function distBar(s){
+  var t=s.total||1;
+  var h=pctv(s.healthy,t),w=pctv(s.warning,t),c=pctv(s.critical,t);
+  return '<div class="card"><div class="card-title" style="margin-bottom:16px">Health Distribution</div>'
+    +'<div class="distbar"><div style="width:'+h+'%;background:var(--emerald)"></div><div style="width:'+w+'%;background:var(--amber)"></div><div style="width:'+c+'%;background:var(--red)"></div></div>'
+    +'<div class="distlegend"><span><i style="background:var(--emerald)"></i>Healthy '+s.healthy+'</span><span><i style="background:var(--amber)"></i>Warning '+s.warning+'</span><span><i style="background:var(--red)"></i>Critical '+s.critical+'</span></div>'
+    +'<div class="bigscore" style="color:'+scoreColor(s.avgScore)+'">'+s.avgScore+'<span>/100 avg</span></div></div>';
+}
+function miniStat(l,v,st){return '<div class="mini '+st+'"><div class="mini-v">'+v+'</div><div class="mini-l">'+esc(l)+'</div></div>';}
+function alertRow(a){return '<div class="alert-row" onclick="openDrawer(\''+esc(a.locId)+'\')"><span class="alert-sev '+a.sev+'"></span><div class="alert-body"><div class="alert-title">'+esc(a.title)+' <span class="alert-prop">· '+esc(a.property)+'</span></div><div class="alert-detail">'+esc(a.fix||a.detail)+'</div></div>'+sevPill(a.sev)+'</div>';}
+
+/* ================= LISTINGS ================= */
+function renderListings(){
+  var list=filtered();
+  var rows='';
+  if(!list.length)rows='<div class="empty">No listings match this filter.</div>';
+  else list.forEach(function(l){
+    var r=l.reviews||{};
+    var ratingCell=(r.avg!==null&&r.avg!==undefined)?(r.avg.toFixed(1)+' <span class="sub">('+fmt(r.total)+')</span>'):'<span class="sub">--</span>';
+    var photoCell=(l.photoCount===null||l.photoCount===undefined)?'--':fmt(l.photoCount);
+    rows+='<div class="tr" onclick="openDrawer(\''+esc(l.id)+'\')">'
+      +'<div><div class="name">'+esc(l.title)+'</div><div class="cat">'+esc(l.address||'')+'</div></div>'
+      +'<div class="cat">'+esc(l.category)+'</div>'
+      +'<div class="sub hide">'+ratingCell+'</div>'
+      +'<div class="sub hide">'+photoCell+'</div>'
+      +'<div class="score-wrap"><div class="score-bar"><div class="score-fill" style="width:'+l.score+'%;background:'+scoreColor(l.score)+'"></div></div><span class="score-num" style="color:'+scoreColor(l.score)+'">'+l.score+'</span></div>'
+      +'<div>'+statusPill(l.status)+'</div></div>';
+  });
+  var html='<div class="card"><div class="card-head"><div class="card-title">Listings: worst first</div>'
+    +'<div class="filters">'+fbtn('all','All')+fbtn('critical','Critical')+fbtn('warning','Warnings')+fbtn('healthy','Healthy')+'</div></div>'
+    +'<input class="search" id="search" placeholder="Search by name, category or address..." value="'+esc(QUERY)+'">'
+    +'<div class="tbl"><div class="th"><div>Listing</div><div>Category</div><div class="hide">Rating</div><div class="hide">Photos</div><div>Health</div><div>Status</div></div>'+rows+'</div></div>';
+  document.getElementById('content').innerHTML=html;
+  var se=document.getElementById('search');
+  se.addEventListener('input',function(){QUERY=this.value;var p=this.selectionStart;renderListings();var n=document.getElementById('search');n.focus();try{n.setSelectionRange(p,p);}catch(e){}});
+}
+function fbtn(f,label){return '<button class="fbtn'+(FILTER===f?' active':'')+'" onclick="setFilter(\''+f+'\')">'+label+'</button>';}
+function setFilter(f){FILTER=f;renderListings();}
+function filtered(){var q=QUERY.trim().toLowerCase();return (DATA.listings||[]).filter(function(l){if(FILTER!=='all'&&l.status!==FILTER)return false;if(q){var hay=(l.title+' '+l.category+' '+(l.address||'')).toLowerCase();if(hay.indexOf(q)<0)return false;}return true;});}
+
+/* ================= REVIEWS ================= */
+function renderReviews(){
+  var s=DATA.summary||{};
+  if(!DATA.reviewApi){document.getElementById('content').innerHTML=errCard('Reviews API not enabled','Enable the Google My Business API to pull review data.','https://console.cloud.google.com/apis/library/mybusiness.googleapis.com?project=reviews-456415');return;}
+  var rating=(s.portfolioRating!==null&&s.portfolioRating!==undefined)?s.portfolioRating.toFixed(2):'--';
+  var vel=sVel(s);
+  var html='<div class="kpis">'
+    +kpi('Portfolio Rating',rating,stars(s.portfolioRating),'amber',IC.star)
+    +kpi('Total Reviews',fmt(s.totalReviews),fmt(vel)+' in '+velLabel(),'blue',IC.chat)
+    +kpi('Unanswered',fmt(s.unanswered),'reply to lift rankings','red',IC.warn)
+    +kpi('Negatives Open',fmt(s.negOpen),'1-3 star, no reply','red',IC.warn)
+    +'</div>';
+  var focusOpts='<option value="">Whole portfolio</option>';
+  (DATA.listings||[]).forEach(function(l){if(l.reviews&&l.reviews.total)focusOpts+='<option value="'+esc(l.title)+'"'+(THEMEFOCUS===l.title?' selected':'')+'>'+esc(l.title)+'</option>';});
+  html+='<div class="card"><div class="card-head"><div class="card-title">What residents are saying</div>'
+    +'<div class="ai-ctl-row" style="margin:0"><select class="msel" id="theme-focus" onchange="THEMEFOCUS=this.value">'+focusOpts+'</select>'
+    +'<button class="btn primary" id="theme-run"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4 2.5 5.2.8.8 1.5 1.5 1.5 2.8h6c0-1.3.7-2 1.5-2.8C18.7 13 20 11.5 20 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>Analyze reviews with AI</button></div></div>'
+    +'<div id="theme-panel">'+(THEMES?renderThemes(THEMES):'<div class="empty">Pick a scope and let the AI read every review to surface top complaints, praise and fixes.</div>')+'</div></div>';
+  var rows=(DATA.listings||[]).filter(function(l){return l.reviews;}).map(function(l){return l;});
+  rows.sort(function(a,b){var ra=a.reviews.responseRate; var rb=b.reviews.responseRate; ra=(ra===null)?101:ra; rb=(rb===null)?101:rb; if(ra!==rb)return ra-rb; return (b.reviews.recentNeg||0)-(a.reviews.recentNeg||0);});
+  var tr='';
+  rows.forEach(function(l){var r=l.reviews;
+    var rr=(r.responseRate===null)?'--':(r.responseRate+'%');
+    var rrcls=(r.responseRate===null)?'sub':(r.responseRate>=90?'ok':(r.responseRate>=50?'warn':'bad'));
+    tr+='<div class="tr rev" onclick="openReviewDrawer(\''+esc(l.id)+'\',\''+esc(l.title.replace(/'/g,"\\'"))+'\')">'
+      +'<div><div class="name">'+esc(l.title)+'</div><div class="cat">'+(typeof r.avg==='number'?stars(r.avg)+' '+r.avg.toFixed(1):'no rating')+'</div></div>'
+      +'<div class="sub">'+fmt(r.total)+'</div>'
+      +'<div class="sub hide">'+fmt(velOf(r))+'</div>'
+      +'<div class="'+rrcls+'">'+rr+'</div>'
+      +'<div class="sub">'+(r.unanswered||0)+'</div>'
+      +'<div>'+((r.recentNeg>0)?'<span class="pill red">'+r.recentNeg+' neg</span>':'<span class="pill green">clear</span>')+'</div></div>';
+  });
+  html+='<div class="card" style="margin-top:16px"><div class="card-title" style="margin-bottom:6px">Reviews by property: lowest response rate first</div>'
+    +'<div class="tbl"><div class="th th-rev"><div>Property</div><div>Total</div><div class="hide">In '+velLabel()+'</div><div>Response</div><div>Unanswered</div><div>Negatives</div></div>'+tr+'</div></div>';
+  document.getElementById('content').innerHTML=html;
+  document.getElementById('theme-run').addEventListener('click',runThemes);
+}
+function runThemes(){
+  var panel=document.getElementById('theme-panel');
+  panel.innerHTML='<div class="ai-loading"><div class="ai-typing"><span></span><span></span><span></span></div><p>Reading '+(THEMEFOCUS?('every review for '+esc(THEMEFOCUS)):'reviews across the portfolio')+'...</p></div>';
+  google.script.run.withSuccessHandler(function(r){
+    if(r.error){panel.innerHTML=errCard('Could not analyze',r.error,null);return;}
+    var parsed=parseJson(r.text);
+    if(!parsed){panel.innerHTML='<div class="ai-report-box">'+mdToHtml(r.text)+'</div>';return;}
+    THEMES=parsed;panel.innerHTML=renderThemes(parsed);
+  }).withFailureHandler(function(e){panel.innerHTML=errCard('Could not analyze',(e&&e.message)?e.message:String(e),null);}).getReviewThemes(THEMEFOCUS,false);
+}
+function renderThemes(d){
+  var sent=d.sentiment||{positive:0,neutral:0,negative:0};
+  var h='<div class="theme-panel">';
+  if(d.summary)h+='<div class="ai-summary" style="margin-bottom:14px">'+esc(d.summary)+'</div>';
+  h+='<div class="slegend"><span><i style="background:var(--emerald)"></i>Positive '+(sent.positive||0)+'%</span><span><i style="background:var(--amber)"></i>Neutral '+(sent.neutral||0)+'%</span><span><i style="background:var(--red)"></i>Negative '+(sent.negative||0)+'%</span></div>';
+  h+='<div class="sentiment"><div style="width:'+(sent.positive||0)+'%;background:var(--emerald)"></div><div style="width:'+(sent.neutral||0)+'%;background:var(--amber)"></div><div style="width:'+(sent.negative||0)+'%;background:var(--red)"></div></div>';
+  if(d.analyzed)h+='<div class="sub" style="margin-bottom:8px">Based on '+fmt(d.analyzed)+' written reviews</div>';
+  if(d.complaints&&d.complaints.length){h+='<div class="ai-sec-title"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>Top Complaints</div>';d.complaints.forEach(function(c){h+='<div class="issue high"><div class="issue-top"><span class="issue-title">'+esc(c.theme)+'</span><span class="theme-count">'+(c.count||'')+(c.count?' mentions':'')+'</span></div><div class="issue-detail">'+esc(c.detail||'')+'</div>'+(c.example?'<div class="theme-eg">"'+esc(c.example)+'"</div>':'')+'</div>';});}
+  if(d.praise&&d.praise.length){h+='<div class="ai-sec-title green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Top Praise</div>';d.praise.forEach(function(c){h+='<div class="issue" style="border-left-color:var(--emerald)"><div class="issue-top"><span class="issue-title">'+esc(c.theme)+'</span><span class="theme-count">'+(c.count||'')+(c.count?' mentions':'')+'</span></div><div class="issue-detail">'+esc(c.detail||'')+'</div>'+(c.example?'<div class="theme-eg">"'+esc(c.example)+'"</div>':'')+'</div>';});}
+  if(d.recommendations&&d.recommendations.length){h+='<div class="ai-sec-title blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>Recommendations</div>';d.recommendations.forEach(function(c){h+='<div class="issue low"><div class="issue-title">'+esc(c.title)+'</div><div class="issue-detail">'+esc(c.detail||'')+'</div></div>';});}
+  h+='</div>';return h;
+}
+/* ================= PERFORMANCE ================= */
+function renderPerformance(){
+  setLoading('Pulling views, calls, clicks & directions from the Performance API ('+rangeLabel()+')...');
+  google.script.run.withSuccessHandler(function(p){PERF=p;paintPerformance();}).withFailureHandler(onFail).getPerformanceData(rangeJson(),false);
+}
+function paintPerformance(){
+  var p=PERF;if(!p){return;}
+  if(p.error&&!p.rows.length){document.getElementById('content').innerHTML=errCard('Performance data unavailable',p.error,p.enableLink);return;}
+  var t=p.totals||{views:0,calls:0,clicks:0,directions:0};
+  var html='<div class="kpis">'
+    +kpi('Total Views',fmt(t.views),'impressions '+trend(t.viewsTrend),'blue',IC.eye)
+    +kpi('Calls',fmt(t.calls),'phone clicks '+trend(t.callsTrend),'green',IC.phone)
+    +kpi('Website Clicks',fmt(t.clicks),'to your sites '+trend(t.clicksTrend),'amber',IC.cursor)
+    +kpi('Directions',fmt(t.directions),'route requests '+trend(t.dirTrend),'blue',IC.map)
+    +'</div>';
+  var rows='';
+  if(!p.rows.length)rows='<div class="empty">No performance data returned for this range.</div>';
+  else p.rows.forEach(function(r){
+    rows+='<div class="tr perf">'
+      +'<div class="name">'+esc(r.title)+'</div>'
+      +'<div class="sub">'+fmt(r.views)+' '+trend(r.viewsTrend)+'</div>'
+      +'<div class="sub">'+fmt(r.calls)+' '+trend(r.callsTrend)+'</div>'
+      +'<div class="sub hide">'+fmt(r.clicks)+' '+trend(r.clicksTrend)+'</div>'
+      +'<div class="sub">'+fmt(r.directions)+' '+trend(r.dirTrend)+'</div></div>';
+  });
+  html+='<div class="card"><div class="card-head"><div class="card-title">Performance by property · '+esc(p.label||rangeLabel())+'</div><div class="sub">vs prior '+ (p.len||90) +' days</div></div>'
+    +'<div class="tbl"><div class="th th-perf"><div>Property</div><div>Views</div><div>Calls</div><div class="hide">Clicks</div><div>Directions</div></div>'+rows+'</div></div>';
+  document.getElementById('content').innerHTML=html;
+}
+
+/* ================= ALERTS ================= */
+function renderAlerts(){
+  var alerts=DATA.alerts||[];
+  var high=alerts.filter(function(a){return a.sev==='high';}).length;
+  var med=alerts.filter(function(a){return a.sev==='medium';}).length;
+  var html='<div class="kpis" style="grid-template-columns:repeat(3,1fr)">'
+    +kpi('Total Actions',fmt(alerts.length),'high + medium priority','blue',IC.warn)
+    +kpi('High Priority',fmt(high),'do these first','red',IC.warn)
+    +kpi('Medium Priority',fmt(med),'this week','amber',IC.warn)
+    +'</div>';
+  var feed='';
+  if(!alerts.length)feed='<div class="empty">Nothing needs attention. Every listing is in good shape.</div>';
+  else alerts.forEach(function(a){feed+=alertRow(a);});
+  html+='<div class="card"><div class="card-title" style="margin-bottom:8px">All Priority Actions</div>'+feed+'</div>';
+  document.getElementById('content').innerHTML=html;
+}
+
+/* ================= AI ANALYST ================= */
+function renderAI(){
+  var html='<div class="ai-wrap">';
+  html+='<div class="card ai-controls"><div class="ai-ctl-row"><div class="ai-modes">'
+    +aiModeBtn('overview','Portfolio Audit')+aiModeBtn('reviews','Review Strategy')+aiModeBtn('fixes','Ranking Fixes')
+    +'</div><select class="msel" id="ai-focus"><option value="">Whole portfolio</option>'
+    +(DATA.listings||[]).map(function(l){return '<option value="'+esc(l.title)+'"'+(FOCUS===l.title?' selected':'')+'>'+esc(l.title)+'</option>';}).join('')
+    +'</select><button class="btn primary" id="ai-run"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5z"/></svg>Generate</button></div>'
+    +'<div class="ai-key" id="ai-key-row"></div></div>';
+  html+='<div id="ai-report">'+(AISTATE.report?renderReport(AISTATE.report):aiEmpty())+'</div>';
+  html+=chatBox();
+  html+='</div>';
+  document.getElementById('content').innerHTML=html;
+  Array.prototype.forEach.call(document.querySelectorAll('.ai-mode'),function(b){b.classList.toggle('active',b.getAttribute('data-mode')===AISTATE.mode);});
+  document.getElementById('ai-run').addEventListener('click',function(){AISTATE.mode=curMode();FOCUS=document.getElementById('ai-focus').value;runAI();});
+  Array.prototype.forEach.call(document.querySelectorAll('.ai-mode'),function(b){b.addEventListener('click',function(){AISTATE.mode=b.getAttribute('data-mode');Array.prototype.forEach.call(document.querySelectorAll('.ai-mode'),function(x){x.classList.toggle('active',x===b);});});});
+  refreshKeyRow();
+  bindChat();
+}
+function aiModeBtn(m,label){return '<button class="ai-mode" data-mode="'+m+'">'+label+'</button>';}
+function curMode(){var a=document.querySelector('.ai-mode.active');return a?a.getAttribute('data-mode'):'overview';}
+function aiEmpty(){return '<div class="card"><div class="ai-empty"><div class="ai-empty-ic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4 2.5 5.2.8.8 1.5 1.5 1.5 2.8h6c0-1.3.7-2 1.5-2.8C18.7 13 20 11.5 20 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg></div><h3>Your GBP strategist is ready</h3><p>Pick a lens and hit Generate. The AI reads your live portfolio: reviews, ratings, response rates, categories, hours, photos: and returns a scored, prioritized action plan grounded in real numbers.</p></div></div>';}
+function refreshKeyRow(){
+  google.script.run.withSuccessHandler(function(st){
+    var row=document.getElementById('ai-key-row');if(!row)return;
+    if(st.set){row.innerHTML='<span style="color:var(--emerald)">&#9679;</span> API key saved ('+esc(st.masked)+') <button class="fbtn" id="ai-key-clear">Change</button>';document.getElementById('ai-key-clear').addEventListener('click',function(){row.innerHTML=keyForm();bindKeyForm();});}
+    else{row.innerHTML=keyForm();bindKeyForm();}
+  }).getApiKeyStatus();
+}
+function keyForm(){return 'Anthropic API key: <input type="password" class="ai-key-input" id="ai-key-input" placeholder="sk-ant-..."> <button class="fbtn" id="ai-key-save">Save</button> <span class="rmsg" id="ai-key-msg"></span>';}
+function bindKeyForm(){var b=document.getElementById('ai-key-save');if(!b)return;b.addEventListener('click',function(){var k=document.getElementById('ai-key-input').value;var msg=document.getElementById('ai-key-msg');msg.textContent='Saving...';google.script.run.withSuccessHandler(function(r){if(r.error){msg.style.color='var(--red)';msg.textContent=r.error;}else{msg.style.color='var(--emerald)';msg.textContent='Saved';refreshKeyRow();}}).saveApiKey(k);});}
+function runAI(){
+  var box=document.getElementById('ai-report');
+  box.innerHTML='<div class="card"><div class="ai-loading"><div class="ai-typing"><span></span><span></span><span></span></div><p>Analyzing '+(FOCUS?esc(FOCUS):'your portfolio')+': reading reviews, ratings, categories, hours & photos...</p></div></div>';
+  var ctx=buildAIContext();
+  google.script.run.withSuccessHandler(function(r){
+    if(r.error){box.innerHTML=errCard('AI error',r.error,null);return;}
+    var parsed=parseJson(r.text);
+    if(!parsed){box.innerHTML='<div class="ai-report-box">'+mdToHtml(r.text)+'</div>';return;}
+    AISTATE.report=parsed;box.innerHTML=renderReport(parsed);
+  }).withFailureHandler(function(e){box.innerHTML=errCard('AI error',(e&&e.message)?e.message:String(e),null);}).getAIAnalysis(AISTATE.mode,FOCUS,ctx);
+}
+function buildAIContext(){
+  var slim={summary:DATA.summary,generatedAt:DATA.updated,listings:(DATA.listings||[]).map(function(l){return {title:l.title,category:l.category,score:l.score,grade:l.grade,status:l.status,address:l.address,hasWebsite:!!l.website,hasPhone:!!l.phone,hasDesc:l.hasDesc,hoursDays:l.hoursCovered,specialHours:l.specialHours,photos:l.photoCount,postDays:l.postDays,reviews:l.reviews,issues:(l.issues||[]).map(function(i){return {sev:i.sev,pillar:i.pillar,title:i.title};})};})};
+  return JSON.stringify(slim);
+}
+function renderReport(d){
+  var score=(d.healthScore!==undefined&&d.healthScore!==null)?d.healthScore:'--';
+  var col=scoreColor(typeof score==='number'?score:0);
+  var grade=d.grade||gradeFor(typeof score==='number'?score:0);
+  var circ=2*Math.PI*54;var off=circ*(1-((typeof score==='number'?score:0)/100));
+  var html='<div class="ai-report-box"><div class="ai-hero">'
+    +'<div class="ai-score"><svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="54" fill="none" stroke="var(--surface3)" stroke-width="11"/><circle cx="65" cy="65" r="54" fill="none" stroke="'+col+'" stroke-width="11" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'" transform="rotate(-90 65 65)"/></svg><div class="ai-score-num"><span class="sn" style="color:'+col+'">'+score+'</span><span class="sl">HEALTH</span></div></div>'
+    +'<div class="ai-hero-txt"><div class="ai-grade" style="background:'+col+'22;color:'+col+'">GRADE '+grade+'</div><div class="ai-headline">'+esc(d.headline||'')+'</div><div class="ai-summary">'+esc(d.summary||'')+'</div></div></div>';
+  if(d.metrics&&d.metrics.length){html+='<div class="ai-metrics">';d.metrics.forEach(function(m){var mc=m.status==='good'?'var(--emerald)':(m.status==='bad'?'var(--red)':(m.status==='warn'?'var(--amber)':'var(--text)'));html+='<div class="ai-metric"><div class="ai-metric-v" style="color:'+mc+'">'+esc(m.value)+'</div><div class="ai-metric-l">'+esc(m.label)+'</div></div>';});html+='</div>';}
+  if(d.priorities&&d.priorities.length){html+='<div class="ai-sec-title"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>Priority Actions</div>';d.priorities.forEach(function(p){html+='<div class="issue '+(p.severity||'medium')+'"><div class="issue-top">'+sevPill(p.severity||'medium')+'<span class="issue-title">'+esc(p.title)+'</span></div><div class="issue-detail">'+esc(p.detail||'')+'</div>'+(p.impact?'<div class="issue-fix"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'+esc(p.impact)+'</div>':'')+'</div>';});}
+  if(d.opportunities&&d.opportunities.length){html+='<div class="ai-sec-title blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Opportunities</div>';d.opportunities.forEach(function(o){html+='<div class="issue low"><div class="issue-title">'+esc(o.title)+'</div><div class="issue-detail">'+esc(o.detail||'')+'</div></div>';});}
+  if(d.wins&&d.wins.length){html+='<div class="ai-sec-title green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>What\'s Working</div>';d.wins.forEach(function(w){html+='<div class="issue" style="border-left-color:var(--emerald)"><div class="issue-title">'+esc(w.title)+'</div><div class="issue-detail">'+esc(w.detail||'')+'</div></div>';});}
+  html+='</div>';return html;
+}
+function chatBox(){
+  var msgs=CHAT.map(function(m){return '<div class="chat-row '+(m.role==='user'?'user':'ai')+'"><div class="chat-msg">'+(m.role==='user'?esc(m.content):mdToHtml(m.content))+'</div></div>';}).join('');
+  if(!CHAT.length)msgs='<div class="chat-hint2">Ask anything: "Which 3 properties should I fix first?" · "Draft a plan for the worst location" · "Where am I losing the most calls?"</div>';
+  return '<div class="card ai-chat"><div class="ai-chat-head">Ask the strategist</div><div class="ai-chat-body" id="chat-body">'+msgs+'</div><div class="ai-chat-input"><input id="chat-input" placeholder="Ask about your portfolio..."><button class="chat-send" id="chat-send"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div></div>';
+}
+function bindChat(){
+  var send=document.getElementById('chat-send'),input=document.getElementById('chat-input');
+  if(!send)return;
+  function go(){var q=input.value.trim();if(!q)return;CHAT.push({role:'user',content:q});input.value='';paintChat(true);
+    google.script.run.withSuccessHandler(function(r){CHAT.push({role:'assistant',content:r.error?('Error: '+r.error):r.text});paintChat(false);}).withFailureHandler(function(e){CHAT.push({role:'assistant',content:'Error: '+((e&&e.message)?e.message:String(e))});paintChat(false);}).chatWithAI(buildAIContext(),JSON.stringify(CHAT));
+  }
+  send.addEventListener('click',go);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
+}
+function paintChat(loading){
+  var body=document.getElementById('chat-body');if(!body)return;
+  var msgs=CHAT.map(function(m){return '<div class="chat-row '+(m.role==='user'?'user':'ai')+'"><div class="chat-msg">'+(m.role==='user'?esc(m.content):mdToHtml(m.content))+'</div></div>';}).join('');
+  if(loading)msgs+='<div class="chat-row ai"><div class="chat-msg"><div class="ai-typing"><span></span><span></span><span></span></div></div></div>';
+  body.innerHTML=msgs;body.scrollTop=body.scrollHeight;
+}
+
+/* ================= DETAIL DRAWER ================= */
+function openDrawer(locId){
+  var l=(DATA.listings||[]).filter(function(x){return x.id===locId;})[0];
+  if(!l)return;
+  var r=l.reviews||{};
+  var circ=2*Math.PI*32;var off=circ*(1-(l.score/100));var col=scoreColor(l.score);
+  var quick='';
+  quick+=drawerQuick('Category',esc(l.category));
+  quick+=drawerQuick('Rating',(r.avg!==null&&r.avg!==undefined)?(r.avg.toFixed(1)+' ('+fmt(r.total)+')'):'--');
+  quick+=drawerQuick('Response',(r.responseRate!==null&&r.responseRate!==undefined)?(r.responseRate+'%'):'--');
+  quick+=drawerQuick('Photos',(l.photoCount===null||l.photoCount===undefined)?'--':fmt(l.photoCount));
+  quick+=drawerQuick('Hours',l.hoursCovered+'/7 days');
+  quick+=drawerQuick('Posts',(l.postDays===null||l.postDays===undefined)?'none':(l.postDays+'d ago'));
+  var issues='';
+  if(!l.issues||!l.issues.length){issues='<div class="dr-perfect"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><div>No issues detected. This listing is dialed in.</div></div>';}
+  else{var order={high:0,medium:1,low:2};l.issues.slice().sort(function(a,b){return order[a.sev]-order[b.sev];}).forEach(function(it){issues+=drawerIssue(it);});}
+  var links='';
+  if(l.mapsUri)links+='<a class="dr-link" href="'+esc(l.mapsUri)+'" target="_blank">View on Maps</a>';
+  if(l.website)links+='<a class="dr-link" href="'+esc(l.website)+'" target="_blank">Website</a>';
+  var html='<div class="dr-head"><button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
+    +'<div class="dr-name">'+esc(l.title)+'</div><div class="dr-addr">'+esc(l.address||'')+'</div>'
+    +'<div class="dr-scorebox"><div class="dr-ring"><svg viewBox="0 0 78 78"><circle cx="39" cy="39" r="32" fill="none" stroke="var(--surface3)" stroke-width="7"/><circle cx="39" cy="39" r="32" fill="none" stroke="'+col+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+off+'" transform="rotate(-90 39 39)"/></svg><div class="rn"><b style="color:'+col+'">'+l.score+'</b><span>'+l.grade+'</span></div></div>'
+    +'<div class="dr-quick">'+quick+'</div></div>'+(links?'<div class="dr-links">'+links+'</div>':'')+'</div>'
+    +'<div class="dr-body"><div class="dr-sec">Issues & Fixes ('+(l.issues?l.issues.length:0)+')</div>'+issues+'</div>';
+  document.getElementById('drawerInner').innerHTML=html;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerMask').classList.add('open');
+}
+function drawerQuick(k,v){return '<div class="q"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>';}
+function drawerIssue(it){return '<div class="issue '+it.sev+'"><div class="issue-top">'+sevPill(it.sev)+'<span class="issue-title">'+esc(it.title)+'</span><span class="pillar">'+esc(it.pillar)+'</span></div><div class="issue-detail">'+esc(it.detail)+'</div><div class="issue-fix"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'+esc(it.fix)+'</div></div>';}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerMask').classList.remove('open');REVDRAWER=null;}
+
+/* ================= REVIEW DRAWER ================= */
+function openReviewDrawer(locId,title){
+  REVDRAWER={locId:locId,title:title,reviews:null,filter:'all'};
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerMask').classList.add('open');
+  document.getElementById('drawerInner').innerHTML='<div class="dr-head"><button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="dr-name">'+esc(title)+'</div><div class="dr-addr">Loading reviews...</div></div><div class="dr-body"><div class="ai-loading"><div class="ai-typing"><span></span><span></span><span></span></div><p>Pulling reviews...</p></div></div>';
+  google.script.run.withSuccessHandler(function(res){if(!REVDRAWER||REVDRAWER.locId!==locId)return;REVDRAWER.reviews=res;paintReviewDrawer();}).withFailureHandler(function(e){document.getElementById('drawerInner').innerHTML=errCard('Could not load reviews',(e&&e.message)?e.message:String(e),null);}).getLocationReviews(locId);
+}
+function paintReviewDrawer(){
+  var d=REVDRAWER;if(!d)return;var res=d.reviews||{};
+  if(!res.available){document.getElementById('drawerInner').innerHTML='<div class="dr-head"><button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="dr-name">'+esc(d.title)+'</div></div><div class="dr-body">'+errCard('Reviews unavailable',res.error||'Could not load',null)+'</div>';return;}
+  var items=res.items||[];
+  var f=d.filter;
+  var shown=items.filter(function(r){if(f==='unanswered')return !r.replied;if(f==='negative')return r.stars<=3;return true;});
+  var head='<div class="dr-head"><button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>'
+    +'<div class="dr-name">'+esc(d.title)+'</div><div class="dr-addr">'+(typeof res.avg==='number'?(res.avg.toFixed(1)+' avg · '):'')+fmt(res.total)+' reviews</div>'
+    +'<div class="rev-filter"><div class="sort-toggle">'+revFilterBtn('all','All ('+items.length+')')+revFilterBtn('unanswered','Unanswered ('+items.filter(function(r){return !r.replied;}).length+')')+revFilterBtn('negative','Negative ('+items.filter(function(r){return r.stars<=3;}).length+')')+'</div></div></div>';
+  var body='<div class="dr-body">';
+  if(!shown.length)body+='<div class="empty">No reviews in this filter.</div>';
+  else shown.forEach(function(r,i){
+    var realIdx=items.indexOf(r);
+    body+='<div class="rev-item '+(r.replied?'answered':'unanswered')+'" id="rev-'+realIdx+'">'
+      +'<div class="rev-head"><span class="rev-who">'+esc(r.reviewer)+'</span><span class="rev-when">'+(r.ageDays!==null?(r.ageDays+'d ago'):'')+'</span></div>'
+      +stars(r.stars)
+      +(r.comment?'<div class="rev-comment">'+esc(r.comment)+'</div>':'<div class="rev-comment sub">(no written comment)</div>');
+    if(r.replied){body+='<div class="rev-reply"><b>Your reply</b>'+esc(r.replyComment)+'</div>';}
+    else{
+      body+='<div class="rev-actions"><button class="rbtn ai" onclick="draftReply('+realIdx+')"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4 2.5 5.2.8.8 1.5 1.5 1.5 2.8h6c0-1.3.7-2 1.5-2.8C18.7 13 20 11.5 20 9a7 7 0 0 0-7-7z"/></svg>Draft reply with AI</button></div>'
+        +'<div class="rdraft" id="draft-'+realIdx+'" style="display:none"></div>';
+    }
+    body+='</div>';
+  });
+  body+='</div>';
+  document.getElementById('drawerInner').innerHTML=head+body;
+}
+function revFilterBtn(f,label){return '<button class="fbtn'+(REVDRAWER.filter===f?' active':'')+'" onclick="setRevFilter(\''+f+'\')">'+label+'</button>';}
+function setRevFilter(f){if(!REVDRAWER)return;REVDRAWER.filter=f;paintReviewDrawer();}
+function draftReply(idx){
+  var d=REVDRAWER;if(!d||!d.reviews)return;var r=(d.reviews.items||[])[idx];if(!r)return;
+  var box=document.getElementById('draft-'+idx);box.style.display='block';
+  box.innerHTML='<div class="ai-loading" style="padding:20px 0"><div class="ai-typing"><span></span><span></span><span></span></div><p>Writing a reply...</p></div>';
+  google.script.run.withSuccessHandler(function(res){
+    if(res.error){box.innerHTML=errCard('Could not draft',res.error,null);return;}
+    box.innerHTML='<textarea id="draft-txt-'+idx+'">'+esc(res.text||'')+'</textarea>'
+      +'<div class="rev-actions"><button class="rbtn post" onclick="postReply('+idx+')"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Post to Google</button>'
+      +'<button class="rbtn ai" onclick="draftReply('+idx+')">Regenerate</button>'
+      +'<span class="rmsg" id="draft-msg-'+idx+'"></span></div>';
+  }).withFailureHandler(function(e){box.innerHTML=errCard('Could not draft',(e&&e.message)?e.message:String(e),null);}).draftReviewReply(d.title,r.reviewer,r.stars,r.comment);
+}
+function postReply(idx){
+  var d=REVDRAWER;if(!d||!d.reviews)return;var r=(d.reviews.items||[])[idx];if(!r)return;
+  var txt=document.getElementById('draft-txt-'+idx).value;var msg=document.getElementById('draft-msg-'+idx);
+  msg.style.color='var(--muted)';msg.textContent='Posting...';
+  google.script.run.withSuccessHandler(function(res){
+    if(res.error){msg.style.color='var(--red)';msg.textContent=res.error;return;}
+    msg.style.color='var(--emerald)';msg.textContent='Posted!';
+    r.replied=true;r.replyComment=txt;
+    setTimeout(function(){paintReviewDrawer();},900);
+  }).withFailureHandler(function(e){msg.style.color='var(--red)';msg.textContent=(e&&e.message)?e.message:String(e);}).postReviewReply(r.name,txt);
+}
+
+/* ================= UTIL ================= */
+function parseJson(t){if(!t)return null;var s=t.indexOf('{');var e=t.lastIndexOf('}');if(s<0||e<0)return null;try{return JSON.parse(t.slice(s,e+1));}catch(err){return null;}}
+function mdToHtml(t){if(!t)return'';t=esc(t);t=t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');t=t.replace(/^### (.+)$/gm,'<h4>$1</h4>');t=t.replace(/^## (.+)$/gm,'<h4>$1</h4>');var lines=t.split(/\n/);var out='';var inList=false;lines.forEach(function(ln){if(/^\s*[-*] /.test(ln)){if(!inList){out+='<ul>';inList=true;}out+='<li>'+ln.replace(/^\s*[-*] /,'')+'</li>';}else{if(inList){out+='</ul>';inList=false;}if(ln.trim())out+='<p>'+ln+'</p>';}});if(inList)out+='</ul>';return out;}
+
+/* ================= PROFILE WATCH ================= */
+var WATCH_SEL={};   // locId -> true (which properties to scan)
+
+function renderWatch(){
+  if(!DATA || !DATA.listings || !DATA.listings.length){
+    document.getElementById('content').innerHTML=errCard('Load the dashboard first','Open the Overview tab once so the property list loads, then come back to Profile Watch.',null);
+    return;
+  }
+  var props=DATA.listings.slice().sort(function(a,b){return a.title<b.title?-1:1;});
+  var chips=props.map(function(p){
+    return '<label class="wp-item'+(WATCH_SEL[p.locId]?' on':'')+'"><input type="checkbox" '+(WATCH_SEL[p.locId]?'checked':'')+' onchange="watchToggle(\''+esc(p.locId)+'\',this.checked)"><span>'+esc(p.title)+'</span></label>';
+  }).join('');
+  var n=selCount();
+  var html='<div class="card"><div class="card-head"><div class="card-title">Choose what to scan</div>'
+    +'<div class="filters"><button class="fbtn" onclick="watchAll(true)">Select all</button><button class="fbtn" onclick="watchAll(false)">Clear</button></div></div>'
+    +'<div class="page-sub" style="margin-bottom:12px">Pick one, a few, or all: only the properties you check get scanned (faster, fewer API calls), and Claude reviews each one you select.</div>'
+    +'<div class="wp-grid">'+chips+'</div>'
+    +'<div style="margin-top:14px"><button class="btn primary" id="wp-scan" onclick="scanWatch()">'+(n?('Scan selected ('+n+')'):'Pick at least one property')+'</button></div>'
+    +'</div><div id="watch-results"></div>';
+  document.getElementById('content').innerHTML=html;
+  if(WATCH) renderWatchResults(WATCH);
+}
+function selCount(){ return Object.keys(WATCH_SEL).filter(function(k){return WATCH_SEL[k];}).length; }
+function watchToggle(locId,on){ if(on) WATCH_SEL[locId]=true; else delete WATCH_SEL[locId]; renderWatch(); }
+function watchAll(on){ WATCH_SEL={}; if(on && DATA && DATA.listings){ DATA.listings.forEach(function(p){ WATCH_SEL[p.locId]=true; }); } renderWatch(); }
+function scanWatch(){
+  var sel=Object.keys(WATCH_SEL).filter(function(k){return WATCH_SEL[k];});
+  if(!sel.length){ return; }
+  var res=document.getElementById('watch-results');
+  res.innerHTML='<div class="loading"><div class="spin"></div><p>Scanning '+sel.length+' propert'+(sel.length===1?'y':'ies')+' for Google\'s changes, pending fixes and highlights...</p></div>';
+  google.script.run.withSuccessHandler(function(w){ WATCH=w; renderWatchResults(w); })
+    .withFailureHandler(function(e){ res.innerHTML=errCard('Scan failed',(e&&e.message)?e.message:String(e),null); })
+    .getProfileWatch(true, JSON.stringify(sel));
+}
+function renderWatchResults(w){
+  var res=document.getElementById('watch-results'); if(!res) return;
+  if(w.error && !(w.items&&w.items.length)){ res.innerHTML=errCard('Could not scan profiles',w.error,w.enableLink); return; }
+  var html='<div class="kpis" style="margin-top:16px">'
+    +kpi('Profiles Scanned',fmt(w.scanned),'you selected these','blue',IC.eye)
+    +kpi('Google Changes',fmt(w.googleChanges),'review & accept/reject','red',IC.warn)
+    +kpi('Pending Fixes',fmt(w.pendingCount),'waiting on Google','amber',IC.check)
+    +kpi('Highlights Flagged',fmt(w.flagged),'verify accuracy','amber',IC.star)
+    +'</div>';
+  var changed=(w.items||[]).filter(function(i){return i.googleDiffs.length;});
+  var pending=(w.items||[]).filter(function(i){return i.pending.length && !i.googleDiffs.length;});
+  var withH=(w.items||[]).filter(function(i){return i.highlights.length;});
+  html+='<div class="card" style="margin-top:16px"><div class="card-title" style="margin-bottom:4px">Google changed these: review now</div>'
+    +'<div class="page-sub" style="margin-bottom:14px">Google\'s crawl or user edits changed the live profile. Compare, then accept or reject in Business Profile Manager.</div>';
+  if(!changed.length) html+='<div class="empty">No Google-initiated changes on the scanned properties.</div>';
+  else changed.forEach(function(i){ html+=watchCard(i,true); });
+  html+='</div>';
+  html+='<div class="card" style="margin-top:16px"><div class="card-title" style="margin-bottom:4px">Waiting on Google: your pending fixes</div>'
+    +'<div class="page-sub" style="margin-bottom:14px">Edits you submitted that have not gone live on Search/Maps yet (this is where a "pool = No" fix sits while Google catches up).</div>';
+  if(!pending.length) html+='<div class="empty">Nothing pending.</div>';
+  else pending.forEach(function(i){ html+=watchCard(i,false); });
+  html+='</div>';
+  html+='<div class="card" style="margin-top:16px"><div class="card-title" style="margin-bottom:4px">Current highlights to verify</div>'
+    +'<div class="page-sub" style="margin-bottom:14px">Amenities currently shown on each scanned profile. Flagged (amber) ones are commonly mis-added: confirm they are real.</div>';
+  if(!withH.length) html+='<div class="empty">No highlight attributes returned for the scanned properties.</div>';
+  else withH.forEach(function(i){
+    html+='<div class="wrow" onclick="openWatchDrawer(\''+esc(i.locId)+'\')"><div class="wname">'+esc(i.title)+'</div><div class="wchips">'+i.highlights.map(function(h){return '<span class="wchip'+(h.risky?' risky':'')+'">'+esc(h.label)+'</span>';}).join('')+'</div></div>';
+  });
+  html+='</div>';
+  res.innerHTML=html;
+}
+function watchCard(i,showDiffs){
+  var body='';
+  if(showDiffs && i.googleDiffs.length){
+    body+='<div class="wdiffs">';
+    i.googleDiffs.forEach(function(d){
+      body+='<div class="wdiff"><div class="wdf">'+esc(d.field)+'</div><div class="wdv"><span class="wmine">You: '+esc(d.mine)+'</span><span class="warr">&#8594;</span><span class="wgoogle">Google: '+esc(d.google)+'</span></div></div>';
+    });
+    body+='</div>';
+  }
+  if(i.pending.length){ body+='<div class="wpending">Pending on Google: '+i.pending.map(esc).join(', ')+'</div>'; }
+  var link=i.mapsUri?('<a class="rbtn" href="'+esc(i.mapsUri)+'" target="_blank" onclick="event.stopPropagation()">Open on Google</a>'):'';
+  var btns='<div class="wactions"><button class="rbtn ai" onclick="event.stopPropagation();openWatchDrawer(\''+esc(i.locId)+'\')"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4 2.5 5.2.8.8 1.5 1.5 1.5 2.8h6c0-1.3.7-2 1.5-2.8C18.7 13 20 11.5 20 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>Diagnose & fix</button>'+link+'</div>';
+  return '<div class="wcard '+(showDiffs?'review':'pending')+'"><div class="wcard-h"><span class="wtitle">'+esc(i.title)+'</span>'+(showDiffs?('<span class="pill red">Google changed '+i.googleDiffs.length+'</span>'):('<span class="pill amber">'+i.pending.length+' pending</span>'))+'</div>'+body+btns+'</div>';
+}
+function openWatchDrawer(locId){
+  var i=(WATCH.items||[]).filter(function(x){return x.locId===locId;})[0];if(!i)return;
+  var diffs='';
+  if(i.googleDiffs.length){ diffs='<div class="dr-sec">Google changed</div>'; i.googleDiffs.forEach(function(d){ diffs+='<div class="issue high"><div class="issue-title">'+esc(d.field)+'</div><div class="issue-detail">Your value: <b>'+esc(d.mine)+'</b><br>Google shows: <b>'+esc(d.google)+'</b></div></div>'; }); }
+  var pend=i.pending.length?('<div class="dr-sec">Pending on Google</div><div class="issue"><div class="issue-detail">'+i.pending.map(esc).join(', ')+': submitted, not live yet.</div></div>'):'';
+  var hi=i.highlights.length?('<div class="dr-sec">Current highlights</div><div style="display:flex;flex-wrap:wrap;gap:7px">'+i.highlights.map(function(h){return '<span class="wchip'+(h.risky?' risky':'')+'">'+esc(h.label)+'</span>';}).join('')+'</div>'):'';
+  var links=i.mapsUri?('<div class="dr-links"><a class="dr-link" href="'+esc(i.mapsUri)+'" target="_blank">Open on Google</a><a class="dr-link" href="https://business.google.com/locations" target="_blank">Edit in Business Profile</a></div>'):'';
+  var html='<div class="dr-head"><button class="dr-close" onclick="closeDrawer()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="dr-name">'+esc(i.title)+'</div><div class="dr-addr">Profile accuracy check</div>'+links+'</div>'
+    +'<div class="dr-body">'+diffs+pend+hi
+    +'<div class="dr-sec" style="margin-top:18px">Claude\u2019s fix</div><div id="watch-ai"><button class="rbtn ai" onclick="watchDiagnose(\''+esc(locId)+'\')"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.3 4 2.5 5.2.8.8 1.5 1.5 1.5 2.8h6c0-1.3.7-2 1.5-2.8C18.7 13 20 11.5 20 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg>Ask Claude how to fix this</button></div>'
+    +'</div>';
+  document.getElementById('drawerInner').innerHTML=html;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerMask').classList.add('open');
+}
+function watchDiagnose(locId){
+  var i=(WATCH.items||[]).filter(function(x){return x.locId===locId;})[0];if(!i)return;
+  var box=document.getElementById('watch-ai');box.innerHTML='<div class="ai-loading"><div class="ai-typing"><span></span><span></span><span></span></div><p>Claude is reviewing '+esc(i.title)+'...</p></div>';
+  google.script.run.withSuccessHandler(function(r){
+    if(r.error){box.innerHTML=errCard('AI error',r.error,null);return;}
+    box.innerHTML='<div class="chat-msg" style="max-width:100%;background:var(--surface2);border:1px solid var(--border)">'+mdToHtml(r.text||'(no response)')+'</div>';
+  }).withFailureHandler(function(e){box.innerHTML=errCard('AI error',(e&&e.message)?e.message:String(e),null);}).diagnoseProfile(i.title, JSON.stringify(i));
+}
+
+boot();
+</script>
+
+<style>
+.vpg-demo-badge{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:rgba(34,211,154,.14);color:#22d39a;border:1px solid rgba(34,211,154,.3);vertical-align:middle;}
+.vpg-portfolio{position:fixed;left:16px;bottom:16px;z-index:99999;display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:12px;background:rgba(19,23,31,.92);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 30px rgba(0,0,0,.4);text-decoration:none;font-family:-apple-system,Segoe UI,Roboto,sans-serif;transition:transform .15s,border-color .15s;}
+.vpg-portfolio:hover{transform:translateY(-2px);border-color:rgba(77,141,255,.5);}
+.vpg-portfolio .dot2{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#4d8dff,#6c5cff);box-shadow:0 0 10px rgba(77,141,255,.7);}
+.vpg-portfolio .txt{line-height:1.25;}
+.vpg-portfolio .txt b{display:block;color:#fff;font-size:11.5px;font-weight:700;}
+.vpg-portfolio .txt span{display:block;color:#8a93a6;font-size:9.5px;letter-spacing:.3px;}
+.vpg-credit{position:fixed;right:14px;bottom:12px;z-index:99998;font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:10.5px;color:rgba(255,255,255,.34);letter-spacing:.3px;pointer-events:none;}
+@media(max-width:640px){.vpg-credit{display:none;}}
+</style>
+<a class="vpg-portfolio" href="https://debashishkumarbora.github.io" target="_blank" rel="noopener">
+  <span class="dot2"></span>
+  <span class="txt"><b>Debashish Kumar Bora</b><span>View portfolio</span></span>
+</a>
+<div class="vpg-credit">Concept and design by Debashish Kumar Bora</div>
+<script>
+(function(){try{
+  var el=document.querySelector('.sb-brand-txt span, .brand-sub, header h1, .topbar h1, .logo-sub');
+  if(el && !document.querySelector('.vpg-demo-badge')){
+    var b=document.createElement('span'); b.className='vpg-demo-badge'; b.textContent='Live Demo';
+    el.parentNode.appendChild(b);
+  }
+}catch(e){}})();
+</script>
+<script>
+/* phone layer: section bar, back button, wide tables */
+DKB_MOBILE({
+  narrow: 1000,
+  nav: { items: '.sidebar .nav-item[data-view]', after: '.main > .topbar' },
+  tables: '.tbl',
+  layers: [
+    { open: '#drawer.open', close: function () { closeDrawer(); } }
+  ],
+  home: { is: function () { return VIEW === 'overview'; }, go: function () { setView('overview'); } },
+  wrap: ['setView']
+});
+</script>
+</body></html>

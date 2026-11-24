@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="../kit/mobile.js"></script>
 <meta charset="utf-8">
 <base target="_top">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -2057,6 +2058,15 @@ function adminActivity(){
 }
 
 window.addEventListener('load', boot);
+</script>
+<script>
+/* phone layer */
+DKB_MOBILE({
+  layers: [
+    { open: '#story', close: function () { closeStory(); } },
+    { open: '#modal .sheet', close: function () { closeSheet(); } }
+  ]
+});
 </script>
 </body>
 </html>

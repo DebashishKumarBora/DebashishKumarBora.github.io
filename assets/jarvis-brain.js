@@ -38,6 +38,7 @@ window.JARVIS_BRAIN = (function(){
     ['adsintel', /\b(ads intelligence|ads intel|superdash|super dash|claude style chat|chat agent|ads agent|ads chat|ai analyst for ads)\b/],
     ['perf',     /\b(performance review|perf review|year over year review|yoy review|annual review|review that (builds|writes) itself|self building review)\b/],
     ['clients',  /\b(client reports?|clientone|client one|client portal|per client reports?)\b/],
+    ['campaignops', /\b(campaign ops|campaignops|campaign operations|mcp( server)?|model context protocol|approval agent|safe agent|agent guardrails?|human in the loop|change agent)\b/],
     ['ads',      /\b(adcommand|ad command|ads command|command center)\b/],
     ['hub',      /\b(intelligence hub|marketing hub|marketing intelligence|control room|the hub|hub)\b/],
     ['lease',    /\b(leasing( dashboard)?|lease|snowflake dashboard|occupancy dashboard)\b/],
@@ -59,7 +60,7 @@ window.JARVIS_BRAIN = (function(){
      know:'Tableau is in his toolkit, though his recent builds lean on Looker Studio, Power BI and Apps Script.',
      card:'tools'},
     {k:'appsscript', re:/\b(apps script|app script|google apps script|gas)\b/, n:'Google Apps Script',
-     know:'Apps Script is the engine behind most of the builds here. All three <b>AI agents</b> and the live dashboards are Apps Script web apps.',
+     know:'Apps Script is the engine behind most of the builds here. Three of the four <b>AI agents</b> and the live dashboards are Apps Script web apps.',
      card:'agents'},
     {k:'snowflake', re:/\bsnowflake\b/, n:'Snowflake',
      know:'Yes. The <b>Leasing Dashboard</b> was built on raw Snowflake tables, turning them into a funnel from prospect to signed lease.',
@@ -83,7 +84,7 @@ window.JARVIS_BRAIN = (function(){
      know:'Yes. Meta Ads is part of his day to day stack, and his dashboards blend Meta with Google Ads, GA4 and CRM data.',
      card:'tools'},
     {k:'claude', re:/\b(claude|anthropic|llms?|large language models?|gpt|openai|chatgpt|gen ai|generative ai)\b/, n:'Claude',
-     know:'He builds with <b>Claude</b>. It powers the AI layer in Ads Intelligence and AdCommand, reading the account data and returning what to fix first.',
+     know:'He builds with <b>Claude</b>. It powers the AI layer in Ads Intelligence and AdCommand, reading the account data and returning what to fix first. <b>Campaign Ops</b> goes further: it lets Claude change Google Ads, but only after a person approves each change.',
      card:'one:adsintel', offer:'demo:adsintel'},
     {k:'azure', re:/\bazure\b/, n:'Azure',
      know:'Azure is part of his cloud toolkit.',
@@ -134,7 +135,7 @@ window.JARVIS_BRAIN = (function(){
      card:'about', next:['Where does he work now?','Education?','Is he available?']},
 
     {id:'current', re:[[/\b(where|who) does he work (now|currently|today)\b/,6],[/\b(current|present) (job|role|employer|company|position)\b/,6],[/\bwhat is he doing now\b/,5],[/\bis he employed\b/,5]],
-     a:['He is a <b>Senior Marketing Executive at QX Global</b>, where his work covers Google Ads, data and automation for a US property management company. The AI agents on this page come from that work.'],
+     a:['He is a <b>Senior Marketing Executive at QX Global</b>, where his work covers Google Ads, data and automation for a US property management company. Ads Intelligence, Performance Review and Client Reports come from that work.'],
      card:'agents', next:['Is he available?','Show me an AI agent','Book a call']},
 
     {id:'edu', re:[[/\b(education|degree|mba|university|college|studied|study|qualification|iit|ism|dhanbad|kaziranga)\b/,5]],
@@ -180,8 +181,8 @@ window.JARVIS_BRAIN = (function(){
      card:'hire', next:['Show me his best work','How much does he charge?','Book a call']},
 
     {id:'work', re:[[/\b(work|projects?|portfolio|builds?|demos?|examples?|samples?)\b/,3],[/\bcase stud(y|ies)\b/,7],[/\bwhat (has|did) he (built|build|made|make|created)\b/,6],[/\bshow me (his|the|some) (work|projects|stuff)\b/,6]],
-     a:['Eleven builds on this page, and nine run live in your browser: <b>three AI agents</b> and <b>six dashboards</b>, all on sample data. Pick one and I will open it.',
-        'Everything here is a real build shown on invented data: three AI agents, six live dashboards and two Looker Studio reports. Want me to open the best one first?'],
+     a:['Twelve builds on this page, and ten run live in your browser: <b>four AI agents</b> and <b>six dashboards</b>, all on sample data. Pick one and I will open it.',
+        'Everything here is a real build shown on invented data: four AI agents, six live dashboards and two Looker Studio reports. Want me to open the best one first?'],
      card:'work', next:CHIPS.work, offer:'demo:adsintel'},
 
     {id:'best', re:[[/\b(best|favou?rite|top|strongest|most impressive|flagship|proudest|coolest|signature)\b/,4],[/\bwhere (should|do) i start\b/,5],[/\b(recommend|suggest)\b/,3],[/\bwhich (one|project|demo) (first|should)\b/,5]],
@@ -189,8 +190,8 @@ window.JARVIS_BRAIN = (function(){
      card:'one:adsintel', next:['Open it','How was it built?','Show me another one'], offer:'demo:adsintel', project:'adsintel'},
 
     {id:'agents', re:[[/\b(ai )?agents?\b/,4],[/\b(agentic|assistants? he built|bots? he built)\b/,4]],
-     a:['Three AI agents for marketing teams: <b>Ads Intelligence</b> answers questions about 16 ad accounts, <b>Performance Review</b> writes a year over year review and turns it into slides, and <b>Client Reports</b> gives every client a private link to their own results.'],
-     card:'agents', next:['Open Ads Intelligence','How do the agents use AI?','Show the dashboards'], filter:'agent'},
+     a:['Four AI agents for marketing teams: <b>Ads Intelligence</b> answers questions about 16 ad accounts, <b>Performance Review</b> writes a year over year review and turns it into slides, <b>Client Reports</b> gives every client a private link to their own results, and <b>Campaign Ops</b> lets an AI agent change Google Ads, but only after a person approves each change.'],
+     card:'agents', next:['Open Ads Intelligence','Open Campaign Ops','Show the dashboards'], filter:'agent'},
 
     {id:'dashboards', re:[[/\b(dashboards?|dash boards?|reports?|reporting|bi)\b/,3],[/\blive apps?\b/,4]],
      a:['Six live dashboards: <b>AdCommand</b> for Google Ads, a <b>Marketing Intelligence Hub</b>, a <b>Leasing Dashboard</b> on Snowflake, plus GA4, Business Profile reviews and Search Console. Each one opens right here.'],
@@ -209,7 +210,7 @@ window.JARVIS_BRAIN = (function(){
      card:'work', next:['Show me his best work','What has he built?','Book a call']},
 
     {id:'property', re:[[/\b(real estate|property|properties|multifamily|multi family|apartments?|housing|leasing|landlords?|rentals?)\b/,5]],
-     a:['Yes. His current work is for <b>Sail</b>, a US property management company: Google Ads, data and AI tools across 16 ad accounts. The three AI agents on this page come from that world.'],
+     a:['Yes. His current work is for <b>Sail</b>, a US property management company: Google Ads, data and AI tools across 16 ad accounts. Ads Intelligence, Performance Review and Client Reports come from that world.'],
      card:'agents', next:['Show me an AI agent','Open the Leasing Dashboard','Book a call']},
 
     {id:'travel', re:[[/\b(travel|tourism|holidays?|airlines?|flights?|tour operators?|ota)\b/,5]],
@@ -467,7 +468,7 @@ window.JARVIS_BRAIN = (function(){
 
     /* "show me another one" */
     if(RX.another.test(x)&&!findProject(x)){
-      var order=['adsintel','perf','clients','ads','hub','lease','ga4','gbp','gsc'];
+      var order=['adsintel','perf','clients','campaignops','ads','hub','lease','ga4','gbp','gsc'];
       var cur=order.indexOf(ctx.project), nk=order[(cur+1)%order.length];
       return projectAnswer(nk,'what',ctx);
     }
@@ -525,7 +526,7 @@ window.JARVIS_BRAIN = (function(){
     'Now Senior Marketing Executive at QX Global. Before: Southall Travel, Programming.com, Investosure Consultancy, freelance from 2019.',
     'MBA from IIT (ISM) Dhanbad. Certified in Google Data Analytics, Microsoft Power BI, Advanced Excel.',
     'Stack: Looker Studio, Power BI, Apps Script, Claude, SQL, BigQuery, Snowflake, GA4, Google Ads, Meta Ads, Python.',
-    'Builds on this site: Ads Intelligence, Performance Review, Client Reports (AI agents), AdCommand, Marketing Intelligence Hub, Leasing Dashboard, GA4, Reviews and Search Console dashboards, two Looker Studio reports. Demos use invented sample data.',
+    'Builds on this site: Ads Intelligence, Performance Review, Client Reports, Campaign Ops (AI agents; Campaign Ops is a personal open source MCP server that lets AI change Google Ads only after a person approves), AdCommand, Marketing Intelligence Hub, Leasing Dashboard, GA4, Reviews and Search Console dashboards, two Looker Studio reports. Demos use invented sample data.',
     'Based in Guwahati, India, remote, overlapping UK and US hours. Open to projects and full time roles. Pricing is per project after a free intro call.',
     'Contact: '+E+', WhatsApp, LinkedIn, or book a 30 minute call on this page.'
   ].join(' ');

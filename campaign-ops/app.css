@@ -84,6 +84,8 @@ button { font: inherit; color: inherit; }
 .top-nav { display: flex; gap: 22px; margin-right: auto; }
 .top-nav a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500; }
 .top-nav a:hover { color: var(--ink); }
+.top-home { color: var(--muted); font-size: 15px; font-weight: 500; text-decoration: none; }
+.top-home:hover { color: var(--ink); }
 .top-cta { color: var(--ink); font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--rule-strong); border-radius: var(--r-sm); padding: 7px 13px; background: var(--sheet); }
 .top-cta:hover { border-color: var(--muted); }
 
@@ -486,6 +488,42 @@ button { font: inherit; color: inherit; }
   .toast { font-size: 13px; padding: 8px 12px; }
   .toasts { left: 16px; right: 16px; bottom: 16px; max-width: none; }
 }
+
+@media (max-width: 420px) {
+  .xs-hide { display: none; }
+  .top-inner { gap: 14px; }
+  .top-home { font-size: 14px; margin-left: auto; }
+}
+
+/* ---------- app mode (?embed=app): inside the portfolio's phone app ---------- */
+html.embed, html.embed body { height: 100%; overflow: hidden; background: var(--sheet); }
+html.embed .skip, html.embed .top, html.embed .hero, html.embed #demo .section-head,
+html.embed .replay, html.embed .how, html.embed .foot { display: none; }
+html.embed .demo { padding: 0; }
+html.embed .demo > .wrap { padding: 0; max-width: none; }
+html.embed .ws { position: fixed; inset: 0; margin: 0; border: 0; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; }
+html.embed .ws-bar { flex: none; padding: 8px 12px; gap: 8px 10px; }
+html.embed .ws-tabs { display: flex; flex: none; border-bottom: 1px solid var(--rule); background: var(--sheet); overflow-x: auto; scrollbar-width: none; }
+html.embed .ws-tabs::-webkit-scrollbar { display: none; }
+html.embed .ws-tab { flex: 1 0 auto; background: none; border: 0; border-bottom: 2px solid transparent; padding: 11px 8px; font-weight: 600; font-size: 14px; color: var(--muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+html.embed .ws-tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--sign); }
+html.embed .ws-body { flex: 1; height: auto; min-height: 0; grid-template-columns: minmax(0, 1fr); }
+html.embed .ws-body .pane-session { display: none; }
+html.embed .ws-body[data-mtab-active="agent"] .pane-side,
+html.embed .ws-body:not([data-mtab-active="agent"]) .pane-agent { display: none; }
+html.embed .ws-body[data-mtab-active="session"] .pane-side { display: none; }
+html.embed .ws-body[data-mtab-active="session"] .pane-session { display: flex; }
+html.embed .pane-agent { border-right: 0; }
+html.embed .pane-head, html.embed .side-tabs { display: none; }
+html.embed .pane-session { flex-direction: column; min-height: 0; background: #f7f7f5; }
+html.embed .session-intro { flex: none; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #dddcd6; background: var(--sheet); }
+html.embed .session-intro p { margin: 0; flex: 1; font-size: 13px; line-height: 1.4; color: var(--muted); }
+html.embed .session-intro .btn { flex: none; padding: 8px 12px; font-size: 14px; }
+html.embed .pane-session .desk { flex: 1; min-height: 0; display: flex; flex-direction: column; border: 0; border-radius: 0; box-shadow: none; }
+html.embed .pane-session .desk-bar { display: none; }
+html.embed .pane-session .desk-chat { flex: 1; height: auto; min-height: 0; padding: 14px 12px 18px; }
+html.embed .toasts { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+@media (max-width: 380px) { html.embed .ws-tab { padding: 11px 6px; font-size: 13.5px; } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

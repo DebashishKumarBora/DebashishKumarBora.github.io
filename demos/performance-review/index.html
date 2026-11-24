@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="../kit/mobile.js"></script>
 <base target="_top">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -369,6 +370,42 @@ table.t{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:
 }
 </style>
 <style>#navSettings{display:none!important}</style>
+<style id="dkb-phone">
+@media (max-width:900px){
+  .side{position:sticky;top:0;z-index:8;padding:0;gap:0;background:#fff;border-bottom:1px solid var(--hair)}
+  .brand{padding:0 0 0 16px}
+  .brand .word{font-size:17px;letter-spacing:.38em}
+  .nav{gap:6px;padding:9px 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{flex:none;display:inline-flex;align-items:center;height:36px;padding:0 15px;border:1px solid var(--hair);border-radius:999px;font-size:14.5px;line-height:1}
+  .nav a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  html.dkb-in-app .brand{display:none}
+  .bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:center;gap:8px;padding:10px 14px}
+  .bar::-webkit-scrollbar{display:none}
+  .bar .field{flex:none;width:auto}
+  .bar .field>label{display:none}
+  .bar .field select{width:auto;min-height:36px;padding:5px 30px 5px 11px;font-size:14px;border-radius:999px}
+  .bar .field .row{flex-wrap:nowrap}
+  .bar .field .row input[type=date]{min-height:36px;font-size:14px;flex:none;width:auto}
+  .bar-actions{flex:none;flex-wrap:nowrap;margin-left:0;align-items:center;gap:8px}
+  #bDefault{display:none}
+  .bar .btn,.bar .menu>summary{min-height:36px;padding:5px 14px;font-size:14px;border-radius:999px}
+  .menu-list{position:fixed;left:12px;right:12px;top:auto;bottom:12px;min-width:0;z-index:60;padding:8px;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+  .menu-list button{padding:14px 12px;font-size:16px}
+  .menu[open]::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:59}
+  .drawer{width:100vw}
+  .drawer-in{padding:18px 16px 56px}
+}
+@media (max-width:560px){
+  .content{padding:18px 14px 72px}
+  h1.hero{font-size:25px;line-height:1.22;margin:6px 0 12px}
+  h2.sec{font-size:23px;line-height:1.25}
+  .tiles{gap:8px;margin:16px 0 6px}
+  .tile .tv{font-size:23px}
+  .pctl{gap:8px;font-size:13px;padding:0 8px}
+  .pctl button{padding:6px 10px;font-size:13px}
+}
+</style>
 </head>
 <body>
 <div class="app" id="app">
@@ -1817,6 +1854,26 @@ function bindUi() {
 }
 init();
 
+</script>
+<script>
+/* phone layer */
+DKB_MOBILE({
+  narrow: 900,
+  layers: [
+    { open: '#present.on', close: function () { closePresent(); } },
+    { open: '#drawer.on', close: function () { closeDrawer(false); } },
+    { open: function () { var m = document.getElementById('exportMenu'); return !!(m && m.open); },
+      close: function () { document.getElementById('exportMenu').open = false; } }
+  ],
+  home: { is: function () { return S.view === 'report'; }, go: function () { showView('report'); } },
+  after: function () {
+    /* close the export sheet when one of its actions is picked or the page is tapped */
+    var m = document.getElementById('exportMenu');
+    if (!m) return;
+    m.addEventListener('click', function (e) { if (e.target === m || e.target.closest('.menu-list button')) setTimeout(function () { m.open = false; }, 0); });
+    document.addEventListener('click', function (e) { if (m.open && !m.contains(e.target)) m.open = false; });
+  }
+});
 </script>
 </body>
 </html>
