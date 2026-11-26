@@ -276,9 +276,9 @@
     if(/^(stop|quiet|silence|shh+|stop talking)$/.test(x)){ shutUp(); botTell(S.stopped); return true; }
     if(/\b(dark mode|light mode|switch theme|change theme)\b/.test(x)){ var tb=document.getElementById('themeBtn'); if(tb){tb.click();botTell(S.theme);return true;} }
     if(/^(top|go to top|back to top|scroll to top)$/.test(x)){ window.scrollTo({top:0,behavior:RM?'auto':'smooth'}); botTell(S.top); return true; }
-    var nav=x.match(/\b(?:go to|take me to|scroll to|jump to|show me)(?: the)? (about|services|clients|brands|contact|skills|stack|work|before and after|calculator|roi|estimator|lab|data lab)(?: section)?$/);
+    var nav=x.match(/\b(?:go to|take me to|scroll to|jump to|show me)(?: the)? (about|services|clients|brands|contact|skills|stack|work|agents|agent series|before and after|calculator|roi|estimator|lab|data lab)(?: section)?$/);
     if(nav){
-      var map={about:'#about',services:'#services',clients:'#clients',brands:'#clients',contact:'#contact',skills:'#skills',stack:'#skills',work:'#work','before and after':'#transform',calculator:'#lab',roi:'#lab',estimator:'#lab',lab:'#lab','data lab':'#lab'};
+      var map={about:'#about',services:'#services',clients:'#clients',brands:'#clients',contact:'#contact',skills:'#skills',stack:'#skills',work:'#work',agents:'#agents','agent series':'#agents','before and after':'#transform',calculator:'#lab',roi:'#lab',estimator:'#lab',lab:'#lab','data lab':'#lab'};
       act('go:'+map[nav[1]]); botTell('Here you go.'); return true;
     }
     if(/^(show|filter)( me)?( only)?( the)? (looker( studio)?( builds| work| reports)?|looker studio work\??)$/.test(x)||/^looker studio work\??$/.test(x)||/^show the looker studio builds$/.test(x)){

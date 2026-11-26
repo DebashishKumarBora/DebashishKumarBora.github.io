@@ -136,7 +136,7 @@ window.SITE={
    "repo": "https://github.com/DebashishKumarBora/campaign-ops-mcp",
    "p": "AI agents can read a Google Ads account, but no team would let one change budgets or ad copy without limits, a person approving it, and an undo.",
    "b": "A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo.",
-   "r": "Tested in a real Claude session on a sandbox account: it found wasted spend and an ad that broke Fair Housing rules, waited for approval, then applied and verified three fixes.",
+   "r": "Now live on the Google Ads API. In a real Google Ads test account it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. It is Agent 01 in the Agent series.",
    "mshots": [
     "mshots/campaignops-1.webp",
     "mshots/campaignops-2.webp",

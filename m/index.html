@@ -426,7 +426,47 @@ body.kb-open #s-ask.on{bottom:0}
   transform:translate(-50%,16px);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s var(--ease)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+/* ---------- home: the Agent series (from ../assets/agents-data.js) ---------- */
+.agc{position:relative;border-radius:var(--r-lg);border:1px solid var(--border);overflow:hidden;box-shadow:var(--card-shadow);
+  background:radial-gradient(120% 80% at 100% 0%,rgba(109,94,248,.2),transparent 60%),var(--surface)}
+.agc::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--grad);opacity:.55;pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.agc-main{display:block;width:100%;padding:14px 14px 12px;border:0;background:none;text-align:left}
+.agc-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.agc-no{padding:4px 8px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);font:700 10px/1 var(--mono)}
+.agc-live{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:20px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.28);color:var(--emerald);font:600 9.5px/1 var(--mono);white-space:nowrap}
+.agc-live i{width:6px;height:6px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 3px rgba(52,211,153,.2);animation:pulse 2s infinite}
+.agc-nm{display:block;margin:10px 0 4px;font:800 21px/1.15 var(--display);letter-spacing:-.02em}
+.agc-ln{display:block;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.agc-diff{margin-top:12px;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--bg2)}
+.agc-diff small{display:block;margin-bottom:6px;font:500 9.5px/1.2 var(--mono);color:var(--faint)}
+.agc-diff .d,.agc-diff .i{position:relative;padding:5px 8px 5px 22px;border-radius:8px;font-size:12.5px;line-height:1.4}
+.agc-diff .d{background:rgba(251,113,133,.12)}
+.agc-diff .d span{text-decoration:line-through;text-decoration-color:#FB7185;text-decoration-thickness:1.5px}
+.agc-diff .i{margin-top:4px;background:rgba(52,211,153,.12)}
+.agc-diff .d::before,.agc-diff .i::before{position:absolute;left:8px;top:5px;font:700 12px/1.4 var(--mono)}
+.agc-diff .d::before{content:"-";color:#FB7185}
+.agc-diff .i::before{content:"+";color:var(--emerald)}
+.agc-steps{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.agc-steps i{font:600 9.5px/1 var(--mono);font-style:normal;padding:5px 7px;border-radius:20px;background:rgba(52,211,153,.1);color:var(--emerald)}
+.agc-proof{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+.agc-proof div{padding:8px 4px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);text-align:center;min-width:0}
+.agc-proof b{display:block;font:800 14px/1.1 var(--display);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.agc-proof span{display:block;margin-top:3px;font-size:9px;line-height:1.25;color:var(--muted)}
+.agc-cta{display:grid;grid-template-columns:1fr auto;gap:8px;padding:0 14px 14px}
+.agc-cta .btn{height:42px;font-size:13px}
+.agc-cta .btn:only-child{grid-column:1 / -1}
+.agc+.agc{margin-top:10px}
+.agc-next{display:flex;align-items:center;gap:10px;margin-top:8px;padding:11px 12px;border-radius:var(--r);border:1px dashed var(--border2)}
+.agc-next>span{flex-shrink:0;padding:4px 8px;border-radius:20px;border:1px dashed var(--border2);font:700 10px/1 var(--mono);color:var(--faint)}
+.agc-next b{display:block;font:700 12.5px/1.25 var(--display)}
+.agc-next small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+[data-theme="light"] .agc-diff .d span{text-decoration-color:#E11D48}
+[data-theme="light"] .agc-diff .d::before{color:#E11D48}
+[data-theme="light"] .agc-live,[data-theme="light"] .agc-steps i,[data-theme="light"] .agc-diff .i::before{color:#059669}
+
 @media (max-width:359px){
+  .agc-proof{grid-template-columns:1fr 1fr}
   .cta{display:none}
   .stats{grid-template-columns:1fr 1fr}
   .steps{grid-template-columns:1fr 1fr}
@@ -505,6 +545,9 @@ body.kb-open #s-ask.on{bottom:0}
 
       <div class="sh"><h2>AI agents<small>Tools that do the work, not just show it</small></h2><button data-go="work" data-f="agent">See all</button></div>
       <div class="rail" id="railAgents"></div>
+
+      <div class="sh" id="agentsHead"><h2>Agent series<small>Agents that act inside real platforms, one at a time</small></h2></div>
+      <div id="agentSeries"></div>
 
       <button class="promo press" data-go="lab">
         <div><small>Try it yourself</small><b>Hand it a messy export</b><span>Drop in a CSV and get a dashboard and plain English insights in seconds. Nothing is uploaded.</span><em>Open the data lab <svg class="ico" style="width:14px;height:14px"><use href="#i-chev"/></svg></em></div>
@@ -659,9 +702,10 @@ body.kb-open #s-ask.on{bottom:0}
 
 <div class="toast" id="toast" role="status"></div>
 
-<script src="../assets/site-data.js?v=9"></script>
-<script src="app.js?v=9"></script>
-<script src="../assets/jarvis-brain.js?v=9" defer></script>
+<script src="../assets/site-data.js?v=10"></script>
+<script src="../assets/agents-data.js?v=10"></script>
+<script src="app.js?v=10"></script>
+<script src="../assets/jarvis-brain.js?v=10" defer></script>
 <script src="../assets/lab.js" defer></script>
 </body>
 </html>

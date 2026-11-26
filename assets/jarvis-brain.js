@@ -190,8 +190,12 @@ window.JARVIS_BRAIN = (function(){
      card:'one:adsintel', next:['Open it','How was it built?','Show me another one'], offer:'demo:adsintel', project:'adsintel'},
 
     {id:'agents', re:[[/\b(ai )?agents?\b/,4],[/\b(agentic|assistants? he built|bots? he built)\b/,4]],
-     a:['Four AI agents for marketing teams: <b>Ads Intelligence</b> answers questions about 16 ad accounts, <b>Performance Review</b> writes a year over year review and turns it into slides, <b>Client Reports</b> gives every client a private link to their own results, and <b>Campaign Ops</b> lets an AI agent change Google Ads, but only after a person approves each change.'],
-     card:'agents', next:['Open Ads Intelligence','Open Campaign Ops','Show the dashboards'], filter:'agent'},
+     a:['Four AI agents for marketing teams: <b>Ads Intelligence</b> answers questions about 16 ad accounts, <b>Performance Review</b> writes a year over year review and turns it into slides, <b>Client Reports</b> gives every client a private link to their own results, and <b>Campaign Ops</b>, Agent 01 in his Agent series, changes a real Google Ads account only after a person approves each change.'],
+     card:'agents', next:['Open Ads Intelligence','What is the Agent series?','Show the dashboards'], filter:'agent'},
+
+    {id:'series', re:[[/\b(agent series|agents series|the series|series of agents)\b/,8],[/\blive run\b/,8],[/\b(real|live) google ads( test)? accounts?\b/,7],[/\bgoogle ads api\b/,3],[/\bagent (01|1|one|02|2|two)\b/,7],[/\b(next|new|upcoming) agents?\b/,7]],
+     a:['<b>Campaign Ops</b> is Agent 01 in Deb’s Agent series. On 26 Nov 2026 it ran on a real Google Ads test account through the Google Ads API: it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. The run is written up step by step, with screenshots. The next agent joins the series when it ships.'],
+     card:'series', project:'campaignops', next:['How was it built?','Show me an AI agent','Book a call']},
 
     {id:'dashboards', re:[[/\b(dashboards?|dash boards?|reports?|reporting|bi)\b/,3],[/\blive apps?\b/,4]],
      a:['Six live dashboards: <b>AdCommand</b> for Google Ads, a <b>Marketing Intelligence Hub</b>, a <b>Leasing Dashboard</b> on Snowflake, plus GA4, Business Profile reviews and Search Console. Each one opens right here.'],
@@ -416,7 +420,7 @@ window.JARVIS_BRAIN = (function(){
   function title(p){return '<b>'+p.t+'</b>';}
   function theTitle(p){return (/(Dashboard|Hub|Review)/.test(p.t)?'the ':'')+title(p);}
 
-  var STRONG=['clean','lab','property','travel','industries','dev','email','whatsapp','social','self','salary','rates','book','timeline','available','contact','resume','edu','certs','location','experience','current','brands','results','why','process','tour','langs','site','demodata','greet','thanks','bye','joke','compliment'];
+  var STRONG=['series','clean','lab','property','travel','industries','dev','email','whatsapp','social','self','salary','rates','book','timeline','available','contact','resume','edu','certs','location','experience','current','brands','results','why','process','tour','langs','site','demodata','greet','thanks','bye','joke','compliment'];
   var FACET=['what','problem','how','result'];
   function projectAnswer(k,facet,ctx){
     var P=projects(), p=P[k]; if(!p) return null;
@@ -429,8 +433,10 @@ window.JARVIS_BRAIN = (function(){
     else if(facet==='problem') txt='The problem: '+p.p.charAt(0).toLowerCase()+p.p.slice(1)+' '+title(p)+' fixes that.';
     else if(facet==='result') txt=p.r;
     else txt=title(p)+': '+p.s+' Built with '+p.tool+'.';
+    var series=(k==='campaignops'&&facet==='what');
+    if(series) txt+=' It is <b>Agent 01</b> in his Agent series, and it now works on a real Google Ads test account.';
     var ask=(live&&facet==='what')?' Want me to open it?':'';
-    return {text:txt+ask,card:'one:'+k,project:k,facet:facet,offer:live?offer:null,
+    return {text:txt+ask,card:series?'series':'one:'+k,project:k,facet:facet,offer:live?offer:null,
             next:live?['Open it','How was it built?','Show me another one']:['Show the Looker Studio builds','Show me an AI agent','Book a call']};
   }
 
@@ -466,8 +472,8 @@ window.JARVIS_BRAIN = (function(){
       return {text:'That is the short version. For the detail behind it, a quick call with Deb is the fastest way. Want me to open his calendar?',offer:'book',next:['Book a call','Show me his best work']};
     }
 
-    /* "show me another one" */
-    if(RX.another.test(x)&&!findProject(x)){
+    /* "show me another one" (but "the next agent" is a question about the Agent series) */
+    if(RX.another.test(x)&&!findProject(x)&&!/\b(next|new|upcoming) agents?\b/.test(x)){
       var order=['adsintel','perf','clients','campaignops','ads','hub','lease','ga4','gbp','gsc'];
       var cur=order.indexOf(ctx.project), nk=order[(cur+1)%order.length];
       return projectAnswer(nk,'what',ctx);
@@ -478,6 +484,10 @@ window.JARVIS_BRAIN = (function(){
     var refOnly=!pk&&ctx.project&&(RX.ref.test(x)||words<=3)&&(RX.open.test(x)||RX.how.test(x)||RX.problem.test(x)||RX.result.test(x));
     if(refOnly) pk=ctx.project;
     if(pk){
+      /* "is Campaign Ops live?", "does it work on a real account?" -> the live run */
+      if(pk==='campaignops'&&/\b(live run|live|real|connected|google ads api|test account|for real|actually work)\b/.test(x)&&!RX.open.test(x)&&!RX.how.test(x)){
+        var si=byId('series'); if(si) return {text:pick('series',si.a),card:si.card,next:si.next,intent:'series',project:'campaignops'};
+      }
       var facet=RX.open.test(x)?'open':RX.how.test(x)?'how':RX.problem.test(x)?'problem':RX.result.test(x)?'result':'what';
       var pa=projectAnswer(pk,facet,ctx); if(pa) return pa;
     }
@@ -527,6 +537,7 @@ window.JARVIS_BRAIN = (function(){
     'MBA from IIT (ISM) Dhanbad. Certified in Google Data Analytics, Microsoft Power BI, Advanced Excel.',
     'Stack: Looker Studio, Power BI, Apps Script, Claude, SQL, BigQuery, Snowflake, GA4, Google Ads, Meta Ads, Python.',
     'Builds on this site: Ads Intelligence, Performance Review, Client Reports, Campaign Ops (AI agents; Campaign Ops is a personal open source MCP server that lets AI change Google Ads only after a person approves), AdCommand, Marketing Intelligence Hub, Leasing Dashboard, GA4, Reviews and Search Console dashboards, two Looker Studio reports. Demos use invented sample data.',
+    'Agent series: Campaign Ops is Agent 01. On 26 Nov 2026 it ran on a Google Ads test account through the Google Ads API, found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then changed the ad and confirmed it with Google. Test accounts never show ads or spend money. More agents join the series as they ship.',
     'Based in Guwahati, India, remote, overlapping UK and US hours. Open to projects and full time roles. Pricing is per project after a free intro call.',
     'Contact: '+E+', WhatsApp, LinkedIn, or book a 30 minute call on this page.'
   ].join(' ');

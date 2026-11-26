@@ -1325,6 +1325,90 @@ section{padding:44px 0}
 .ba-tag{background:rgba(8,10,18,.86);color:#fff;font-size:.62rem}
 .ba-tag-r{color:var(--emerald)}
 </style>
+<style>
+/* =====================================================================
+   V5 LAYER  ·  the Agent series. One list (assets/agents-data.js) feeds
+   this section and the phone app. Phone first, wider screens after.
+   ===================================================================== */
+[data-theme="dark"]{--ag-rose:#FB7185;--ag-ok:#34D399}
+[data-theme="light"]{--ag-rose:#E11D48;--ag-ok:#059669}
+#agents{padding-top:52px}
+@media(min-width:1024px){#agents{padding-top:84px}}
+.ags{display:grid;gap:14px}
+.ag{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;padding:18px;border-radius:var(--r-lg);
+  background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--border);box-shadow:var(--card-shadow)}
+.ag::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:var(--grad);pointer-events:none;opacity:.6;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.ag-l,.ag-r{min-width:0;position:relative}
+.ag-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ag-no{font-family:var(--mono);font-size:.7rem;font-weight:700;padding:6px 11px;border-radius:30px;border:1px solid var(--border2);background:var(--surface);color:var(--text);white-space:nowrap}
+.ag-live{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.68rem;color:var(--ag-ok);white-space:nowrap;
+  background:color-mix(in srgb,var(--emerald) 12%,transparent);border:1px solid color-mix(in srgb,var(--emerald) 32%,transparent);padding:6px 11px;border-radius:30px}
+.ag-live i{width:7px;height:7px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}
+.ag-name{font-size:clamp(1.75rem,7.4vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin:14px 0 8px}
+.ag-line{color:var(--muted);font-size:.95rem;line-height:1.55;max-width:46ch}
+.ag-proof{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.ag-proof div{border:1px solid var(--border);background:var(--surface);border-radius:var(--r);padding:11px 12px;min-width:0}
+.ag-proof b{display:block;font-family:var(--display);font-size:1.3rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.ag-proof span{display:block;font-size:.74rem;color:var(--muted);margin-top:4px;line-height:1.35}
+.ag-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.ag-cta .btn{flex:1 1 180px}
+.ag-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:14px;font-family:var(--mono);font-size:.66rem;color:var(--faint)}
+.ag-foot a{color:var(--cyan);white-space:nowrap}
+.ag-foot a:hover{text-decoration:underline}
+/* the real change from the live run */
+.ag-r{display:block;color:inherit}
+.cc{border:1px solid var(--border2);background:var(--bg2);border-radius:var(--r);overflow:hidden;transition:transform .45s var(--ease),border-color .3s,box-shadow .45s}
+.ag-r:hover .cc{transform:translateY(-3px);border-color:color-mix(in srgb,var(--indigo) 55%,transparent);box-shadow:0 22px 50px -28px var(--glow)}
+.cc-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:11px 13px;border-bottom:1px solid var(--border)}
+.cc-h code{font-family:var(--mono);font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:7px;border:1px solid var(--border2);background:var(--grad-soft)}
+.cc-h b{font-size:.86rem;font-weight:700}
+.cc-h i{font-style:normal;font-family:var(--mono);font-size:.62rem;color:var(--cyan);white-space:nowrap}
+.cc-h small{grid-column:1 / -1;font-size:.7rem;color:var(--faint)}
+.cc-ln{padding:11px 13px;border-bottom:1px solid var(--border)}
+.cc-ln small{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.cc-del,.cc-ins{position:relative;font-size:.84rem;line-height:1.45;padding:6px 9px 6px 26px;border-radius:8px}
+.cc-del{background:color-mix(in srgb,var(--ag-rose) 12%,transparent)}
+.cc-del span{background:linear-gradient(var(--ag-rose),var(--ag-rose)) no-repeat 0 58%/0 1.6px;transition:background-size .9s var(--ease) .35s}
+.ag.in .cc-del span{background-size:100% 1.6px}
+.cc-ins{background:color-mix(in srgb,var(--emerald) 13%,transparent);margin-top:5px;opacity:.2;transition:opacity .6s var(--ease) 1.05s}
+.ag.in .cc-ins{opacity:1}
+.cc-del::before,.cc-ins::before{position:absolute;left:9px;top:6px;font-family:var(--mono);font-weight:700}
+.cc-del::before{content:"-";color:var(--ag-rose)}
+.cc-ins::before{content:"+";color:var(--ag-ok)}
+.cc-ln em{display:inline-block;margin-top:5px;font-style:normal;font-family:var(--mono);font-size:.6rem;color:var(--ag-rose);border:1px solid color-mix(in srgb,var(--ag-rose) 40%,transparent);padding:2px 7px;border-radius:20px}
+.cc-steps{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:12px 13px;border-bottom:1px solid var(--border)}
+.cc-steps li{font-family:var(--mono);font-size:.62rem;padding:5px 9px;border-radius:20px;border:1px solid var(--border);color:var(--faint);
+  transition:background .4s,color .4s,border-color .4s;transition-delay:calc(1.25s + var(--i,0) * .18s)}
+.ag.in .cc-steps li{color:var(--ag-ok);border-color:color-mix(in srgb,var(--emerald) 38%,transparent);background:color-mix(in srgb,var(--emerald) 10%,transparent)}
+.cc-f{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;padding:10px 13px;font-size:.72rem;color:var(--muted)}
+.cc-f code{font-family:var(--mono);font-size:.64rem;color:var(--faint)}
+/* the open slot that shows this is a series */
+.ag-next{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:center;padding:15px 16px;border:1px dashed var(--border2);border-radius:var(--r-lg);color:var(--muted)}
+.ag-next .ag-no{grid-row:span 2;background:transparent;color:var(--faint);border-style:dashed}
+.ag-next b{font-size:.95rem;font-weight:700;color:var(--text);line-height:1.3}
+.ag-next span:last-child{font-size:.82rem;line-height:1.4}
+@media(min-width:860px){
+  .ag{grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);gap:34px;padding:30px;align-items:center}
+  .ag-cta .btn{flex:0 0 auto}
+}
+@media(min-width:1024px){
+  .ag{padding:38px 40px;gap:46px}
+  .ag-name{font-size:3rem}
+  .ag-line{font-size:1rem}
+  .ag-proof{gap:10px}
+  .ag-proof div{padding:13px 14px}
+  .ag-proof b{font-size:1.5rem}
+  .cc-del,.cc-ins{font-size:.88rem}
+  .ag-next{padding:16px 20px}
+}
+@media(min-width:860px) and (max-width:1023px){.nav-links a{padding:8px 11px}}
+@media(prefers-reduced-motion:reduce){
+  .cc-del span{background-size:100% 1.6px}
+  .cc-ins{opacity:1}
+  .cc-steps li{color:var(--ag-ok);border-color:color-mix(in srgb,var(--emerald) 38%,transparent);background:color-mix(in srgb,var(--emerald) 10%,transparent)}
+}
+</style>
 <link rel="stylesheet" href="assets/jarvis.css" />
 </head>
 <body>
@@ -1338,6 +1422,7 @@ section{padding:44px 0}
     <a href="#top" class="logo"><span class="mark">DKB</span> Debashish Bora</a>
     <div class="nav-links" id="navlinks">
       <a href="#work">Work</a>
+      <a href="#agents">Agents</a>
       <a href="#clients">Clients</a>
       <a href="#services">Services</a>
       <a href="#about">About</a>
@@ -1430,6 +1515,16 @@ section{padding:44px 0}
   <div class="more-wrap" id="moreWrap"><button type="button" class="btn btn-ghost" id="moreWork">Show all projects</button></div>
   <div class="lb" id="lb"><button class="lb-x" id="lbX">✕</button><img id="lbImg" src="" alt=""><div class="lb-cap" id="lbCap"></div></div>
   <p class="work-note"><a href="https://github.com/DebashishKumarBora" target="_blank" rel="noopener">All the code is on GitHub ↗</a></p>
+</section>
+
+<!-- AGENT SERIES (filled from assets/agents-data.js) -->
+<section class="wrap" id="agents">
+  <div class="sec-head reveal">
+    <span class="eyebrow">Agent series</span>
+    <h2>Agents that act, not just answer.</h2>
+    <p>Each one plugs into Claude, works inside a real platform and changes nothing until a person says yes. New agents join this list as they ship.</p>
+  </div>
+  <div class="ags" id="agList"></div>
 </section>
 
 <!-- BEFORE / AFTER (transformation) -->
@@ -1690,6 +1785,7 @@ section{padding:44px 0}
 </div>
 <div class="dkb-toast" id="dkbToast" role="status"></div>
 
+<script src="assets/agents-data.js?v=10"></script>
 <script>
 /* ============ THEME ============ */
 const root=document.documentElement, tbtn=document.getElementById('themeBtn');
@@ -1806,7 +1902,7 @@ const projects=[
    live:'https://debashishkumarbora.github.io/campaign-ops/',repo:'https://github.com/DebashishKumarBora/campaign-ops-mcp',
    p:'AI agents can read a Google Ads account, but no team would let one change budgets or ad copy without limits, a person approving it, and an undo.',
    b:'A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo.',
-   r:'Tested in a real Claude session on a sandbox account: it found wasted spend and an ad that broke Fair Housing rules, waited for approval, then applied and verified three fixes.'},
+   r:'Now live on the Google Ads API. In a real Google Ads test account it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. It is Agent 01 in the Agent series.'},
   {k:'ads',s:'Sixteen Google Ads accounts in one web app, with a Claude analyst on top.',t:'AdCommand',shots:['shots/ads-1.webp','shots/ads-2.webp','shots/ads-3.webp','shots/ads-4.webp','shots/ads-5.webp','shots/ads-6.webp'],tool:'Google Ads API + Claude',tag:['app'],file:'shots/ads-1.webp',
    live:'https://script.google.com/macros/s/AKfycbxLdJehYqxPBmTLfTtMUhkcnE7OGgTpFx1iCNVaQD4TBOuvsmEN_n9KvrywxJ1Aq4dW/exec',repo:'https://github.com/DebashishKumarBora/ads-command-center',
    p:'Sixteen Google Ads accounts lived in sixteen browser tabs, with no single place to see what was working.',
@@ -1953,8 +2049,50 @@ function dkbAct(a){
   else if(type==='demos'){ botSay('Pick one and it opens right here, live.',null,{topic:'work'}); }
   else if(type==='top'){ window.scrollTo({top:0,behavior:'smooth'}); }
   else if(type==='link'){ window.open(arg,'_blank','noopener'); }
+  else if(type==='page'){ window.location.href=arg; }
 }
 window.DKB={act:dkbAct,demos:DEMOS,projects:projects,toast:dkbToast,ask:function(q){dkbAct('ask:'+q);}};
+
+/* ============ AGENT SERIES ============
+   Rendered from assets/agents-data.js, the same list the phone app uses. */
+(function(){
+  var list=window.DKB_AGENTS||[], box=document.getElementById('agList');
+  if(!box) return;
+  if(!list.length){ var sec=document.getElementById('agents'); if(sec) sec.hidden=true; return; }
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function hasDemo(k){return DEMOS.some(function(d){return d.k===k;});}
+  function changeCard(c){
+    return '<div class="cc">'+
+      '<div class="cc-h"><code>'+esc(c.id)+'</code><b>'+esc(c.kind)+'</b><i>From the live run</i><small>'+esc(c.where)+'</small></div>'+
+      c.lines.map(function(l){
+        return '<div class="cc-ln"><small>'+esc(l.field)+'</small><div class="cc-del"><span>'+esc(l.was)+'</span></div>'+
+          '<em>Flagged: '+esc(l.flag)+'</em><div class="cc-ins">'+esc(l.now)+'</div></div>';
+      }).join('')+
+      '<ol class="cc-steps" aria-label="What happened, in order">'+c.steps.map(function(s,i){return '<li style="--i:'+i+'">'+esc(s)+'</li>';}).join('')+'</ol>'+
+      '<div class="cc-f"><span>'+esc(c.approved)+'</span><code>'+esc(c.hash)+'</code></div>'+
+    '</div>';
+  }
+  var html='';
+  list.forEach(function(a){
+    var demoBtn=hasDemo(a.k)?'<button type="button" class="btn btn-ghost" data-act="demo:'+esc(a.k)+'">Try it in your browser</button>'
+                            :(a.demo?'<a class="btn btn-ghost" href="'+esc(a.demo)+'" target="_blank" rel="noopener">Try it in your browser</a>':'');
+    html+='<article class="ag reveal" id="agent-'+esc(a.k)+'">'+
+      '<div class="ag-l">'+
+        '<div class="ag-top"><span class="ag-no">Agent '+esc(a.no)+'</span>'+(a.status?'<span class="ag-live"><i></i>'+esc(a.status)+'</span>':'')+'</div>'+
+        '<h3 class="ag-name">'+esc(a.name)+'</h3>'+
+        '<p class="ag-line">'+esc(a.line)+'</p>'+
+        '<div class="ag-proof">'+(a.proof||[]).map(function(p){return '<div><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>';}).join('')+'</div>'+
+        '<div class="ag-cta"><a class="btn btn-primary" href="'+esc(a.page)+'">See the live run →</a>'+demoBtn+'</div>'+
+        '<div class="ag-foot"><span>'+(a.stack||[]).map(esc).join(' · ')+'</span>'+(a.repo?'<a href="'+esc(a.repo)+'" target="_blank" rel="noopener">View the code ↗</a>':'')+'</div>'+
+      '</div>'+
+      (a.change?'<a class="ag-r" href="'+esc(a.page)+'" aria-label="See the '+esc(a.name)+' live run">'+changeCard(a.change)+'</a>':'')+
+    '</article>';
+  });
+  var nx=String(list.length+1); if(nx.length<2) nx='0'+nx;
+  html+='<div class="ag-next reveal"><span class="ag-no">Agent '+nx+'</span><b>Next in the series</b><span>It joins this list when it ships.</span></div>';
+  box.innerHTML=html;
+  box.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+})();
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-act]'); if(!b)return;
   e.preventDefault(); dkbAct(b.getAttribute('data-act'));
@@ -2000,6 +2138,10 @@ function attach(topic){
     var b=p.live?[['play','Open live demo','demo:'+p.k,1],['arrow','Show me another','ask:Show me another one']]
                 :[['arrow','Show it on the page','f:looker',1],['play','Open an AI agent','demo:adsintel']];
     return '<div class="jc">'+pic+'</div>'+jcButtons(b);
+  }
+  if(topic==='series'){
+    var ag=(window.DKB_AGENTS||[])[0]; if(!ag) return '';
+    return jcButtons([['arrow','See the live run','page:'+ag.page,1],['play','Try it in your browser','demo:'+ag.k],['arrow','Go to the Agent series','go:#agents']]);
   }
   if(topic==='agents') return demoRow(DEMOS.filter(function(d){return d.agent;}));
   if(topic==='dash') return demoRow(DEMOS.filter(function(d){return !d.agent;}));
@@ -2578,11 +2720,12 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   if(btn&&mac){var kb=btn.querySelector('kbd');if(kb)kb.textContent='⌘ K';}
   var ITEMS=[];
   (window.DKB.demos||[]).forEach(function(d){ITEMS.push({g:'Live demos',t:'Open '+d.t,h:d.tool,a:'demo:'+d.k,k:d.t+' '+d.tool+' demo dashboard open'});});
-  [['Work','#work','dashboards projects portfolio agents'],['How I work','#process','process steps services'],['Before and after','#transform','slider spreadsheet'],
+  [['Work','#work','dashboards projects portfolio agents'],['Agent series','#agents','agents ai agent series campaign ops live run google ads api'],['How I work','#process','process steps services'],['Before and after','#transform','slider spreadsheet'],
    ['Clients','#clients','brands'],['Skills','#skills','stack tools'],['About','#about','background bio experience'],
    ['Credentials','#certs','certifications certificates'],['Data lab','#lab','try upload csv messy data clean chart insights'],['Contact','#contact','email hire']]
    .forEach(function(s){ITEMS.push({g:'Jump to',t:s[0],h:'Section',a:'go:'+s[1],k:s[0]+' '+s[2]});});
-  [['Book a call','Calendly','book','schedule meeting hire'],['Message on WhatsApp','Opens WhatsApp','wa','chat message'],
+  [['See the Campaign Ops live run','Agent 01','page:agents/campaign-ops/','agent series campaign ops live run google ads api fair housing case study'],
+   ['Book a call','Calendly','book','schedule meeting hire'],['Message on WhatsApp','Opens WhatsApp','wa','chat message'],
    ['Copy email address','Clipboard','email','mail contact'],['Take the guided tour','Narrated','tour','walkthrough'],
    ['Talk to the assistant','Chat and voice','chat','jarvis ai bot'],['Switch light or dark theme','Appearance','theme','mode'],
    ['Show only AI agents','Filter','f:agent','agents ads intelligence superdash performance review client reports'],['Show only dashboards','Filter','f:app','apps script live'],['Show only Looker Studio','Filter','f:looker','looker']]
@@ -2627,8 +2770,8 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 
 </script>
 <script src="assets/lab.js" defer></script>
-<script src="assets/jarvis-brain.js?v=9" defer></script>
-<script src="assets/jarvis.js" defer></script>
+<script src="assets/jarvis-brain.js?v=10" defer></script>
+<script src="assets/jarvis.js?v=10" defer></script>
 <a href="m/" id="toMobile" class="to-mobile" hidden>📱 Back to mobile view</a>
 <style>
 .to-mobile{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:9998;padding:10px 16px;border-radius:22px;

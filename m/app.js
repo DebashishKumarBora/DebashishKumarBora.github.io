@@ -62,6 +62,35 @@
     $('#services').innerHTML=S.services.map(function(s,i){
       return '<div class="row"><i style="--tint:'+TINTS[i][0]+';--ink:'+TINTS[i][1]+'">'+ico(s[0])+'</i><div><b>'+esc(s[1])+'</b><span>'+esc(s[2])+'</span></div><span></span></div>';}).join('');
     $('#steps').innerHTML=S.steps.map(function(s,i){return '<div><b>0'+(i+1)+'</b><span>'+esc(s)+'</span></div>';}).join('');
+    renderAgents();
+  }
+  /* the Agent series, from the same list as the desktop site (../assets/agents-data.js) */
+  var AG=window.DKB_AGENTS||[], agByK={}; AG.forEach(function(a){agByK[a.k]=a;});
+  function renderAgents(){
+    var box=$('#agentSeries'), head=$('#agentsHead'); if(!box) return;
+    if(!AG.length){ box.hidden=true; if(head) head.hidden=true; return; }
+    var html=AG.map(function(a){
+      var c=a.change, l=c&&c.lines&&c.lines[0];
+      return '<div class="agc">'+
+        '<button class="agc-main press" data-act="agent:'+esc(a.k)+'" aria-label="See the '+esc(a.name)+' live run">'+
+          '<div class="agc-top"><span class="agc-no">Agent '+esc(a.no)+'</span>'+(a.status?'<span class="agc-live"><i></i>'+esc(a.status)+'</span>':'')+'</div>'+
+          '<b class="agc-nm">'+esc(a.name)+'</b><span class="agc-ln">'+esc(a.line)+'</span>'+
+          (l?'<div class="agc-diff"><small>'+esc(l.field)+' · flagged for '+esc(l.flag)+'</small><div class="d"><span>'+esc(l.was)+'</span></div><div class="i">'+esc(l.now)+'</div></div>':'')+
+          (c?'<div class="agc-steps">'+c.steps.map(function(s){return '<i>'+esc(s)+'</i>';}).join('')+'</div>':'')+
+          '<div class="agc-proof">'+(a.proof||[]).map(function(p){return '<div><b>'+esc(p[0])+'</b><span>'+esc(p[2]||p[1])+'</span></div>';}).join('')+'</div>'+
+        '</button>'+
+        '<div class="agc-cta"><button class="btn pri press" data-act="agent:'+esc(a.k)+'">'+ico('play')+'See the live run</button>'+
+          (byK[a.k]&&byK[a.k].live?'<button class="btn press" data-act="demo:'+esc(a.k)+'">Try it</button>':'')+'</div>'+
+      '</div>';
+    }).join('');
+    var nx=String(AG.length+1); if(nx.length<2) nx='0'+nx;
+    html+='<div class="agc-next"><span>Agent '+nx+'</span><div><b>Next in the series</b><small>It joins here when it ships.</small></div></div>';
+    box.innerHTML=html;
+  }
+  /* an agent's write-up opens in the viewer, like a demo */
+  function agentView(k){
+    var a=agByK[k]; if(!a||!a.page) return null;
+    return {k:'agent-'+k,t:a.name,live:BASE+a.page,sub:'Agent '+a.no+' · the live run',hash:'agent-'+k};
   }
   var filter='all';
   function renderWork(){
@@ -123,7 +152,7 @@
     window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-bar-10,behavior:'smooth'});
   }
   function goHash(h){
-    var map={'#work':'work','#agents':'work','#workGrid':'work','#filters':'work','#clients':'home:brands','#trusted':'home:brands',
+    var map={'#work':'work','#agents':'home:agentsHead','#workGrid':'work','#filters':'work','#clients':'home:brands','#trusted':'home:brands',
              '#lab':'lab','#roi':'lab','#transform':'lab','#about':'about','#skills':'about:toolsHead','#certs':'about:certsHead',
              '#contact':'contact','#services':'home:services','#process':'home:steps','#proof':'home','#top':'home'};
     var v=(map[h]||'home').split(':');
@@ -213,13 +242,16 @@
      LIVE DEMO VIEWER
      ===================================================================== */
   /* a fresh frame per demo: changing a frame's address would add steps to the phone's back history */
-  var viewer=$('#viewer'), vBody=$('.vbody',viewer), vLoad=$('#vLoad'), vLoadTxt=$('span',vLoad), viewerOpen=false, vTimer=null, vSlow=null, vKey=null;
+  var viewer=$('#viewer'), vBody=$('.vbody',viewer), vLoad=$('#vLoad'), vLoadTxt=$('span',vLoad), viewerOpen=false, vTimer=null, vSlow=null, vKey=null, vHash=null;
+  var vSub=$('.vbar small',viewer), vSubDefault=vSub?vSub.textContent:'';
   var old=$('#vFrame'); if(old) old.remove();
-  function openViewer(p){
+  function openViewer(p,opt){
+    opt=opt||{};
     var u=demoUrl(p,true); if(!u) return;
     blurInput();
-    vKey=p.k;
+    vKey=p.k; vHash=p.hash||('demo-'+p.k);
     $('#vTitle').textContent=p.t; $('#vExt').href=demoUrl(p,false);
+    if(vSub) vSub.textContent=p.sub||vSubDefault;
     clearTimeout(vTimer); clearTimeout(vSlow); var prev=$('iframe',vBody); if(prev) prev.remove();
     vLoad.style.display='';
     var away=!onSite(p);
@@ -229,9 +261,17 @@
     f.setAttribute('allow','clipboard-write');
     f.addEventListener('load',function(){ vLoad.style.display='none'; clearTimeout(vSlow); });
     vBody.appendChild(f);
+    var wasOpen=viewerOpen;
     viewer.classList.add('on'); viewerOpen=true; lockScroll(true);
-    history.pushState({tab:cur,overlay:'viewer'},'','#demo-'+p.k);
+    if(opt.replace&&wasOpen) history.replaceState({tab:cur,overlay:'viewer'},'','#'+vHash);
+    else history.pushState({tab:cur,overlay:'viewer'},'','#'+vHash);
   }
+  /* a page inside the viewer (an agent write-up) can ask to show its live demo instead */
+  window.addEventListener('message',function(e){
+    if(e.origin!==location.origin) return;
+    var d=e.data||{};
+    if(d&&d.dkb==='demo'&&byK[d.k]&&byK[d.k].live&&viewerOpen) openViewer(byK[d.k],{replace:true});
+  });
   /* back inside a demo: let it close its own drawer, chat or page first */
   function innerBack(){
     var f=$('iframe',vBody); if(!f) return false;
@@ -251,7 +291,7 @@
     var st=e.state||{tab:'home'};
     if(st.overlay!=='viewer'&&viewerOpen){
       /* the phone's back gesture closes the demo's own panel first, and the demo stays open */
-      if(innerBack()){ history.pushState({tab:cur,overlay:'viewer'},'','#demo-'+vKey); return; }
+      if(innerBack()){ history.pushState({tab:cur,overlay:'viewer'},'','#'+(vHash||('demo-'+vKey))); return; }
       closeViewer(true);
     }
     if(!st.overlay&&sheetOpen) closeSheet(true);
@@ -273,6 +313,7 @@
     if(t==='sheet') openProject(arg);
     else if(t==='brand') openBrand(+arg);
     else if(t==='demo'){ var p=byK[arg]; if(p) openViewer(p); }
+    else if(t==='agent'){ var av=agentView(arg); if(av){ if(sheetOpen) closeSheet(); openViewer(av); } }
     else if(t==='book') window.open(S.calendly,'_blank','noopener');
     else if(t==='wa') window.open(S.whatsapp,'_blank','noopener');
     else if(t==='email') copyEmail();
@@ -330,6 +371,7 @@
         (p.live?'<button class="btn pri press" data-act="demo:'+p.k+'">'+ico('play')+'Open live demo</button>':'')+
         '<button class="btn press" data-act="sheet:'+p.k+'">Details</button></div></div>';
     }
+    if(topic==='series'){ var ag=AG[0]; return ag?btns([['See the live run','agent:'+ag.k,1],['Try it','demo:'+ag.k],['Agent series','go:#agents']]):''; }
     if(topic==='agents') return mrail(P.filter(function(p){return p.tag.indexOf('agent')>=0;}));
     if(topic==='dash') return mrail(P.filter(function(p){return p.tag.indexOf('app')>=0;}));
     if(/^(work|demo|demos)$/.test(topic)) return mrail(live);
@@ -343,7 +385,7 @@
     if(topic==='tools') return btns([['See his tools','go:#skills'],['See the work','tab:work']]);
     return '';
   }
-  function goLabel(h){return {'#lab':'Open the data lab','#clients':'See the brands','#work':'See the work','#contact':'Contact','#about':'About Deb'}[h]||null;}
+  function goLabel(h){return {'#lab':'Open the data lab','#clients':'See the brands','#work':'See the work','#agents':'See the Agent series','#contact':'Contact','#about':'About Deb'}[h]||null;}
   function typing(on){
     var t=$('.typing',msgs); if(t) t.remove();
     if(on){ add('typing','<i></i><i></i><i></i>'); }
@@ -428,8 +470,9 @@
   (function boot(){
     var h=(location.hash||'').slice(1), tab='home', after=null;
     var alias={clients:'home:brands',trusted:'home:brands',services:'home:services',process:'home:steps',skills:'about:toolsHead',certs:'about:certsHead',
-               roi:'lab',transform:'lab',proof:'home',agents:'work',workGrid:'work',filters:'work'};
+               roi:'lab',transform:'lab',proof:'home',agents:'home:agentsHead',workGrid:'work',filters:'work'};
     if(TABS.indexOf(h)>=0) tab=h;
+    else if(/^agent-/.test(h)&&agentView(h.slice(6))){ tab='home'; after=function(){openViewer(agentView(h.slice(6)));}; }
     else if(/^p-/.test(h)&&byK[h.slice(2)]){ tab='work'; after=function(){openProject(h.slice(2));}; }
     else if(/^demo-/.test(h)&&byK[h.slice(5)]){ tab='work'; after=function(){var p=byK[h.slice(5)];openProject(p.k);if(p.live)openViewer(p);}; }
     else if(alias[h]){ var v=alias[h].split(':'); tab=v[0]; if(v[1]) after=function(){setTimeout(function(){jump(v[1]);},120);}; }
