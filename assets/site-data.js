@@ -55,7 +55,8 @@ window.SITE={
     "mshots/adsintel-2.webp",
     "mshots/adsintel-3.webp",
     "mshots/adsintel-4.webp"
-   ]
+   ],
+   "cover": "covers/adsintel.webp"
   },
   {
    "k": "perf",
@@ -84,7 +85,8 @@ window.SITE={
     "mshots/perf-2.webp",
     "mshots/perf-3.webp",
     "mshots/perf-4.webp"
-   ]
+   ],
+   "cover": "covers/perf.webp"
   },
   {
    "k": "clients",
@@ -113,11 +115,12 @@ window.SITE={
     "mshots/clients-2.webp",
     "mshots/clients-3.webp",
     "mshots/clients-4.webp"
-   ]
+   ],
+   "cover": "covers/clients.webp"
   },
   {
    "k": "campaignops",
-   "s": "An AI agent that fixes Google Ads, but only after a person approves each change.",
+   "s": "An AI agent that watches Google Ads around the clock and fixes it, but only after you approve on your phone.",
    "t": "Campaign Ops",
    "shots": [
     "shots/cops-1.webp",
@@ -135,14 +138,15 @@ window.SITE={
    "live": "https://debashishkumarbora.github.io/campaign-ops/",
    "repo": "https://github.com/DebashishKumarBora/campaign-ops-mcp",
    "p": "AI agents can read a Google Ads account, but no team would let one change budgets or ad copy without limits, a person approving it, and an undo.",
-   "b": "A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo.",
+   "b": "A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo. It runs on Cloudflare's free plan, where Autopilot checks the account every hour, writes each fix, and every approval is signed with a passkey on a phone.",
    "r": "Now live on the Google Ads API. In a real Google Ads test account it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. It is Agent 01 in the Agent series.",
    "mshots": [
     "mshots/campaignops-1.webp",
     "mshots/campaignops-2.webp",
     "mshots/campaignops-3.webp",
     "mshots/campaignops-4.webp"
-   ]
+   ],
+   "cover": "covers/campaignops.webp"
   },
   {
    "k": "ads",
@@ -165,7 +169,8 @@ window.SITE={
    "repo": "https://github.com/DebashishKumarBora/ads-command-center",
    "p": "Sixteen Google Ads accounts lived in sixteen browser tabs, with no single place to see what was working.",
    "b": "A Google Ads command center on the live API: accounts, analytics, a geo view, search terms, keywords, ads, budget pacing and a Claude analyst with chat and voice.",
-   "r": "The whole portfolio in one web app, with the AI analyst flagging what to fix first."
+   "r": "The whole portfolio in one web app, with the AI analyst flagging what to fix first.",
+   "cover": "covers/ads.webp"
   },
   {
    "k": "hub",
@@ -194,7 +199,8 @@ window.SITE={
     "mshots/hub-2.webp",
     "mshots/hub-3.webp",
     "mshots/hub-4.webp"
-   ]
+   ],
+   "cover": "covers/hub.webp"
   },
   {
    "k": "lease",
@@ -223,7 +229,8 @@ window.SITE={
     "mshots/lease-2.webp",
     "mshots/lease-3.webp",
     "mshots/lease-4.webp"
-   ]
+   ],
+   "cover": "covers/lease.webp"
   },
   {
    "k": "ga4",
@@ -252,7 +259,8 @@ window.SITE={
     "mshots/ga4-2.webp",
     "mshots/ga4-3.webp",
     "mshots/ga4-4.webp"
-   ]
+   ],
+   "cover": "covers/ga4.webp"
   },
   {
    "k": "gbp",
@@ -281,7 +289,8 @@ window.SITE={
     "mshots/gbp-2.webp",
     "mshots/gbp-3.webp",
     "mshots/gbp-4.webp"
-   ]
+   ],
+   "cover": "covers/gbp.webp"
   },
   {
    "k": "gsc",
@@ -309,7 +318,8 @@ window.SITE={
     "mshots/gsc-2.webp",
     "mshots/gsc-3.webp",
     "mshots/gsc-4.webp"
-   ]
+   ],
+   "cover": "covers/gsc.webp"
   },
   {
    "t": "Client Campaign Performance",
@@ -324,7 +334,8 @@ window.SITE={
    "p": "A travel client needed paid and organic performance in one place, across millions of impressions.",
    "b": "Looker Studio dashboard blending Google Ads + Search Console: KPIs, Brand vs Generic keywords, match-type performance and location insights.",
    "r": "Surfaced 121M+ impressions, 2.1M clicks & 86K conversions, with clear wins in low-CTR, cost-heavy queries.",
-   "k": "ccp"
+   "k": "ccp",
+   "cover": "covers/ccp.webp"
   },
   {
    "t": "GA4 Traffic Analytics",
@@ -339,7 +350,8 @@ window.SITE={
    "p": "The team could not tell where quality traffic came from, or how engagement was trending.",
    "b": "GA4-powered Looker Studio dashboard: channel performance (paid vs organic), device split, landing-page conversions and YoY/MoM views.",
    "r": "Mapped 157K sessions & 70K users, revealing 79.7% mobile traffic and the pages actually converting.",
-   "k": "gta"
+   "k": "gta",
+   "cover": "covers/gta.webp"
   }
  ],
  "brands": [
@@ -509,5 +521,6 @@ window.SITE={
    "Data Analytics Certification",
    "Henry Harvin"
   ]
- ]
+ ],
+ "covers": true
 };

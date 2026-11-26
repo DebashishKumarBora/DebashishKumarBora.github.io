@@ -321,6 +321,49 @@ footer a:hover{color:var(--text)}
 .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(10,11,20,.7);color:#fff;cursor:pointer;display:grid;place-items:center}
 .lb-nav.p{left:4px}.lb-nav.n{right:4px}
 
+/* ---------- since the run: 0.3, 0.4 and 0.5 ---------- */
+h1,h2,h3{text-wrap:balance}
+.rel-more{display:none}
+@media(max-width:599px){
+  .rel.new{order:1}.rel-g>.rel:nth-child(2){order:2}.rel-g>.rel:nth-child(1){order:3}
+  .rel:not(.new) ul{display:none}
+  .rel:not(.new).open ul{display:grid}
+  .rel:not(.new) h3{margin-bottom:0}
+  .rel:not(.new).open h3{margin-bottom:10px}
+  .rel-more{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:8px 14px;border-radius:999px;border:1px solid var(--border2);
+    background:var(--surface2);color:var(--text);font-family:inherit;font-weight:600;font-size:.78rem;line-height:1;cursor:pointer}
+  .rel-more::after{content:"";width:7px;height:7px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+  .rel.open .rel-more::after{transform:rotate(225deg) translateY(-1px)}
+}
+.pill.new{color:var(--text);background:var(--grad-soft);border:1px solid var(--border2);font-weight:700}
+.pill.new:hover{border-color:color-mix(in srgb,var(--indigo) 60%,transparent)}
+.facts.tight{margin:0 0 12px}
+.rel-g{display:grid;grid-template-columns:1fr;gap:10px}
+.rel{border:1px solid var(--border);background:var(--surface);border-radius:var(--r);padding:15px 15px 16px;min-width:0}
+.rel.new{background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--grad) border-box;border:1.5px solid transparent;box-shadow:0 18px 40px -26px rgba(109,94,248,.8)}
+.rel-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.rel-v{font-family:var(--mono);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border2);color:var(--text)}
+.rel.new .rel-v{background:var(--grad);border-color:transparent;color:#fff}
+.rel-top em{font-style:normal;font-family:var(--mono);font-size:.64rem;color:var(--faint)}
+.rel h3{font-size:1.04rem;line-height:1.3;letter-spacing:-.01em;margin:11px 0 10px}
+.rel ul{list-style:none;display:grid;gap:9px}
+.rel li{position:relative;padding-left:25px;font-size:.84rem;color:var(--muted);line-height:1.45}
+.rel li b{color:var(--text);font-weight:600}
+.rel li::before{content:"";position:absolute;left:0;top:1px;width:16px;height:16px;border-radius:50%;background:var(--okbg);border:1px solid color-mix(in srgb,var(--ok) 45%,transparent)}
+.rel li::after{content:"";position:absolute;left:5.5px;top:5px;width:4px;height:7px;border:solid var(--ok);border-width:0 1.6px 1.6px 0;transform:rotate(45deg)}
+.phones{display:grid;grid-auto-flow:column;grid-auto-columns:70%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:16px -16px 0 0;padding:4px 16px 8px 0;scrollbar-width:none}
+.phones::-webkit-scrollbar{display:none}
+.phone{scroll-snap-align:start;margin:0;min-width:0}
+.phone .scr{border-radius:26px;overflow:hidden;border:1px solid var(--border2);background:#EDF0F4;aspect-ratio:600/1298;box-shadow:var(--shadow)}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top}
+.phone figcaption{display:grid;grid-template-columns:24px minmax(0,1fr);gap:9px;margin-top:12px;font-size:.82rem;color:var(--muted);line-height:1.45}
+.phone figcaption i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--grad);color:#fff;font-family:var(--mono);font-size:.7rem;font-weight:700;display:grid;place-items:center}
+.phone figcaption b{color:var(--text);font-weight:600}
+.since-side{margin-top:18px;display:grid;gap:12px;max-width:420px}
+.sig .lv b{font-size:.84rem}
+.sig .lv b.mono{font-size:.8rem;letter-spacing:.02em}
+.since-note{font-size:.78rem;color:var(--faint);max-width:72ch}
+
 /* ---------- reveal ---------- */
 .rv{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .rv.in{opacity:1;transform:none}
@@ -337,6 +380,10 @@ footer a:hover{color:var(--text)}
   .flow-notes{grid-template-columns:repeat(3,1fr)}
   .shots{grid-auto-columns:46%;margin-right:-24px;padding-right:24px}
   .term-b{font-size:.72rem}
+  .rel-g{grid-template-columns:1fr 1fr}
+  .rel.new{grid-column:1/-1}
+  .phones{grid-auto-columns:42%;margin-right:-24px;padding-right:24px}
+  .since-side{grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:none;align-items:end;gap:20px}
 }
 @media(min-width:900px){
   body{font-size:16px}
@@ -370,6 +417,16 @@ footer a:hover{color:var(--text)}
   .flow>.arr:not(.ap)::after{left:auto;right:5px;top:50%;bottom:auto;margin-top:-4px;transform:rotate(-45deg)}
   .flow>.arr.ap::before{left:50%;top:4px;bottom:4px}
   .shots{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:repeat(3,1fr);overflow:visible;margin-right:0;padding-right:0;gap:14px}
+  .facts.tight{margin-bottom:14px}
+  .rel-g{gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .rel.new{grid-column:auto}
+  .rel{padding:20px 22px 22px}
+  .rel h3{font-size:1.22rem}
+  .rel li{font-size:.9rem}
+  .since-show{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:28px;align-items:end;margin-top:28px}
+  .phones{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;margin:0;padding:0;gap:24px}
+  .since-side{margin:0 0 4.6rem;grid-template-columns:1fr;gap:12px}
+  .phone figcaption{font-size:.88rem}
   .lb{padding:20px 28px}
   .lb-nav.p{left:-6px}.lb-nav.n{right:-6px}
 }
@@ -397,11 +454,11 @@ footer a:hover{color:var(--text)}
 <main id="main">
   <!-- HERO -->
   <section class="hero wrap" aria-labelledby="h1">
-    <div class="hero-chips"><span class="pill no">Agent 01</span><span class="pill live"><i></i>Live on the Google Ads API</span></div>
+    <div class="hero-chips"><span class="pill no">Agent 01</span><span class="pill live"><i></i>Live on the Google Ads API</span><a class="pill new" href="#since">New in 0.5: Autopilot watches around the clock</a></div>
     <h1 id="h1">It found a Fair Housing problem inside Google Ads, then <em>waited for a person to say yes.</em></h1>
     <p class="lede">Campaign Ops is an AI agent for Google Ads. It plugs into Claude, proposes every change, and touches nothing until a person approves. This page is the record of its first run on a Google Ads test account, through Google's official API.</p>
     <div class="hero-cta">
-      <a class="btn btn-pri" id="tryDemo" href="../../campaign-ops/">Try it in your browser</a>
+      <a class="btn btn-pri" id="tryDemo" href="../../campaign-ops/">Try the app in your browser</a>
       <a class="btn btn-gh" href="https://github.com/DebashishKumarBora/campaign-ops-mcp" target="_blank" rel="noopener">Read the code ↗</a>
     </div>
     <div class="facts">
@@ -576,7 +633,73 @@ footer a:hover{color:var(--text)}
     <div class="truth-g">
       <div class="tc real rv"><h3><i></i>Real</h3><ul><li>The Google Ads accounts, campaigns, budgets, keywords and ads</li><li>The robot login, every change and the read back</li><li>The approval and the audit log</li></ul></div>
       <div class="tc simu rv"><h3><i></i>Simulated</h3><ul><li>Clicks, cost, leads and search terms</li><li>Test accounts never serve ads, so Google has none to report. Campaign Ops fills them in from its sample data</li></ul></div>
-      <div class="tc never rv"><h3><i></i>Never happened</h3><ul><li>Spending money. Test accounts cannot spend</li><li>Touching a live account. It refuses anything Google does not confirm is a test account</li></ul></div>
+      <div class="tc never rv"><h3><i></i>Never happened</h3><ul><li>Spending money. Test accounts cannot spend</li><li>Touching a live account. The version used for this run refused anything Google did not confirm was a test account</li></ul></div>
+    </div>
+  </section>
+
+  <!-- SINCE THE RUN -->
+  <section class="wrap" id="since" aria-labelledby="sinceH">
+    <div class="sh rv">
+      <h2 id="sinceH">Since the run: it watches on its own, and asks first</h2>
+      <p>Three releases followed. Version 0.3 opened real Google Ads accounts behind a lock. Version 0.4 moved Campaign Ops to Cloudflare's free plan, with every approval signed by a passkey on a phone. Version 0.5 added Autopilot: it checks the account every hour without Claude, writes the fix, and waits for a yes.</p>
+    </div>
+    <div class="facts tight rv">
+      <div class="fact"><b>0</b><span>Ways for the AI to approve its own change</span></div>
+      <div class="fact"><b>115</b><span>Automated tests</span></div>
+      <div class="fact"><b>27</b><span>Steps in the cloud check, on Cloudflare's own runtime</span></div>
+      <div class="fact"><b>$0</b><span>A month, on Cloudflare's free plan</span></div>
+    </div>
+    <div class="rel-g">
+      <article class="rel rv">
+        <div class="rel-top"><span class="rel-v">0.3</span><em>Real accounts</em></div>
+        <h3>Live accounts stay locked until a person opens them</h3>
+        <ul>
+          <li><b>Read-only by default.</b> Real numbers come in, but nothing changes until a person opens a change window of 1 to 8 hours by typing the account's name.</li>
+          <li><b>Google as witness.</b> Google keeps its own history of every change. Each one made with the robot's key has to match an approval, or it raises an alarm.</li>
+          <li><b>Pulse.</b> Day-by-day alarms a monthly report misses, like tracking that stopped while clicks kept coming, each with the odds it is chance.</li>
+          <li><b>Approve links.</b> Every proposal comes with a link that opens it in the console.</li>
+        </ul>
+        <button type="button" class="rel-more" aria-expanded="false">Show what changed</button>
+      </article>
+      <article class="rel rv">
+        <div class="rel-top"><span class="rel-v">0.4</span><em>In the cloud</em></div>
+        <h3>Approved from a phone, signed with a passkey</h3>
+        <ul>
+          <li><b>Runs on Cloudflare's free plan.</b> A Worker, a Durable Object with its own SQLite database, and a morning watch on a schedule.</li>
+          <li><b>A passkey signs every yes.</b> Approving, undoing and unlocking each need Face ID, and the signature covers a hash of that exact change.</li>
+          <li><b>Claude connects with OAuth.</b> Allowing it takes the passkey too, and there is no approve button inside the chat.</li>
+          <li><b>A phone app.</b> It installs to the Home Screen and buzzes when a change is waiting, or when the morning check finds something.</li>
+        </ul>
+        <button type="button" class="rel-more" aria-expanded="false">Show what changed</button>
+      </article>
+      <article class="rel new rv">
+        <div class="rel-top"><span class="rel-v">0.5</span><em>Autopilot</em></div>
+        <h3>It watches around the clock, writes the fix, and asks first</h3>
+        <ul>
+          <li><b>Every hour, without Claude.</b> Google's change history, ad disapprovals and landing pages, then a full review every morning.</li>
+          <li><b>It writes the fix.</b> Wasted searches, Fair Housing copy, budgets and pacing become proposals, each with what it is worth.</li>
+          <li><b>Approve means apply.</b> The phone buzzes, Face ID signs it, and the change is applied and checked straight away.</li>
+          <li><b>The free AI, on a short leash.</b> Cloudflare's Workers AI writes replacement copy, and a line is used only if it passes the Fair Housing screen and adds no new claim.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="since-show">
+    <div class="phones">
+      <figure class="phone rv"><div class="scr"><img src="../../images/agents/campaign-ops/auto-1-home.webp" alt="Phone screen: Home says three changes need you, worth about $189 a month, with a Review them button" width="600" height="1298" loading="lazy" decoding="async"></div><figcaption><i>1</i><span><b>It finds the problems.</b> Every hour Autopilot checks the account and writes each fix. Home says what needs you, and nothing else.</span></figcaption></figure>
+      <figure class="phone rv"><div class="scr"><img src="../../images/agents/campaign-ops/auto-2-fix.webp" alt="Phone screen: new copy for an ad, the old Fair Housing risk lines struck through and the AI's replacement lines below, with Approve with passkey" width="600" height="1298" loading="lazy" decoding="async"></div><figcaption><i>2</i><span><b>Approve with Face ID.</b> The AI's new copy passed the Fair Housing screen; the passkey signs this exact change.</span></figcaption></figure>
+      <figure class="phone rv"><div class="scr"><img src="../../images/agents/campaign-ops/auto-3-activity.webp" alt="Phone screen: Activity lists what Autopilot noticed: a check with three changes, a tracking alarm and a Google disapproval" width="600" height="1298" loading="lazy" decoding="async"></div><figcaption><i>3</i><span><b>It shows its work.</b> Every check, alarm and change, newest first, with the signature record behind each one.</span></figcaption></figure>
+    </div>
+    <aside class="since-side">
+      <div class="art sig rv" role="img" aria-label="Signature record for P-0002: signed by Deb with the passkey on iPhone, for approving P-0002, over change hash 87B5 ABBA, valid once within 5 minutes. The signature checks out.">
+        <div class="art-h"><b>P-0002</b><span class="r">Signature record</span></div>
+        <div class="lv"><small>SIGNED BY</small><b>Deb, passkey on iPhone</b></div>
+        <div class="lv"><small>FOR</small><b>Approve P-0002</b></div>
+        <div class="lv"><small>OVER</small><b class="mono">Change hash 87B5 ABBA</b></div>
+        <div class="lv"><small>VALID</small><b>Once, within 5 minutes</b></div>
+        <div class="chain">✓ Signature checks out</div>
+      </div>
+      <p class="since-note rv">These screens come from the cloud version's end-to-end check: the real Worker in Cloudflare's runtime, a virtual passkey and a stand-in for Google Ads. The live demo runs the same app in your browser on a made-up account.</p>
+    </aside>
     </div>
   </section>
 
@@ -594,7 +717,7 @@ footer a:hover{color:var(--text)}
       <div class="rule rv"><i></i><div><b>Exclude searches about disability, families, vouchers or religion</b><span>Those exclusions can shut out protected groups</span></div></div>
       <div class="rule rv"><i></i><div><b>Block your own brand, or a fifth of a campaign's conversions</b><span>Negative keywords are checked against real search terms</span></div></div>
       <div class="rule rv"><i></i><div><b>Make more than 10 changes an hour</b><span>Or touch the same item twice within 30 minutes</span></div></div>
-      <div class="rule rv"><i></i><div><b>Touch an account Google does not confirm is a test account</b><span>Checked before every single change, for now</span></div></div>
+      <div class="rule rv"><i></i><div><b>Change a live account while it is locked</b><span>A person unlocks it for 1 to 8 hours by typing its name</span></div></div>
     </div>
     <p class="kill rv">One switch stops everything: <code>Pause all changes</code></p>
   </section>
@@ -610,15 +733,15 @@ footer a:hover{color:var(--text)}
       <div class="arr a1" aria-hidden="true"></div>
       <div class="node n-ai"><small>THE AI</small><b>Claude</b><span>Reads, reasons and proposes</span></div>
       <div class="arr a2" aria-hidden="true"></div>
-      <div class="node core"><small>THE AGENT</small><b>Campaign Ops</b><span>Holds the rules, the key and the log</span></div>
+      <div class="node core"><small>THE AGENT</small><b>Campaign Ops</b><span>Holds the rules, the key and the log, and runs Autopilot</span></div>
       <div class="arr ap" aria-hidden="true"></div>
       <div class="node person"><small>A PERSON</small><b>Approval console</b><span>Approves or rejects every change</span></div>
       <div class="arr a3" aria-hidden="true"></div>
-      <div class="node n-gads"><small>THE PLATFORM</small><b>Google Ads API</b><span>Test accounts only, for now</span></div>
+      <div class="node n-gads"><small>THE PLATFORM</small><b>Google Ads API</b><span>Test accounts, and live ones behind a lock</span></div>
     </div>
     <div class="flow-notes">
       <div class="rv"><b>Claude never talks to Google.</b> Only Campaign Ops can, and only through its own tools.</div>
-      <div class="rv"><b>The key stays on my laptop.</b> The robot's login file lives outside the code and is never uploaded.</div>
+      <div class="rv"><b>The key never sits in the code.</b> On the laptop it lives outside the project. In the cloud it is an encrypted Cloudflare secret.</div>
       <div class="rv"><b>Every step is logged.</b> Each entry is chained to the one before it, so a quiet edit would show.</div>
     </div>
   </section>
@@ -635,9 +758,9 @@ footer a:hover{color:var(--text)}
   <!-- BUILT WITH -->
   <section class="wrap" aria-labelledby="builtH">
     <div class="sh rv"><h2 id="builtH">Built with</h2></div>
-    <div class="stack rv"><span>TypeScript</span><span>Model Context Protocol</span><span>Claude Desktop</span><span>Google Ads API v26</span><span>Service account login</span><span>48 automated tests</span></div>
+    <div class="stack rv"><span>TypeScript</span><span>Model Context Protocol</span><span>Claude</span><span>Google Ads API v26</span><span>Service account login</span><span>Cloudflare Workers</span><span>Durable Objects</span><span>Passkeys (WebAuthn)</span><span>OAuth 2.1</span><span>Web Push</span><span>Workers AI</span><span>Cron Triggers</span><span>115 automated tests</span></div>
     <div class="end-cta rv">
-      <a class="btn btn-pri" id="tryDemo2" href="../../campaign-ops/">Try it in your browser</a>
+      <a class="btn btn-pri" id="tryDemo2" href="../../campaign-ops/">Try the app in your browser</a>
       <a class="btn btn-gh" href="https://github.com/DebashishKumarBora/campaign-ops-mcp" target="_blank" rel="noopener">Read the code ↗</a>
     </div>
     <div class="series rv">
@@ -770,6 +893,15 @@ footer a:hover{color:var(--text)}
     els.forEach(function(el){io.observe(el);});
   } else els.forEach(function(el){el.classList.add('in');});
 })();
+</script>
+<script>
+/* phones: the two older releases open on tap, so the newest one leads */
+document.querySelectorAll('.rel-more').forEach(function(b){
+  b.addEventListener('click',function(){
+    var card=b.closest('.rel'); var open=card.classList.toggle('open');
+    b.setAttribute('aria-expanded',String(open)); b.textContent=open?'Hide what changed':'Show what changed';
+  });
+});
 </script>
 </body>
 </html>

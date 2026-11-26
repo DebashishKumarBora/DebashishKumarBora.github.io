@@ -27,48 +27,90 @@ var GBPMOCK = (function(){
         stars:stars, ageDays:ri(1,120), comment:pool[ri(0,pool.length-1)], replied:replied, replyComment:replied?'Thanks for the feedback. Please reach out to the office so we can help.':'' }); }
     out.sort(function(a,b){return a.ageDays-b.ageDays;}); return out;
   }
+  function issuesFor(name){
+    if(name==='Kova') return [
+      {sev:'high',title:'Wrong primary category',pillar:'Profile',detail:'Listed as Apartment building, which hides the standard hours editor, so Google fills in hours from other sites.',fix:'Change the primary category to Apartment complex.'},
+      {sev:'high',title:'Reviews waiting for a reply',pillar:'Reviews',detail:'Four reviews from the last month have no reply, two of them negative.',fix:'Reply to each one within 48 hours.'},
+      {sev:'medium',title:'Hours missing for 3 days',pillar:'Hours',detail:'Saturday, Sunday and Monday have no hours set.',fix:'Add hours for every day the office is open.'}];
+    if(name==='Lumi') return [
+      {sev:'high',title:'Too few photos',pillar:'Media',detail:'Only 6 photos. Listings with 20 or more tend to get more calls and direction requests.',fix:'Add at least 14 photos: outside, amenities and a model unit.'},
+      {sev:'medium',title:'No business description',pillar:'Profile',detail:'The description is empty, so Google shows nothing about the community.',fix:'Add a 600 to 750 character description.'}];
+    if(name==='The Carver') return [
+      {sev:'medium',title:'No post in 9 weeks',pillar:'Posts',detail:'The last update went out 63 days ago.',fix:'Post at least once a month.'}];
+    if(name==='Quinn'||name==='Alto') return [
+      {sev:'low',title:'Posts are slowing down',pillar:'Posts',detail:'The last update went out '+(name==='Quinn'?41:38)+' days ago.',fix:'Post at least once a month.'}];
+    return [];
+  }
   function listing(c, idx){
-    var poor = (c.name==='Kova'||c.name==='Lumi');
-    var score = poor?ri(52,68):ri(78,96);
-    var grade = score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
-    var issues=[];
-    if(poor){ if(c.name==='Kova'){ issues.push('Category is Apartment building, which hides the hours editor. Change to Apartment complex.'); issues.push('4 reviews from the last month are unanswered.'); }
-              else { issues.push('Only 6 photos. Listings with 20 or more get more calls.'); issues.push('No business description set.'); } }
-    else if(rnd()<0.4){ issues.push('Last post was '+ri(35,80)+' days ago. Post at least monthly.'); }
-    var avg=poor?rf(3.4,3.9):rf(4.2,4.8);
-    var revCount=ri(18,140);
-    var answeredRate=poor?rf(0.4,0.6):rf(0.8,0.96);
-    var revs=reviews(Math.min(12,revCount), avg, answeredRate);
-    return { id:'loc-'+idx, title:c.name+' Apartments', name:c.name, address:ri(100,9999)+' Main St, '+c.city+', MN', phone:'(612) 555-'+String(1000+idx).slice(-4),
-      website:'https://'+slug(c.name)+'apts.com', category:(c.name==='Kova')?'Apartment building':'Apartment complex', status:'OPEN',
-      grade:grade, score:score, issues:issues, mapsUri:'https://maps.google.com/?q='+slug(c.name),
-      photoCount:poor&&c.name==='Lumi'?6:ri(14,60), postDays:ri(3,80), hasDesc:!(poor&&c.name==='Lumi'), hoursCovered:c.name!=='Kova', specialHours:false,
-      rating:Math.round(avg*10)/10, reviewCount:revCount, unanswered:Math.round(revCount*(1-answeredRate)), reviews:revs };
+    var poor=(c.name==='Kova'||c.name==='Lumi'), mid=(c.name==='The Carver');
+    var score=poor?ri(52,63):mid?ri(70,76):ri(82,96);
+    var grade=score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
+    var status=score>=80?'healthy':score>=65?'warning':'critical';
+    var avg=Math.round((poor?rf(3.4,3.8):rf(4.2,4.8))*10)/10;
+    var total=ri(42,140);
+    var answeredRate=poor?rf(0.48,0.6):rf(0.88,0.98);
+    var items=reviews(14, avg, answeredRate);
+    if(c.name==='Kova'){ items.slice(0,4).forEach(function(r,i){ r.replied=false; r.replyComment=''; if(i<2){ r.stars=ri(1,2); r.comment=NEG[i]; } r.ageDays=ri(3,26); }); items.sort(function(a,b){return a.ageDays-b.ageDays;}); }
+    var unanswered=Math.max(items.filter(function(r){return !r.replied;}).length, Math.round(total*(1-answeredRate)));
+    var negOpen=items.filter(function(r){return r.stars<=3&&!r.replied;}).length;
+    var last30=ri(3,9), last60=last30+ri(3,8), last90=last60+ri(3,7);
+    var id='loc-'+idx;
+    return { id:id, locId:id, title:c.name+' Apartments', name:c.name, address:ri(100,9999)+' Main St, '+c.city+', MN', phone:'(612) 555-'+String(1000+idx).slice(-4),
+      website:'https://'+slug(c.name)+'apts.example', category:(c.name==='Kova')?'Apartment building':'Apartment complex', status:status,
+      grade:grade, score:score, issues:issuesFor(c.name), mapsUri:'https://maps.google.com/?q='+slug(c.name),
+      photoCount:c.name==='Lumi'?6:ri(18,60), postDays:mid?63:(c.name==='Quinn'?41:(c.name==='Alto'?38:ri(3,28))), hasDesc:c.name!=='Lumi', hoursCovered:c.name==='Kova'?4:7, specialHours:false,
+      rating:avg, reviewCount:total, unanswered:unanswered,
+      reviews:{ total:total, avg:avg, responseRate:Math.round((1-unanswered/Math.max(1,total))*100), unanswered:unanswered, recentNeg:negOpen, last30:last30, last60:last60, last90:last90 },
+      _items:items };
   }
+  var DASH=null;
   function dashboard(){
-    var listings=COMM.map(function(c,i){return listing(c,i);});
-    var totalReviews=listings.reduce(function(a,l){return a+l.reviewCount;},0);
-    var negOpen=listings.reduce(function(a,l){return a+l.reviews.filter(function(r){return r.stars<=3 && !r.replied;}).length;},0);
-    var unanswered=listings.reduce(function(a,l){return a+l.unanswered;},0);
-    var portfolioRating=Math.round(listings.reduce(function(a,l){return a+l.rating;},0)/listings.length*10)/10;
-    var summary={ total:listings.length, avgScore:Math.round(listings.reduce(function(a,l){return a+l.score;},0)/listings.length),
-      critical:listings.filter(function(l){return l.grade==='D'||l.grade==='F';}).length,
-      warning:listings.filter(function(l){return l.grade==='C';}).length,
-      healthy:listings.filter(function(l){return l.grade==='A'||l.grade==='B';}).length,
-      negOpen:negOpen, portfolioRating:portfolioRating, totalReviews:totalReviews, unanswered:unanswered };
-    var alerts=[]; listings.forEach(function(l){ if(l.grade==='D'||l.grade==='F') alerts.push({property:l.name, severity:'high', text:l.issues[0]||'Profile needs attention.'}); });
-    return { summary:summary, accounts:2, updated:new Date().toISOString(), listings:listings, alerts:alerts, reviewApi:true, enableLink:'' };
+    if(DASH) return DASH;
+    var listings=COMM.map(function(c,i){return listing(c,i);}).sort(function(a,b){return a.score-b.score;});
+    function sum(f){return listings.reduce(function(a,l){return a+f(l);},0);}
+    var totalReviews=sum(function(l){return l.reviews.total;});
+    var summary={ total:listings.length, avgScore:Math.round(sum(function(l){return l.score;})/listings.length),
+      critical:listings.filter(function(l){return l.status==='critical';}).length,
+      warning:listings.filter(function(l){return l.status==='warning';}).length,
+      healthy:listings.filter(function(l){return l.status==='healthy';}).length,
+      negOpen:sum(function(l){return l.reviews.recentNeg;}),
+      portfolioRating:Math.round(sum(function(l){return l.reviews.avg*l.reviews.total;})/Math.max(1,totalReviews)*100)/100,
+      totalReviews:totalReviews, unanswered:sum(function(l){return l.reviews.unanswered;}),
+      reviewsLast30:sum(function(l){return l.reviews.last30;}), reviewsLast60:sum(function(l){return l.reviews.last60;}), reviewsLast90:sum(function(l){return l.reviews.last90;}) };
+    var alerts=[];
+    listings.forEach(function(l){ l.issues.forEach(function(it){ if(it.sev!=='low') alerts.push({locId:l.locId, sev:it.sev, title:it.title, property:l.name, fix:it.fix, detail:it.detail}); }); });
+    alerts.sort(function(a,b){return (a.sev==='high'?0:1)-(b.sev==='high'?0:1);});
+    DASH={ summary:summary, accounts:2, updated:new Date().toISOString(), listings:listings, alerts:alerts, reviewApi:true, enableLink:'' };
+    return DASH;
   }
-  function profileWatch(){
-    var d=dashboard();
-    var communities=d.listings.map(function(l){ return { name:l.name, rating:l.rating, reviews:l.reviewCount, totalReviews:l.reviewCount, unanswered:l.unanswered,
-      responseRate:Math.round((1-l.unanswered/Math.max(1,l.reviewCount))*100), negOpen:l.reviews.filter(function(r){return r.stars<=3&&!r.replied;}).length,
-      recentNeg:l.reviews.filter(function(r){return r.stars<=3;}).slice(0,3), score:l.score, status:l.grade, stale:l.postDays>45 }; });
-    return { updated:new Date().toISOString(), portfolioRating:d.summary.portfolioRating, avg:d.summary.portfolioRating,
-      totalReviews:d.summary.totalReviews, unanswered:d.summary.unanswered, negOpen:d.summary.negOpen,
-      responseRate:Math.round((1-d.summary.unanswered/Math.max(1,d.summary.totalReviews))*100),
-      communities:communities, reviews:communities, recentNeg:communities.slice(0,5), score:d.summary.avgScore, status:'ok', reviewApi:true, name:'All communities' };
+  function locationReviews(locId){
+    var l=dashboard().listings.filter(function(x){return x.locId===locId;})[0];
+    if(!l) return { available:false, error:'Unknown listing.' };
+    return { available:true, total:l.reviews.total, avg:l.reviews.avg, items:l._items };
   }
+  var WATCHDATA={
+    'Kova':{googleDiffs:[{field:'Hours, Sunday',mine:'Closed',google:'10 AM to 4 PM'}],pending:[],highlights:[{label:'Pool',risky:true},{label:'Pet friendly',risky:false}]},
+    'Harbor Cove':{googleDiffs:[{field:'Phone',mine:'(612) 555-1010',google:'(612) 555-0199'}],pending:[],highlights:[{label:'Fitness center',risky:false},{label:'EV charging',risky:true}]},
+    'Maple Ridge':{googleDiffs:[],pending:['Amenity: pool = No'],highlights:[{label:'Pool',risky:true},{label:'Dog park',risky:false}]},
+    'Lumi':{googleDiffs:[],pending:['Description'],highlights:[{label:'Rooftop deck',risky:false}]}
+  };
+  function profileWatch(sel){
+    var ids=[]; try{ ids=JSON.parse(sel||'[]'); }catch(e){ ids=[]; }
+    var all=dashboard().listings; var pick=all.filter(function(l){return ids.indexOf(l.locId)>=0;}); if(!pick.length) pick=all;
+    var items=pick.map(function(l){ var w=WATCHDATA[l.name]||{googleDiffs:[],pending:[],highlights:[{label:'Fitness center',risky:false},{label:'In-unit laundry',risky:false}]};
+      return { locId:l.locId, title:l.title, mapsUri:l.mapsUri, googleDiffs:w.googleDiffs, pending:w.pending, highlights:w.highlights }; });
+    return { scanned:items.length, googleChanges:items.filter(function(i){return i.googleDiffs.length;}).length, pendingCount:items.filter(function(i){return i.pending.length;}).length,
+      flagged:items.reduce(function(a,i){return a+i.highlights.filter(function(h){return h.risky;}).length;},0), items:items };
+  }
+  function diagnose(title){
+    var name=String(title||'').replace(/ Apartments$/,'');
+    var w=WATCHDATA[name];
+    var t='**'+esc2(title)+'** looks right on Google.';
+    if(w&&w.googleDiffs.length) t='Google changed **'+esc2(w.googleDiffs[0].field)+'** on **'+esc2(title)+'** from "'+esc2(w.googleDiffs[0].mine)+'" to "'+esc2(w.googleDiffs[0].google)+'". If yours is right, reject the change in Business Profile Manager, then post an update so Google sees fresh activity.';
+    else if(w&&w.pending.length) t='Your fix (**'+esc2(w.pending[0])+'**) is still waiting on Google. These usually go live within a few days; nothing else to do yet.';
+    return { text:t+'\n\nIllustrative analysis for this demo, powered by '+MODEL+'.' };
+  }
+  function esc2(x){return String(x==null?'':x).replace(/[*_]/g,'');}
   function perf(){
     var rows=COMM.map(function(c){ return { title:c.name+' Apartments', views:ri(800,6000), viewsTrend:+rf(-15,35).toFixed(1), calls:ri(10,120), callsTrend:+rf(-20,40).toFixed(1), clicks:ri(40,400), clicksTrend:+rf(-10,30).toFixed(1), directions:ri(20,260), dirTrend:+rf(-12,28).toFixed(1) }; });
     rows.sort(function(a,b){return b.views-a.views;});
@@ -85,7 +127,7 @@ var GBPMOCK = (function(){
   function aiAnalysis(mode,focus){
     var obj={ healthScore:79, grade:'B', headline:'Profiles are healthy except Kova and Lumi.',
       summary:'Fourteen of sixteen listings grade B or better. Kova is losing the hours editor to a category error and has unanswered reviews. Lumi is thin on photos and has no description.',
-      metrics:[{label:'Portfolio rating',value:'4.4',status:'good'},{label:'Unanswered reviews',value:'openings',status:'warn'},{label:'Listings graded D or F',value:'2',status:'bad'},{label:'Total reviews',value:'many',status:'good'}],
+      metrics:(function(){var sm=dashboard().summary;return [{label:'Portfolio rating',value:sm.portfolioRating.toFixed(1),status:'good'},{label:'Unanswered reviews',value:String(sm.unanswered),status:'warn'},{label:'Listings graded D or F',value:String(sm.critical),status:'bad'},{label:'Total reviews',value:sm.totalReviews.toLocaleString(),status:'good'}];})(),
       priorities:[
         {severity:'high',title:'Fix Kova category',detail:'Kova is set to Apartment building, which removes the standard hours editor and pulls wrong hours from aggregators. Change it to Apartment complex.',impact:'restores hours control'},
         {severity:'high',title:'Answer Kova reviews',detail:'Four reviews from the last month are unanswered. Reply within 48 hours to protect the rating.',impact:'higher response rate'},
@@ -103,14 +145,15 @@ var GBPMOCK = (function(){
     else if(/review|answer|respond|negative/.test(last)) body='You have open negative reviews at **Kova** and **Lumi**. Reply within 48 hours. I can draft responses for each if you want.';
     else if(/photo|lumi|description/.test(last)) body='**Lumi** has only 6 photos and no description. Add 20 or more photos and a full description to lift calls and clicks.';
     else body='Across 16 listings the portfolio rating is about **4.4**. The two that need work are **Kova** (category and unanswered reviews) and **Lumi** (photos and description).';
-    return { text: body+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' };
+    return { text: body+'\n\nIllustrative analysis for this demo, powered by '+MODEL+'.' };
   }
   function route(fn,a){
     switch(fn){
       case 'getDashboardData': return dashboard();
       case 'getPerformanceData': return perf();
-      case 'getProfileWatch': return profileWatch();
-      case 'diagnoseProfile': return profileWatch();
+      case 'getProfileWatch': return profileWatch(a[1]);
+      case 'diagnoseProfile': return diagnose(a[0]);
+      case 'getLocationReviews': return locationReviews(a[0]);
       case 'getReviewThemes': return themes();
       case 'getAIAnalysis': return aiAnalysis(a[0],a[1]);
       case 'chatWithAI': return chat(a);
@@ -1050,4 +1093,5 @@ DKB_MOBILE({
   wrap: ['setView']
 });
 </script>
+<style id="dkb-phone-density">/* Phones: tighter numbers and cards, so a screen holds more. */@media (max-width:640px){.kpi-val{font-size:24px}.kpi{padding:12px 13px}.bigscore{font-size:32px;margin-top:10px}.card{padding:14px}.mini-v{font-size:19px}}</style>
 </body></html>

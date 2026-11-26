@@ -127,9 +127,13 @@
   .rw .pill{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;flex:0 0 auto}
   .pill.red{background:var(--red-soft);color:var(--red)} .pill.amber{background:var(--amber-soft);color:var(--amber)} .pill.green{background:var(--green-soft);color:var(--green)} .pill.blue{background:var(--blue-soft);color:var(--blue)}
   .funnel{display:flex;flex-direction:column;gap:2px;margin:8px 0}
-  .fstage{position:relative;margin:0 auto;height:56px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:#08110d;font-weight:600;width:0;transition:width 1.1s cubic-bezier(.2,.7,.3,1);overflow:hidden;white-space:nowrap}
-  .fstage .fl{font-family:var(--disp);font-size:14px}
-  .fstage .fv{font-family:var(--disp);font-size:17px}
+  .fst{display:grid;gap:6px;padding:4px 0}
+  .fst-h{display:flex;justify-content:center;align-items:baseline;gap:10px;flex-wrap:wrap;text-align:center}
+  .fst-h .fl{font-family:var(--disp);font-size:13.5px;font-weight:600;color:var(--text)}
+  .fst-h .fl small{font-size:11px;font-weight:500;color:var(--muted);margin-left:4px}
+  .fst-h .fv{font-family:var(--disp);font-size:17px;font-weight:700;color:var(--text)}
+  .fstage{position:relative;margin:0 auto;height:22px;border-radius:7px;width:0;min-width:8px;transition:width 1.1s cubic-bezier(.2,.7,.3,1)}
+  @media(max-width:640px){.fstage{height:14px;border-radius:5px}.fst-h .fv{font-size:15.5px}}
   .fdrop{text-align:center;font-size:11.5px;color:var(--muted);padding:3px 0}
   .fdrop b{color:var(--amber)}
   .chart-card{padding:20px 22px 16px;margin-bottom:22px}
@@ -1006,7 +1010,7 @@ var VPG = (function(){
         '2. Lumi: tighten geo-targeting to a 5 mile radius around the property and exclude the downtown core. Expect cost per lead to fall toward the **$180** portfolio median.',
         '3. Recheck both in 7 days.',
         '**Expected payoff:** recovering Kova tracking should surface ~12 to 16 hidden leads, and the Lumi geo fix should free roughly **$1,900 per month** to redirect toward MetroLine.',
-        '_Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'._'
+        'Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'.'
       ]);
     }
     if(/problem|break|about to|risk|next/.test(last)){
@@ -1018,7 +1022,7 @@ var VPG = (function(){
         '2. Add a 2-bed and 3-bed ad group at MetroLine, the availability sheet shows real demand there.',
         '3. Cap Maple Ridge daily budget so it stops pacing ahead while full.',
         '**Expected payoff:** better matched spend should lift MetroLine signed leases without raising total portfolio spend.',
-        '_Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'._'
+        'Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'.'
       ]);
     }
     if(/rank|health|funnel|all communit/.test(last)){
@@ -1026,7 +1030,7 @@ var VPG = (function(){
         '**Portfolio funnel health, strongest to weakest:**',
         '1. **S\u014dl Lofts** and **MetroLine**: clean tracking, above-median session-to-lead rate.\n2. **Maple Ridge, Forma, The Mercer, Quinn**: healthy but nearly full, watch for over-spend.\n3. **The Whitmore**: leads are recorded but not flowing back to Google Ads, so bidding is flying blind.\n4. **Lumi**: converting, but at 4x the median cost because of a geo mismatch.\n5. **Kova**: broken tag, 0 recorded leads on real spend. Fix this first.',
         '**The single highest-impact fix this week:** restore Kova conversion tracking, then reconnect The Whitmore leads to Ads so Smart Bidding can optimise on real signals.',
-        '_Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'._'
+        'Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'.'
       ]);
     }
     if(/track|tag|kova/.test(last)){
@@ -1038,14 +1042,14 @@ var VPG = (function(){
         '2. Verify the lead trigger fires on the exact confirmation page path.',
         '3. Once fixed, re-import the GA4 lead event into Google Ads as a conversion so bidding can use it.',
         '**Expected payoff:** roughly **12 to 16 leads** should reappear immediately, and Kova stops looking like wasted spend.',
-        '_Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'._'
+        'Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'.'
       ]);
     }
     return pick([
       '**Here is the one-glance read across all 16 communities.**',
       'Total spend is tracking to roughly **$29K** for this window against about **180 recorded leads**. Fifteen communities are flowing cleanly. The exceptions are **Kova** (broken tag, 0 recorded leads) and **Lumi** (converting but at 4x median cost from a geo mismatch). **MetroLine** is your best place to add budget, and **Maple Ridge** is where to pull it.',
       'Ask me about wasted spend, what is about to break, or a specific community for a deeper dive.',
-      '_Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'._'
+      'Illustrative analysis for this demo, powered by '+AI_MODEL_DISPLAY+'.'
     ]);
   }
   function deepDive(lens, name){
@@ -1072,10 +1076,10 @@ var VPG = (function(){
       moves='1. Keep the current budget steady.\n2. Monitor occupancy weekly, pull budget if it crosses ~95%.\n3. Reallocate any headroom toward MetroLine or Kova once Kova is fixed.';
       payoff='**Expected payoff:** stable, efficient leasing with budget preserved for where it is needed.';
     }
-    return { text: verdict+'\n\n'+body+'\n\n**The moves**\n'+moves+'\n\n'+payoff+'\n\n_Illustrative deep dive for this demo, powered by '+AI_MODEL_DISPLAY+'._' };
+    return { text: verdict+'\n\n'+body+'\n\n**The moves**\n'+moves+'\n\n'+payoff+'\n\nIllustrative deep dive for this demo, powered by '+AI_MODEL_DISPLAY+'.' };
   }
   function diagnose(topic, label){
-    return { text: '**'+label+'**\n\nThis is a demonstration diagnosis. In the live product, the AI operator reads the exact numbers behind this flag and returns a prioritized, step-by-step fix a non-technical marketer can follow.\n\n1. Identify the affected communities and confirm the numbers.\n2. Trace the break to the specific stage: spend, traffic, tracking, leads, or feedback to Ads.\n3. Apply the smallest fix that restores the chain, then verify in 7 days.\n\n_Illustrative diagnosis for this demo, powered by '+AI_MODEL_DISPLAY+'._' };
+    return { text: '**'+label+'**\n\nThis is a demonstration diagnosis. In the live product, the AI operator reads the exact numbers behind this flag and returns a prioritized, step-by-step fix a non-technical marketer can follow.\n\n1. Identify the affected communities and confirm the numbers.\n2. Trace the break to the specific stage: spend, traffic, tracking, leads, or feedback to Ads.\n3. Apply the smallest fix that restores the chain, then verify in 7 days.\n\nIllustrative diagnosis for this demo, powered by '+AI_MODEL_DISPLAY+'.' };
   }
 
   // ---- tool links: point tiles at the sibling demo repos on GitHub Pages ----
@@ -1389,9 +1393,11 @@ function renderOcc(){
     if(pull.length)parts.push('Pull budget from <b>'+esc(pull[0].name)+'</b> ('+fmt1(pull[0].occupancy)+'% occupied): nearly full but still spending hard.');
     msg=sowhat('', parts.join(' '));
   } else { msg=sowhat('green','Spend is well-matched to vacancy across the portfolio. No obvious reallocation needed right now.'); }
-  var W=680,H=360,pl=52,pr=20,pt=20,pb=40,iw=W-pl-pr,ih=H-pt-pb;
+  var narrowChart=window.innerWidth<640;
+  var W=narrowChart?360:680,H=narrowChart?390:360,pl=narrowChart?40:52,pr=narrowChart?12:20,pt=20,pb=40,iw=W-pl-pr,ih=H-pt-pb;
   var maxSp=Math.max.apply(null,spends.concat([1]));
-  function sx(o){return pl+(o/100)*iw;} function sy(s){return pt+ih-(s/maxSp)*ih;}
+  var occLo=Math.max(0,Math.min(80,Math.floor((Math.min.apply(null,C.map(function(x){return x.occupancy||0;}).concat([100]))-4)/5)*5));
+  function sx(o){return pl+((o-occLo)/(100-occLo))*iw;} function sy(s){return pt+ih-(s/maxSp)*ih;}
   var occLine=sx(90), spLine=sy(medSpend);
   var dots=C.map(function(x,i){var v=verdict(x);var col=v.c==='red'?'var(--red)':v.c==='amber'?'var(--amber)':v.c==='blue'?'var(--blue)':'var(--green)';var r=Math.max(6,Math.min(15,Math.sqrt((x.spend||1))/6));var cx=sx(x.occupancy),cy=sy(x.spend);var tip='<b>'+esc(x.name)+'</b><br>'+fmt1(x.occupancy)+'% occupied'+(x.vacant!=null?' · '+x.vacant+' vacant':'')+'<br>Spend '+usd(x.spend)+' · '+fmt(x.trueLeads)+' leads<br>'+v.t;return '<g class="dot" style="transition-delay:'+(i*40)+'ms"><circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+col+'" fill-opacity="0.65" stroke="'+col+'" data-issue="community" data-arg="'+esc(x.name).replace(/"/g,'&quot;')+'" data-lens="occ" data-tip="'+esc(tip).replace(/"/g,'&quot;')+'"></circle><text x="'+cx.toFixed(1)+'" y="'+(cy-r-4).toFixed(1)+'" text-anchor="middle" class="axis-t">'+esc(x.name.split(' ')[0])+'</text></g>';}).join('');
   var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:'+W+'px">'+
@@ -1423,7 +1429,7 @@ function renderFunnel(){
   for(var i=1;i<stages.length;i++){var d=1-(stages[i].v/(stages[i-1].v||1));if(d>worstDrop.pct){worstDrop={i:i,pct:d,from:stages[i-1].l,to:stages[i].l};}}
   var ctr=impr>0?(clk/impr*100):0, s2l=sess>0?(leads/sess*100):0;
   var msg=sowhat('','Paid click-through is <b>'+fmt1(ctr)+'%</b>, and <b>'+fmt1(s2l)+'%</b> of site visitors become real leads. Your biggest leak is <b>'+esc(worstDrop.from)+' → '+esc(worstDrop.to)+'</b>, where you lose <b>'+Math.round(worstDrop.pct*100)+'%</b>. Fix that stage and everything downstream grows.');
-  var fun=stages.map(function(s,i){var w=Math.max(14,Math.round(s.v/max*100));var drop=i>0?(1-(s.v/(stages[i-1].v||1))):0;var dropHtml=i>0?('<div class="fdrop">▼ <b>'+Math.round(drop*100)+'%</b> drop-off</div>'):'';return dropHtml+'<div class="fstage" data-w="'+w+'" style="background:linear-gradient(90deg,'+s.c+','+s.c+'cc)"><span class="fl">'+s.l+' <span style="opacity:.6;font-size:11px">'+s.note+'</span></span><span class="fv">'+fmt(s.v)+'</span></div>';}).join('');
+  var fun=stages.map(function(s,i){var w=Math.max(3,Math.round(s.v/max*100));var drop=i>0?(1-(s.v/(stages[i-1].v||1))):0;var dropHtml=i>0?('<div class="fdrop">▼ <b>'+Math.round(drop*100)+'%</b> drop-off</div>'):'';return dropHtml+'<div class="fst"><div class="fst-h"><span class="fl">'+s.l+'<small>'+s.note+'</small></span><span class="fv">'+fmt(s.v)+'</span></div><div class="fstage" data-w="'+w+'" style="background:linear-gradient(90deg,'+s.c+','+s.c+'cc)"></div></div>';}).join('');
   var withSess=C.filter(function(x){return (x.sessions||0)>=50;}).sort(function(a,b){return (b.leadRatePct||0)-(a.leadRatePct||0);});
   var maxLr=Math.max.apply(null,withSess.map(function(x){return x.leadRatePct||0;}).concat([1]));
   var rows=withSess.map(function(x){var w=Math.round((x.leadRatePct||0)/maxLr*100);var col=(x.leadRatePct>=2)?'var(--green)':(x.leadRatePct>=1?'var(--amber)':'var(--red)');return '<div class="rw" data-issue="community" data-arg="'+esc(x.name).replace(/"/g,'&quot;')+'" data-lens="funnel" title="Diagnose &amp; fix"><div class="nm">'+esc(x.name)+'</div><div class="barwrap"><div class="bar" data-w="'+w+'" style="background:'+col+'"></div><div class="barlabel">'+fmt1(x.leadRatePct||0)+'%</div></div><div class="val">'+fmt(x.sessions)+' sess · '+fmt(x.trueLeads)+' leads</div></div>';}).join('');
@@ -1451,7 +1457,8 @@ function renderQuality(){
   if(cta.length){ msg=sowhat('','<b>'+esc(cta[0].name)+'</b> is your clearest fix: visitors engage ('+fmt1(cta[0].engRatePct)+'% engagement, above the '+fmt1(medEng)+'% median) but few convert ('+fmt1(cta[0].leadRatePct)+'% lead rate). That is a call-to-action or form problem, not a traffic problem.'); }
   else if(low.length){ msg=sowhat('red','<b>'+esc(low[0].name)+'</b> has low engagement and low conversion on '+fmt(low[0].sessions)+' sessions. Either the traffic is poorly targeted or the landing page is weak.'); }
   else { msg=sowhat('green','Traffic quality is healthy across the board: engagement and conversion track together.'); }
-  var W=680,H=360,pl=52,pr=20,pt=20,pb=42,iw=W-pl-pr,ih=H-pt-pb;
+  var narrowChart=window.innerWidth<640;
+  var W=narrowChart?360:680,H=narrowChart?390:360,pl=narrowChart?40:52,pr=narrowChart?12:20,pt=20,pb=42,iw=W-pl-pr,ih=H-pt-pb;
   var maxE=Math.max.apply(null,engs.concat([1])), maxL=Math.max.apply(null,leadrs.concat([1]));
   function sx(e){return pl+(e/maxE)*iw;} function sy(l){return pt+ih-(l/maxL)*ih;}
   var xLine=sx(medEng), yLine=sy(medLr);
@@ -2182,5 +2189,6 @@ DKB_MOBILE({
   }
 });
 </script>
+<style id="dkb-phone-density">/* Phones: tighter numbers and cards, so a screen holds more. */@media (max-width:640px){.stat .v{font-size:23px;margin-top:6px}.stat{padding:12px 14px}.card{padding:16px 15px 14px}.tile{padding:15px 14px 13px}.hero h2{font-size:22px}.ptitle{font-size:21px}}</style>
 </body>
 </html>

@@ -194,7 +194,7 @@ window.JARVIS_BRAIN = (function(){
      card:'agents', next:['Open Ads Intelligence','What is the Agent series?','Show the dashboards'], filter:'agent'},
 
     {id:'series', re:[[/\b(agent series|agents series|the series|series of agents)\b/,8],[/\blive run\b/,8],[/\b(real|live) google ads( test)? accounts?\b/,7],[/\bgoogle ads api\b/,3],[/\bagent (01|1|one|02|2|two)\b/,7],[/\b(next|new|upcoming) agents?\b/,7]],
-     a:['<b>Campaign Ops</b> is Agent 01 in Deb’s Agent series. On 26 Nov 2026 it ran on a real Google Ads test account through the Google Ads API: it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. The run is written up step by step, with screenshots. The next agent joins the series when it ships.'],
+     a:['<b>Campaign Ops</b> is Agent 01 in Deb’s Agent series. On 26 Nov 2026 it ran on a real Google Ads test account through the Google Ads API: it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. Since then it has gained an Autopilot: it checks the account every hour on its own, writes each fix, and buzzes a phone, where the change is approved with Face ID. The run is written up step by step, with screenshots. The next agent joins the series when it ships.'],
      card:'series', project:'campaignops', next:['How was it built?','Show me an AI agent','Book a call']},
 
     {id:'dashboards', re:[[/\b(dashboards?|dash boards?|reports?|reporting|bi)\b/,3],[/\blive apps?\b/,4]],
@@ -537,7 +537,7 @@ window.JARVIS_BRAIN = (function(){
     'MBA from IIT (ISM) Dhanbad. Certified in Google Data Analytics, Microsoft Power BI, Advanced Excel.',
     'Stack: Looker Studio, Power BI, Apps Script, Claude, SQL, BigQuery, Snowflake, GA4, Google Ads, Meta Ads, Python.',
     'Builds on this site: Ads Intelligence, Performance Review, Client Reports, Campaign Ops (AI agents; Campaign Ops is a personal open source MCP server that lets AI change Google Ads only after a person approves), AdCommand, Marketing Intelligence Hub, Leasing Dashboard, GA4, Reviews and Search Console dashboards, two Looker Studio reports. Demos use invented sample data.',
-    'Agent series: Campaign Ops is Agent 01. On 26 Nov 2026 it ran on a Google Ads test account through the Google Ads API, found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then changed the ad and confirmed it with Google. Test accounts never show ads or spend money. More agents join the series as they ship.',
+    'Agent series: Campaign Ops is Agent 01. On 26 Nov 2026 it ran on a Google Ads test account through the Google Ads API, found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then changed the ad and confirmed it with Google. Test accounts never show ads or spend money. Version 0.5 added Autopilot, which watches the account every hour, writes fixes as proposals and asks for approval on a phone. More agents join the series as they ship.',
     'Based in Guwahati, India, remote, overlapping UK and US hours. Open to projects and full time roles. Pricing is per project after a free intro call.',
     'Contact: '+E+', WhatsApp, LinkedIn, or book a 30 minute call on this page.'
   ].join(' ');

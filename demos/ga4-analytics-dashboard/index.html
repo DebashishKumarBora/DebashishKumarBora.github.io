@@ -60,7 +60,7 @@ var GA4MOCK = (function(){
     totals.impressions=Math.round(totals.clicks/0.045); totals.keyEvents=totals.leads; totals.micro=totals.microEvents;
     return { updated:new Date().toISOString(), range:String(range||'30'), count:COMM.length, name:'All communities',
       perProperty:pp, properties:pp, totals:totals, series:series(f), channels:channels(f),
-      sources:channels(f).map(function(c){return {name:c.name, k:c.name, sessions:c.sessions, leads:c.leads, n:c.sessions};}),
+      sources:channels(f).map(function(c){var sm={'Organic Search':'google / organic','Paid Search':'google / cpc','Direct':'(direct) / (none)','Referral':'apartments.com / referral','Organic Social':'facebook.com / social','Email':'newsletter / email'}[c.name]||c.name;return {source:sm, name:sm, k:c.name, sessions:c.sessions, leads:c.leads, conv:c.leads, n:c.sessions};}),
       pages:[{path:'/',views:ri(8000,20000)},{path:'/floorplans',views:ri(3000,9000)},{path:'/contact',views:ri(1500,5000)},{path:'/apply',views:ri(800,3000)}],
       leadRatePct:totals.leadRatePct, totalLeads:totals.leads, trueLeads:totals.leads, totalMicro:totals.microEvents,
       adsConversions:totals.adsConversions, spend:totals.spend, clicks:totals.clicks, impressions:totals.impressions,
@@ -118,7 +118,7 @@ var GA4MOCK = (function(){
     else if(/channel|organic|paid/.test(last)) body='**Paid Search** and **Organic Search** drive the most sessions. Paid converts slightly better per lead, so it is the safer place to add budget.';
     else if(/best|budget|where/.test(last)) body='Add budget at **MetroLine**: lowest cost per lead, most vacancy. Trim near-full communities like **Maple Ridge**.';
     else body='Across 16 communities you have **13,440** sessions and about **403** leads. The one red flag is **Kova** (tracking break); the one waste is **Lumi**.';
-    return { text: body+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' };
+    return { text: body+'\n\nIllustrative analysis for this demo, powered by '+MODEL+'.' };
   }
   function route(fn,a){
     switch(fn){
@@ -134,7 +134,7 @@ var GA4MOCK = (function(){
       case 'getAlerts': return alerts();
       case 'getAIAnalysis': return aiAnalysis(a[0],a[1]);
       case 'chatWithAI': case 'askAssist': return assist(a);
-      case 'explainAlert': { var al; try{al=JSON.parse(a[0]);}catch(e){al={};} return { text:'**'+(al.name||'This community')+'** '+(al.symptom||'')+' '+(al.fix||'')+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' }; }
+      case 'explainAlert': { var al; try{al=JSON.parse(a[0]);}catch(e){al={};} return { text:'**'+(al.name||'This community')+'** '+(al.symptom||'')+' '+(al.fix||'')+'\n\nIllustrative analysis for this demo, powered by '+MODEL+'.' }; }
       case 'getApiKeyStatus': return {set:true, masked:'sk-ant-demo'};
       case 'saveApiKey': return {ok:true};
       case 'clearApiKey': return {ok:true};
@@ -404,6 +404,8 @@ a{color:inherit;text-decoration:none}
 .assist-input input:focus{border-color:var(--blue)}
 .assist-input button{width:44px;flex:0 0 44px;border:none;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center}
 .assist-input button svg{width:18px;height:18px;stroke:var(--on-primary);fill:none;stroke-width:2}
+.assist-tg{display:none}
+@media (max-width:720px){.assist{padding:12px 14px}.assist-h{margin-bottom:10px;cursor:pointer}.assist-h>div{flex:1;min-width:0}.assist-tg{display:block;width:9px;height:9px;flex:0 0 9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(225deg);margin:4px 4px 0 0;transition:transform .2s}.assist.folded .assist-tg{transform:rotate(45deg);margin:0 4px 4px 0}.assist.folded .assist-h{margin-bottom:0}.assist.folded .assist-chips,.assist.folded .assist-thread,.assist.folded .assist-input,.assist.folded .assist-empty{display:none}}
 /* alert center */
 .alert-card{background:var(--panel);border:1px solid var(--border);border-left-width:4px;border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
 .alert-card.crit{border-left-color:var(--red)}
@@ -795,7 +797,7 @@ function renderOverview(){
 }
 function setPulse(k,el){pulseKey=k;document.querySelectorAll('#ov-pulse-toggle button').forEach(function(b){b.classList.remove('active');});el.classList.add('active');setPulseRender();}
 function setPulseRender(){if(!ovData)return;document.getElementById('ov-pulse').innerHTML=svgArea(ovData.series,pulseKey,colorHex(pulseKey),170)+ovAxis(ovData.series);}
-function ovAxis(s){if(!s||s.length<2)return '';function d(x){return x.slice(4,6)+'/'+x.slice(6,8);}return '<div class="axis"><span>'+d(s[0].date)+'</span><span>'+d(s[s.length-1].date)+'</span></div>';}
+function ovAxis(s){if(!s||s.length<2)return '';function d(x){x=String(x||'').replace(/\D/g,'');return x.slice(4,6)+'/'+x.slice(6,8);}return '<div class="axis"><span>'+d(s[0].date)+'</span><span>'+d(s[s.length-1].date)+'</span></div>';}
 function ovRangeLabel(){return range==='7'?'Last 7 days':range==='90'?'Last 90 days':'Last 30 days';}
 
 /* ============ COMMUNITY DETAIL (drill-down) ============ */
@@ -1078,9 +1080,11 @@ function mountAssist(hostId,scope,label,chips){
   if(host.dataset.built===scope)return;
   host.dataset.built=scope;host.dataset.label=label;
   var chipHtml=(chips||[]).map(function(c){return '<button class="assist-chip" onclick="assistChip(\''+hostId+'\',\''+scope+'\',this)">'+esc(c)+'</button>';}).join('');
-  host.innerHTML='<div class="assist"><div class="assist-h"><span class="ai">'+ASSIST_ICON+'</span><div><h4>Ask about '+esc(label)+'</h4><p>Your analyst, looking at this screen with you</p></div></div><div class="assist-chips">'+chipHtml+'</div><div class="assist-thread" id="'+hostId+'-thread"></div><div class="assist-input"><input id="'+hostId+'-in" placeholder="Ask anything about this…" onkeydown="if(event.key===\'Enter\')assistSend(\''+hostId+'\',\''+scope+'\')"><button onclick="assistSend(\''+hostId+'\',\''+scope+'\')"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></div></div>';
+  var folded=window.matchMedia&&window.matchMedia('(max-width:720px)').matches&&!(assistThreads[scope]&&assistThreads[scope].length);
+  host.innerHTML='<div class="assist'+(folded?' folded':'')+'"><div class="assist-h" role="button" tabindex="0" aria-expanded="'+(folded?'false':'true')+'" onclick="foldAssist(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();foldAssist(this);}"><span class="ai">'+ASSIST_ICON+'</span><div><h4>Ask about '+esc(label)+'</h4><p>Your analyst, looking at this screen with you</p></div><span class="assist-tg" aria-hidden="true"></span></div><div class="assist-chips">'+chipHtml+'</div><div class="assist-thread" id="'+hostId+'-thread"></div><div class="assist-input"><input id="'+hostId+'-in" placeholder="Ask anything about this…" onkeydown="if(event.key===\'Enter\')assistSend(\''+hostId+'\',\''+scope+'\')"><button onclick="assistSend(\''+hostId+'\',\''+scope+'\')"><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></div></div>';
   renderAssistThread(hostId,scope);
 }
+function foldAssist(h){var a=h.parentNode;if(!window.matchMedia||!window.matchMedia('(max-width:720px)').matches){a.classList.remove('folded');return;}var f=a.classList.toggle('folded');h.setAttribute('aria-expanded',f?'false':'true');}
 function assistChip(hostId,scope,el){document.getElementById(hostId+'-in').value=el.textContent;assistSend(hostId,scope);}
 function assistSend(hostId,scope){
   var inp=document.getElementById(hostId+'-in');var q=(inp.value||'').trim();if(!q)return;inp.value='';
@@ -1235,5 +1239,6 @@ DKB_MOBILE({
   wrap: ['go', 'openDetail']
 });
 </script>
+<style id="dkb-phone-density">/* Phones: tighter numbers and cards, so a screen holds more. */@media (max-width:640px){.kpi-val{font-size:23px;margin:8px 0 2px}.kpi{padding:12px 14px}.card{padding:14px}}</style>
 </body>
 </html>

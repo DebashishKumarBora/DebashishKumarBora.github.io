@@ -14,15 +14,15 @@ window.DKB_AGENTS = [
     k: 'campaignops',
     name: 'Campaign Ops',
     status: 'Live on the Google Ads API',
-    line: 'Finds what is wrong in a Google Ads account, writes the fix, and makes the change only after a person approves it.',
+    line: 'Watches a Google Ads account around the clock, writes the fix, and makes the change only after a person approves it on their phone.',
     /* [number, label, short label for the phone app] */
     proof: [
       ['5', 'issues found in a real Google Ads test account', 'issues found'],
       ['3 min', 'from proposal to a verified change', 'to a verified change'],
       ['$0', 'spent. Test accounts cannot spend', 'spent'],
-      ['48', 'automated tests behind it', 'automated tests']
+      ['115', 'automated tests behind it', 'automated tests']
     ],
-    stack: ['MCP server', 'Claude', 'Google Ads API', 'TypeScript'],
+    stack: ['MCP server', 'Claude', 'Google Ads API', 'Cloudflare', 'Passkeys', 'Workers AI'],
     /* the real change from the first live run, shown as a before and after */
     change: {
       id: 'P-0004',

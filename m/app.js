@@ -17,6 +17,9 @@
 
   function shotsOf(p){return (p.shots&&p.shots.length?p.shots:[p.file]).map(function(s){return IMG+s;});}
   function phoneShotsOf(p){return (p.mshots||[]).map(function(s){return IMG+s;});}
+  /* bold thumbnail covers (images/covers); S.covers in ../assets/site-data.js turns them off */
+  function coverOf(p){return S.covers&&p.cover?IMG+p.cover:null;}
+  function thumbOf(p){return coverOf(p)||shotsOf(p)[0];}
   var BASE='https://debashishkumarbora.github.io/';
   function onSite(p){return !!p.live&&p.live.indexOf(BASE)===0;}
   /* demos on this site open in app mode: no credit badges, and the app's back
@@ -28,8 +31,8 @@
     if(app&&onSite(p)) u+=(u.indexOf('?')<0?'?':'&')+'embed=app';
     return u;
   }
-  function shot(src,live,eager){
-    return '<div class="shot"><img '+(eager?'':'data-lz loading="lazy" ')+'src="'+src+'" alt="" decoding="async">'+(live?'<span class="live">LIVE</span>':'')+'</div>';
+  function shot(src,live,eager,cover){
+    return '<div class="shot'+(cover?' cv':'')+'"><img '+(eager?'':'data-lz loading="lazy" ')+'src="'+src+'" alt="" decoding="async">'+(live&&!cover?'<span class="live">LIVE</span>':'')+'</div>';
   }
   /* images fade in once loaded, and quietly step aside if one is missing */
   document.addEventListener('load',function(e){var t=e.target;if(t&&t.tagName==='IMG')t.removeAttribute('data-lz');},true);
@@ -39,11 +42,11 @@
      RENDERING
      ===================================================================== */
   function card(p,small,eager){
-    return '<button class="pc'+(small?' sm':'')+' press" data-act="sheet:'+p.k+'">'+shot(shotsOf(p)[0],!!p.live,eager)+
+    return '<button class="pc'+(small?' sm':'')+' press" data-act="sheet:'+p.k+'">'+shot(thumbOf(p),!!p.live,eager,!!coverOf(p))+
       '<div class="pc-b"><b>'+esc(p.t)+'</b><span>'+esc(p.s)+'</span><small>'+esc(p.tool)+'</small></div></button>';
   }
   function tile(p){
-    return '<button class="gc press" data-act="sheet:'+p.k+'">'+shot(shotsOf(p)[0],!!p.live,false)+
+    return '<button class="gc press" data-act="sheet:'+p.k+'">'+shot(thumbOf(p),!!p.live,false,!!coverOf(p))+
       '<div class="gc-b"><b>'+esc(p.t)+'</b><small>'+esc(p.tool)+'</small></div></button>';
   }
   function logo(b,big){
@@ -356,7 +359,7 @@
     return '<div class="att abtn">'+list.map(function(b){return '<button type="button" class="press'+(b[2]?' p':'')+'" data-act="'+esc(b[1])+'">'+esc(b[0])+'</button>';}).join('')+'</div>';
   }
   function mrail(list){
-    return '<div class="att"><div class="mrail">'+list.map(function(p){return '<button class="mini press" data-act="sheet:'+p.k+'">'+shot(shotsOf(p)[0],!!p.live,true)+'<b>'+esc(p.t)+'</b></button>';}).join('')+'</div></div>';
+    return '<div class="att"><div class="mrail">'+list.map(function(p){return '<button class="mini press" data-act="sheet:'+p.k+'">'+shot(thumbOf(p),!!p.live,true,!!coverOf(p))+'<b>'+esc(p.t)+'</b></button>';}).join('')+'</div></div>';
   }
   function attach(topic){
     if(!topic) return '';
@@ -367,7 +370,7 @@
       .map(function(t){return '<button class="tile press" data-act="'+t[3]+'">'+ico(t[0])+'<b>'+t[1]+'</b><span>'+t[2]+'</span></button>';}).join('')+'</div>';
     if(topic.indexOf('one:')===0){
       var p=byK[topic.slice(4)]; if(!p) return '';
-      return '<div class="att one">'+shot(shotsOf(p)[0],!!p.live,true)+'<div class="one-b">'+
+      return '<div class="att one">'+shot(thumbOf(p),!!p.live,true,!!coverOf(p))+'<div class="one-b">'+
         (p.live?'<button class="btn pri press" data-act="demo:'+p.k+'">'+ico('play')+'Open live demo</button>':'')+
         '<button class="btn press" data-act="sheet:'+p.k+'">Details</button></div></div>';
     }

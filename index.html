@@ -837,6 +837,16 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
   opacity:0;transform:scale(1.04);transition:opacity .7s var(--ease),transform 4.6s linear;will-change:opacity}
 .reel-img.on{opacity:1;transform:scale(1)}
 .thumb.img-failed .reel{display:none}
+/* covers: the cover is the first frame; hovering plays the screenshots, like a video preview */
+.thumb.has-cover{background:#07080d}
+.thumb.has-cover .reel-img{object-position:center}
+.thumb.has-cover .reel-img:not(:first-child){object-position:top left}
+.th-phone{position:absolute;right:10px;bottom:12px;z-index:6;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;
+  border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(7,8,13,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:#fff;font:600 .7rem/1 var(--body);cursor:pointer;transition:transform .2s var(--ease),background .2s,border-color .2s}
+.th-phone svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.th-phone:hover{transform:translateY(-2px);background:rgba(7,8,13,.92);border-color:rgba(255,255,255,.45)}
+.th-phone:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 
 /* skeleton shimmer until first paint */
 .thumb.has-reel::before{content:'';position:absolute;inset:0;z-index:1;
@@ -930,6 +940,44 @@ footer{border-top:1px solid var(--border);padding:30px 0;margin-top:24px}
 .mbar a:active{transform:scale(.97)}
 @media(min-width:860px){.mbar{display:none}}
 body.dm-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}
+
+/* ---- 6b. phone view: the same live demo, running at phone size inside a phone ---- */
+.dm-view{display:none;flex-shrink:0;padding:3px;border-radius:999px;background:var(--surface);border:1px solid var(--border)}
+.dm.can-phone .dm-view{display:inline-flex}
+.dm-view button{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 13px;border:0;border-radius:999px;background:transparent;
+  color:var(--muted);font:600 .74rem/1 var(--body);cursor:pointer;transition:background .2s,color .2s}
+.dm-view button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dm-view button[aria-pressed="true"]{background:var(--grad);color:#fff}
+.dm-view button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.dm-phone{position:absolute;inset:0;display:none;z-index:1;overflow:hidden;
+  background:radial-gradient(70% 60% at 50% 40%,color-mix(in srgb,var(--indigo) 22%,transparent),transparent 70%),#07080f}
+.dm.phone .dm-phone{display:flex;align-items:center;justify-content:center;gap:44px}
+.dm.phone .dm-scroll{visibility:hidden}
+.dm.phone .dm-load{display:none}
+.dm-stage{position:relative;flex:none}
+.dm-dev{position:absolute;left:0;top:0;width:414px;height:868px;transform-origin:0 0;border-radius:62px;padding:12px;
+  background:linear-gradient(145deg,#2a2d3a,#0d0e14 45%,#1d2030);box-shadow:0 0 0 1.5px #3a3e50,0 50px 110px -30px #000,inset 0 0 0 1px rgba(255,255,255,.06)}
+.dm-dev::before{content:"";position:absolute;right:-3px;top:190px;width:4px;height:86px;border-radius:0 3px 3px 0;background:#2b2e3c}
+.dm-dev::after{content:"";position:absolute;left:-3px;top:160px;width:4px;height:56px;border-radius:3px 0 0 3px;background:#2b2e3c;box-shadow:0 74px 0 #2b2e3c}
+.dm-screen{position:relative;width:390px;height:844px;border-radius:50px;overflow:hidden;background:#0b0d16}
+.dm-screen iframe{position:absolute;left:0;top:47px;width:390px;height:797px;border:0;display:block;background:#0b0d16}
+.dm-sbar{position:absolute;left:0;right:0;top:0;height:47px;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 44px;
+  background:#07080d;color:#fff;font:700 15px/1 -apple-system,'SF Pro Text',var(--body);letter-spacing:-.01em;pointer-events:none}
+.dm-sbar i{display:flex;gap:6px;align-items:center}
+.dm-sbar svg{height:12px;fill:#fff}
+.dm-island{position:absolute;z-index:4;top:11px;left:50%;width:118px;height:33px;margin-left:-59px;border-radius:20px;background:#000;pointer-events:none}
+.dm-pload{position:absolute;inset:0;z-index:2;display:grid;place-items:center;align-content:center;gap:12px;background:#0b0d16;transition:opacity .4s}
+.dm-pload.gone{opacity:0;pointer-events:none}
+.dm-pnote{max-width:250px;color:var(--muted);font-size:.86rem;line-height:1.55}
+.dm-pnote b{display:block;color:var(--text);font-size:1.02rem;line-height:1.3;margin-bottom:8px;letter-spacing:-.01em}
+.dm-pnote span{display:block;margin-top:10px;font-family:var(--mono);font-size:.66rem;color:var(--faint)}
+.dm.phone.bare .dm-phone{background:#0b0d16;display:block}
+.dm.phone.bare .dm-stage{position:absolute;inset:0;width:auto!important;height:auto!important}
+.dm.phone.bare .dm-dev{position:absolute;inset:0;width:auto;height:auto;transform:none!important;padding:0;border-radius:0;background:none;box-shadow:none}
+.dm.phone.bare .dm-dev::before,.dm.phone.bare .dm-dev::after,.dm.phone.bare .dm-island,.dm.phone.bare .dm-sbar,.dm.phone.bare .dm-pnote{display:none}
+.dm.phone.bare .dm-screen,.dm.phone.bare .dm-screen iframe{width:100%;height:100%;border-radius:0;top:0}
+@media(max-width:1000px){.dm-pnote{display:none}}
+@media(max-width:560px){.dm-view button span{display:none}.dm-view button{padding:0 11px}}
 
 /* keep back-to-top clear of the bar */
 @media(max-width:859px){.to-top{bottom:calc(78px + env(safe-area-inset-bottom))}}
@@ -1503,7 +1551,7 @@ section{padding:44px 0}
   <div class="sec-head reveal">
     <span class="eyebrow">Selected work</span>
     <h2>See it working.</h2>
-    <p>Tap any screenshot to open the live demo. It runs right here, on sample data.</p>
+    <p>Tap a card to open the live demo, or see it running on a phone. It all runs right here, on sample data.</p>
   </div>
   <div class="filters reveal" id="filters">
     <button class="chip active" data-f="all">All</button>
@@ -1785,7 +1833,7 @@ section{padding:44px 0}
 </div>
 <div class="dkb-toast" id="dkbToast" role="status"></div>
 
-<script src="assets/agents-data.js?v=10"></script>
+<script src="assets/agents-data.js?v=12"></script>
 <script>
 /* ============ THEME ============ */
 const root=document.documentElement, tbtn=document.getElementById('themeBtn');
@@ -1898,10 +1946,10 @@ const projects=[
    p:'Property clients wanted their own Google Ads results without seeing other clients or internal notes.',
    b:'One link with a different password per client, showing only that client: highlights, a swipeable recap, top campaign, best day, devices, live ads and top searches, with a PDF cover page.',
    r:'Client ready reports with no manual prep, where every comparison reads as true good news and dips are flagged to the team privately.'},
-  {k:'campaignops',s:'An AI agent that fixes Google Ads, but only after a person approves each change.',t:'Campaign Ops',shots:['shots/cops-1.webp','shots/cops-2.webp','shots/cops-3.webp','shots/cops-4.webp','shots/cops-5.webp','shots/cops-6.webp'],tool:'MCP + Claude',tag:['agent'],file:'shots/cops-1.webp',
+  {k:'campaignops',s:'An AI agent that watches Google Ads around the clock and fixes it, but only after you approve on your phone.',t:'Campaign Ops',shots:['shots/cops-1.webp','shots/cops-2.webp','shots/cops-3.webp','shots/cops-4.webp','shots/cops-5.webp','shots/cops-6.webp'],tool:'MCP + Claude',tag:['agent'],file:'shots/cops-1.webp',
    live:'https://debashishkumarbora.github.io/campaign-ops/',repo:'https://github.com/DebashishKumarBora/campaign-ops-mcp',
    p:'AI agents can read a Google Ads account, but no team would let one change budgets or ad copy without limits, a person approving it, and an undo.',
-   b:'A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo.',
+   b:'A connector (MCP server) that lets AI apps like Claude work on Google Ads safely. Every change is proposed, checked against budget limits and Fair Housing rules, dry run, approved by a person, applied, verified and logged, with one click undo. It runs on Cloudflare\'s free plan, where Autopilot checks the account every hour, writes each fix, and every approval is signed with a passkey on a phone.',
    r:'Now live on the Google Ads API. In a real Google Ads test account it found an ad that broke Fair Housing rules, rewrote it, waited for a person to approve, then made the change and confirmed it with Google. It is Agent 01 in the Agent series.'},
   {k:'ads',s:'Sixteen Google Ads accounts in one web app, with a Claude analyst on top.',t:'AdCommand',shots:['shots/ads-1.webp','shots/ads-2.webp','shots/ads-3.webp','shots/ads-4.webp','shots/ads-5.webp','shots/ads-6.webp'],tool:'Google Ads API + Claude',tag:['app'],file:'shots/ads-1.webp',
    live:'https://script.google.com/macros/s/AKfycbxLdJehYqxPBmTLfTtMUhkcnE7OGgTpFx1iCNVaQD4TBOuvsmEN_n9KvrywxJ1Aq4dW/exec',repo:'https://github.com/DebashishKumarBora/ads-command-center',
@@ -1933,12 +1981,12 @@ const projects=[
    p:'Organic search data sat inside Search Console, unread and unactioned.',
    b:'A clean dashboard for clicks, impressions, CTR and average position, with top queries, top pages and a device split.',
    r:'Organic performance and the exact queries and pages driving it, in one trend-led view.'},
-  {t:'Client Campaign Performance',s:'121M+ impressions, 2.1M clicks and 86K conversions, paid and organic in one view.',tool:'Looker Studio',tag:['looker'],file:'client-campaign-performance.png',
+  {k:'ccp',t:'Client Campaign Performance',s:'121M+ impressions, 2.1M clicks and 86K conversions, paid and organic in one view.',tool:'Looker Studio',tag:['looker'],file:'client-campaign-performance.png',
    live:null,repo:'https://github.com/DebashishKumarBora',
    p:'A travel client needed paid and organic performance in one place, across millions of impressions.',
    b:'Looker Studio dashboard blending Google Ads + Search Console: KPIs, Brand vs Generic keywords, match-type performance and location insights.',
    r:'Surfaced 121M+ impressions, 2.1M clicks & 86K conversions, with clear wins in low-CTR, cost-heavy queries.'},
-  {t:'GA4 Traffic Analytics',s:'157K sessions mapped by channel, device and the landing pages that convert.',tool:'Looker Studio',tag:['looker'],file:'ga4-traffic-analytics.png',
+  {k:'gta',t:'GA4 Traffic Analytics',s:'157K sessions mapped by channel, device and the landing pages that convert.',tool:'Looker Studio',tag:['looker'],file:'ga4-traffic-analytics.png',
    live:null,repo:'https://github.com/DebashishKumarBora',
    p:'The team could not tell where quality traffic came from, or how engagement was trending.',
    b:'GA4-powered Looker Studio dashboard: channel performance (paid vs organic), device split, landing-page conversions and YoY/MoM views.',
@@ -1954,18 +2002,26 @@ function svgWrap(inner){return `<svg class="mini" viewBox="0 0 480 180" preserve
 function slug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 const grid=document.getElementById('workGrid');
 const charts=['line','bar','area','donut'];
-function cardHtml(p,i){return `
+/* COVERS: bold, thumbnail-style covers on the work cards (images/covers/<key>.webp).
+   Set to false to go back to plain screenshots. Hovering a card plays its screenshots either way. */
+var COVERS=true;
+function coverOf(p){return COVERS&&p.k?'covers/'+p.k+'.webp':null;}
+function framesOf(p){var shots=p.shots?p.shots.slice():[p.file];var c=coverOf(p);return c?[c].concat(shots):shots;}
+var PHONE_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>';
+function onSiteDemo(p){return !!p.live&&p.live.indexOf('https://debashishkumarbora.github.io/')===0;}
+function cardHtml(p,i){var fr=framesOf(p),cv=!!coverOf(p);return `
     <div class="proj reveal" data-tags="${p.tag.join(' ')}">
-      <div class="thumb${p.shots?' has-reel':''}" ${p.shots?`data-reel="${p.shots.join(',')}"`:''} ${p.live?`data-live="${p.live}" data-name="${p.t}"`:''}>
-        <span class="tool-tag">${p.tool}</span>
-        ${p.live?'<span class="live-pip"><i></i>LIVE</span>':''}
+      <div class="thumb${fr.length>1?' has-reel':''}${cv?' has-cover':''}" ${fr.length>1?`data-reel="${fr.join(',')}"`:''} ${p.live?`data-live="${p.live}" data-name="${p.t}"`:''}>
+        ${cv?'':`<span class="tool-tag">${p.tool}</span>`}
+        ${p.live&&!cv?'<span class="live-pip"><i></i>LIVE</span>':''}
         <div class="reel">
-          <img class="reel-img on" src="images/${p.shots?p.shots[0]:p.file}" alt="${p.t} dashboard" loading="lazy" decoding="async"
+          <img class="reel-img on" src="images/${fr[0]}" alt="${p.t}${cv?' cover':' dashboard'}" loading="lazy" decoding="async"
                onerror="this.parentElement.parentElement.classList.add('img-failed')">
         </div>
-        ${p.shots?`<div class="reel-bar"><i style="width:${100/p.shots.length}%"></i></div>`:''}
-        ${p.live?'<span class="reel-tap">Open live demo</span>':''}
-        ${mini(charts[i%charts.length])}
+        ${fr.length>1?`<div class="reel-bar"><i style="width:${100/fr.length}%"></i></div>`:''}
+        ${p.live&&!cv?'<span class="reel-tap">Open live demo</span>':''}
+        ${onSiteDemo(p)?`<button type="button" class="th-phone" data-phone="${p.live}" aria-label="Open the ${p.t} live demo at phone size">${PHONE_ICON}<span>Phone view</span></button>`:''}
+        ${cv?'':mini(charts[i%charts.length])}
       </div>
       <div class="body">
         <h3>${p.t}</h3>
@@ -2007,7 +2063,7 @@ document.getElementById('filters').addEventListener('click',e=>{
    conversation, the rich cards and the site actions, and still works
    on its own if those files fail to load. */
 var EMAIL='debashishbora30@gmail.com';
-var DEMOS=projects.filter(function(p){return p.live&&p.k;}).map(function(p){return {k:p.k,t:p.t,tool:p.tool,img:'images/'+p.shots[0],live:p.live,agent:p.tag.indexOf('agent')>-1};});
+var DEMOS=projects.filter(function(p){return p.live&&p.k;}).map(function(p){return {k:p.k,t:p.t,tool:p.tool,img:'images/'+(coverOf(p)||p.shots[0]),live:p.live,agent:p.tag.indexOf('agent')>-1};});
 var STATS=[['£3M+','Google Ads budget a year'],['100+','Ad accounts managed'],['8','Brands delivered for'],['4+','Years, US and UK clients']];
 var ICON={
   play:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M10 8.5v5l4.5-2.5z"/><path d="M8 21h8"/></svg>',
@@ -2392,6 +2448,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
       if(pending) return; pending=true;
       requestAnimationFrame(function(){
         pending=false;
+        if(!r) return;   /* the pointer left before this frame */
         var px=lx/r.width, py=ly/r.height;
         var ry=(px-.5)*7, rx=(.5-py)*7;
         card.style.transform='perspective(820px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translateY(-6px) scale(1.012)';
@@ -2470,6 +2527,10 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
     <div class="dm-top">
       <span class="dm-dots"><i></i><i></i><i></i></span>
       <span class="dm-url" id="dmUrl"></span>
+      <div class="dm-view" id="dmView" role="group" aria-label="How to view the demo">
+        <button type="button" data-view="desk" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span>Desktop</span></button>
+        <button type="button" data-view="phone" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Phone</span></button>
+      </div>
       <button class="dm-x" id="dmX" aria-label="Close">&#10005;</button>
     </div>
     <div class="dm-body">
@@ -2477,6 +2538,19 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
       <div class="dm-scroll" id="dmScroll">
         <iframe id="dmFrame" title="Live demo" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="dm-phone" id="dmPhone">
+        <div class="dm-stage" id="dmStage">
+          <div class="dm-dev" id="dmDev">
+            <div class="dm-screen">
+              <div class="dm-sbar" aria-hidden="true"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.3-1.4A10.4 10.4 0 0 0 8 .3 10.4 10.4 0 0 0 .7 3.2L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.8c1.3 0 2.4.5 3.3 1.3l1.3-1.4A6.6 6.6 0 0 0 8 4.1c-1.8 0-3.4.7-4.6 1.8l1.3 1.4C5.6 6.5 6.7 6 8 6zm0 3.8c.5 0 .9.2 1.2.5L8 11.6 6.8 10.3c.3-.3.7-.5 1.2-.5z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" opacity=".5"/><rect x="2" y="2" width="19" height="8" rx="1.8"/><rect x="23.8" y="4" width="1.8" height="4" rx=".9" opacity=".5"/></svg></i></div>
+              <span class="dm-island" aria-hidden="true"></span>
+              <div class="dm-pload" id="dmPLoad"><span class="dm-spin"></span></div>
+              <iframe id="dmPhoneFrame" title="Live demo at phone size"></iframe>
+            </div>
+          </div>
+        </div>
+        <p class="dm-pnote"><b>The same live demo, on a phone.</b>Every screen is built for phones too. Scroll and tap inside the phone. It all works.<span>390 &#215; 844, the size of an iPhone</span></p>
       </div>
     </div>
     <div class="dm-foot">
@@ -2558,7 +2632,13 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
         R.i=n;
       };
       R.next=function(){R.go((R.i+1)%R.list.length);};
-      R.play=function(){ if(RM||R.timer)return; R.timer=setInterval(R.next,R.delay); };
+      R.cover=thumb.classList.contains('has-cover');
+      R.play=function(){ if(RM||R.timer)return; R.timer=setInterval(R.next,R.cover?1700:R.delay); };
+      /* a cover card works like a video thumbnail: the cover until you hover, then the screens play */
+      if(R.cover){
+        thumb.addEventListener('mouseenter',function(){ R.hover=true; R.ensure(2); R.go(1); R.stop(); R.play(); });
+        thumb.addEventListener('mouseleave',function(){ R.hover=false; R.stop(); R.go(0); });
+      }
       R.stop=function(){ if(R.timer){clearInterval(R.timer);R.timer=null;} };
       reels.push(R);
     });
@@ -2567,12 +2647,12 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   var reelIO=new IntersectionObserver(function(es){
     es.forEach(function(e){
       var R=reels.filter(function(x){return x.thumb===e.target;})[0]; if(!R)return;
-      if(e.isIntersecting){R.ensure(1);R.play();} else {R.stop();}
+      if(e.isIntersecting){R.ensure(1); if(!R.cover) R.play();} else {R.stop(); if(R.cover&&!R.hover) R.go(0);}
     });
   },{threshold:.35});
   document.addEventListener('visibilitychange',function(){
     reels.forEach(function(R){ document.hidden?R.stop():(R.vis!==false&&null); });
-    if(!document.hidden) reels.forEach(function(R){ if(R.thumb.getBoundingClientRect().top<innerHeight&&R.thumb.getBoundingClientRect().bottom>0) R.play(); });
+    if(!document.hidden) reels.forEach(function(R){ if(!R.cover&&R.thumb.getBoundingClientRect().top<innerHeight&&R.thumb.getBoundingClientRect().bottom>0) R.play(); });
   });
 
   /* swipe / drag to scrub a reel on touch */
@@ -2614,36 +2694,73 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
     dmFrame.style.height=Math.round(hgt/s)+'px';
     dmFrame.style.transform='scale('+s+')';
   }
-  addEventListener('resize',fitFrame);
-  addEventListener('orientationchange',function(){setTimeout(fitFrame,250);});
+  /* ---------- the phone view: the same demo at 390 x 844, inside a phone ---------- */
+  var dmStage=document.getElementById('dmStage'), dmDev=document.getElementById('dmDev'),
+      dmPhoneFrame=document.getElementById('dmPhoneFrame'), dmPLoad=document.getElementById('dmPLoad'),
+      dmView=document.getElementById('dmView');
+  var curUrl='', phoneUrl='', viewMode='desk';
+  var SITE_ROOT='https://debashishkumarbora.github.io/';
+  /* demos hosted here are built for phones; an app hosted elsewhere opens as it is */
+  function onSite(u){ return u.indexOf(SITE_ROOT)===0 || !/^https?:/i.test(u); }
+  function phoneAddress(u){ return u+(u.indexOf('?')<0?'?':'&')+'embed=app'; }
+  function narrowScreen(){ return window.innerWidth<700; }
+  function savedView(){ try{ return sessionStorage.getItem('dkb_demo_view')||''; }catch(e){ return ''; } }
+  function fitPhone(){
+    if(!dm||!dm.classList.contains('phone')) return;
+    dm.classList.toggle('bare', narrowScreen());
+    if(narrowScreen()) return;
+    var body=dm.querySelector('.dm-body'); if(!body) return;
+    var s=Math.min(1,(body.clientHeight-40)/868,(body.clientWidth-40)/414);
+    dmStage.style.width=Math.round(414*s)+'px'; dmStage.style.height=Math.round(868*s)+'px';
+    dmDev.style.transform='scale('+s+')';
+  }
+  function setView(mode,remember){
+    viewMode=(mode==='phone'&&dm.classList.contains('can-phone'))?'phone':'desk';
+    dm.classList.toggle('phone',viewMode==='phone');
+    if(dmView) [].forEach.call(dmView.querySelectorAll('button'),function(b){ b.setAttribute('aria-pressed',String(b.getAttribute('data-view')===viewMode)); });
+    if(viewMode==='phone'){
+      var want=phoneAddress(curUrl);
+      if(phoneUrl!==want){ phoneUrl=want; dmPLoad.classList.remove('gone'); dmPhoneFrame.src=want; }
+      fitPhone();
+    } else {
+      dm.classList.remove('bare');
+      if(dmFrame.dataset.url!==curUrl){
+        dmFrame.dataset.url=curUrl; dmLoad.classList.remove('gone'); dmLoadTxt.textContent='Loading live demo'; dmFrame.src=curUrl;
+        clearTimeout(failTimer);
+        failTimer=setTimeout(function(){ if(!dmLoad.classList.contains('gone')) dmLoadTxt.textContent='Taking a moment. You can open it in a new tab.'; },7000);
+      }
+      requestAnimationFrame(fitFrame);
+    }
+    if(remember){ try{ sessionStorage.setItem('dkb_demo_view',viewMode); }catch(e){} }
+  }
+  dmView&&dmView.addEventListener('click',function(e){ var b=e.target.closest('button[data-view]'); if(b) setView(b.getAttribute('data-view'),true); });
+  dmPhoneFrame&&dmPhoneFrame.addEventListener('load',function(){ if(dmPhoneFrame.src&&dmPhoneFrame.src!=='about:blank') dmPLoad.classList.add('gone'); });
+  addEventListener('resize',function(){ fitFrame(); fitPhone(); });
+  addEventListener('orientationchange',function(){setTimeout(function(){ fitFrame(); fitPhone(); },250);});
 
-  function openDemo(url,name){
+  function openDemo(url,name,mode){
     if(!dm)return;
+    curUrl=url; phoneUrl=''; dmFrame.dataset.url='';
     dmUrl.textContent=url.replace(/^https?:\/\//,'');
     dmOpen.href=url;
-    dmLoad.classList.remove('gone');
-    dmLoadTxt.textContent='Loading live demo';
+    dm.classList.toggle('can-phone',onSite(url));
     lockY=window.scrollY||window.pageYOffset||0;
     dm.classList.add('open'); dm.setAttribute('aria-hidden','false');
     document.body.style.top=(-lockY)+'px';
     document.body.classList.add('dm-lock');
     if(dmScroll) dmScroll.scrollTop=0;
-    dmFrame.src=url;
-    requestAnimationFrame(fitFrame);
-    setTimeout(fitFrame,300);
-    clearTimeout(failTimer);
-    failTimer=setTimeout(function(){
-      if(!dmLoad.classList.contains('gone')) dmLoadTxt.textContent='Taking a moment. You can open it in a new tab.';
-    },7000);
+    setView(mode||savedView()||(narrowScreen()?'phone':'desk'),!!mode);
+    setTimeout(function(){ fitFrame(); fitPhone(); },300);
   }
-  window.__openDemo=function(u,n){openDemo(u,n);};
+  window.__openDemo=function(u,n,m){openDemo(u,n,m);};
   function closeDemo(){
     if(!dm)return;
     dm.classList.remove('open'); dm.setAttribute('aria-hidden','true');
     document.body.classList.remove('dm-lock');
     document.body.style.top='';
     window.scrollTo(0,lockY);
-    dmFrame.src='about:blank'; clearTimeout(failTimer);
+    dmFrame.src='about:blank'; dmFrame.dataset.url=''; clearTimeout(failTimer);
+    if(dmPhoneFrame) dmPhoneFrame.src='about:blank'; phoneUrl='';
   }
   if(dmFrame) dmFrame.addEventListener('load',function(){
     if(dmFrame.src&&dmFrame.src!=='about:blank'){dmLoad.classList.add('gone');clearTimeout(failTimer);fitFrame();}
@@ -2654,6 +2771,12 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   addEventListener('keydown',function(e){ if(e.key==='Escape'&&dm&&dm.classList.contains('open'))closeDemo(); });
 
   /* delegate: tapping a live thumb opens the real demo */
+  document.addEventListener('click',function(e){
+    var ph=e.target.closest && e.target.closest('.th-phone[data-phone]');
+    if(!ph)return;
+    e.preventDefault(); e.stopPropagation();
+    openDemo(ph.getAttribute('data-phone'),'','phone');
+  },true);
   document.addEventListener('click',function(e){
     var t=e.target.closest && e.target.closest('.thumb[data-live]');
     if(!t)return;
@@ -2720,11 +2843,11 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
   if(btn&&mac){var kb=btn.querySelector('kbd');if(kb)kb.textContent='⌘ K';}
   var ITEMS=[];
   (window.DKB.demos||[]).forEach(function(d){ITEMS.push({g:'Live demos',t:'Open '+d.t,h:d.tool,a:'demo:'+d.k,k:d.t+' '+d.tool+' demo dashboard open'});});
-  [['Work','#work','dashboards projects portfolio agents'],['Agent series','#agents','agents ai agent series campaign ops live run google ads api'],['How I work','#process','process steps services'],['Before and after','#transform','slider spreadsheet'],
+  [['Work','#work','dashboards projects portfolio agents'],['Agent series','#agents','agents ai agent series campaign ops live run google ads api passkey cloudflare phone approval'],['How I work','#process','process steps services'],['Before and after','#transform','slider spreadsheet'],
    ['Clients','#clients','brands'],['Skills','#skills','stack tools'],['About','#about','background bio experience'],
    ['Credentials','#certs','certifications certificates'],['Data lab','#lab','try upload csv messy data clean chart insights'],['Contact','#contact','email hire']]
    .forEach(function(s){ITEMS.push({g:'Jump to',t:s[0],h:'Section',a:'go:'+s[1],k:s[0]+' '+s[2]});});
-  [['See the Campaign Ops live run','Agent 01','page:agents/campaign-ops/','agent series campaign ops live run google ads api fair housing case study'],
+  [['See the Campaign Ops live run','Agent 01','page:agents/campaign-ops/','agent series campaign ops live run google ads api fair housing case study passkey cloudflare phone approval'],
    ['Book a call','Calendly','book','schedule meeting hire'],['Message on WhatsApp','Opens WhatsApp','wa','chat message'],
    ['Copy email address','Clipboard','email','mail contact'],['Take the guided tour','Narrated','tour','walkthrough'],
    ['Talk to the assistant','Chat and voice','chat','jarvis ai bot'],['Switch light or dark theme','Appearance','theme','mode'],
@@ -2770,7 +2893,7 @@ input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 
 </script>
 <script src="assets/lab.js" defer></script>
-<script src="assets/jarvis-brain.js?v=10" defer></script>
+<script src="assets/jarvis-brain.js?v=12" defer></script>
 <script src="assets/jarvis.js?v=10" defer></script>
 <a href="m/" id="toMobile" class="to-mobile" hidden>📱 Back to mobile view</a>
 <style>

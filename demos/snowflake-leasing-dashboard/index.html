@@ -108,7 +108,7 @@ var SNOWMOCK = (function(){
       case 'getOverview': {
         var f=a[1]?JSON.parse(a[1]):{}; var list=COMM;
         if(f.property){ var c=byName(f.property); if(c) list=[c]; }
-        return overviewFor(list, f.property||'');
+        var ovr=overviewFor(list, f.property||''); if(!f.property) LAST_OV=ovr; return ovr;
       }
       case 'drillBuilding': {
         var c=byName(a[0]); var list=c?[c]:COMM; var ov=overviewFor(list, a[0]);
@@ -133,27 +133,73 @@ var SNOWMOCK = (function(){
           kpis:{ delinquentResidents:delinq, promises:Math.round(rf(20,60)), keptRate:r1(rf(60,82)), collected:Math.round(rf(180000,420000)), onTimeRate:r1(rf(88,96)), plans:Math.round(rf(10,35)) },
           buildings:COMM.map(function(c){var d=ri(0,12);return {k:c.name, name:c.name, city:c.city, state:c.st, units:c.units, n:d, delinquency:d};}).sort(function(x,y){return y.n-x.n;}) };
       }
-      case 'getProperties': return { ok:true, buildings:COMM.map(function(c){return {k:c.name, name:c.name, city:c.city, state:c.st, units:c.units};}) };
-      case 'getAvailabilityBoard': {
-        var rows=[]; COMM.forEach(function(c){ var vac=Math.max(0,Math.round(c.units*(1-c.occ/100))); for(var u=0;u<vac && rows.length<60;u++){ var bed=ri(0,3); rows.push({property:c.name, unit:(100+ri(1,399))+'', bedroom:bed, bedrooms:bed, available:true, moveInDate:new Date(Date.now()+ri(0,45)*86400000).toISOString().slice(0,10), rent:Math.round((1100+bed*350+rf(-80,120))/5)*5, ready:rnd()<0.7}); } });
-        var demand=[0,1,2,3].map(function(b){return {bedroom:b, bedrooms:b, demand:ri(20,120), available:rows.filter(function(r){return r.bedroom===b;}).length};});
-        return { ok:true, updated:new Date().toISOString(), properties:COMM.map(function(c){return c.name;}), rows:rows, available:rows.length, totalAvailable:rows.length, vacantNow:rows.filter(function(r){return r.ready;}).length, vacatingBy:rows.length, demand:demand, bedrooms:[0,1,2,3], source:'sample', sources:'sample' };
-      }
+      case 'getProperties': return { ok:true, updated:new Date().toISOString(), range:'Last 30 days', buildings:COMM.map(function(c){return {k:c.name, name:c.name, city:c.city, state:c.st, units:c.units};}) };
+      case 'getAvailabilityBoard': return availability(a[0]);
       case 'getApiKeyStatus': return {set:true, masked:'sk-ant-demo'};
       case 'saveApiKey': return {ok:true};
       case 'clearApiKey': return {ok:true};
-      case 'getUnitsSheetStatus': return {set:true, rows:60, updated:new Date().toISOString()};
+      case 'getUnitsSheetStatus': return {set:true, rows:availUnits().length, properties:COMM.map(function(c){return c.name;}), updated:new Date().toISOString()};
       case 'saveUnitsSheetId': return {ok:true};
       case 'clearUnitsSheet': return {ok:true};
       case 'deepDive': return aiStruct('deep', a);
       case 'chatPage': return aiChat(a);
-      case 'analystReport': return aiStruct('report', a);
+      case 'analystReport': return analystText();
       case 'testAI': return {ok:true, model:'claude-opus-4-6'};
       case 'testConnection': return {ok:true, rows:1};
       default: return {};
     }
   }
+  /* open units, as an Elise Units sheet would list them; built once so every view agrees */
+  var UNITS=null, TYPES=['Studio','1 BR','2 BR','3 BR'], PLANS=['S1','A2','B1','C1'], SQFT=[520,710,1040,1310], BATH=[1,1,2,2];
+  function availUnits(){
+    if(UNITS) return UNITS;
+    UNITS=[]; var today=new Date(); today.setHours(0,0,0,0);
+    COMM.forEach(function(c){ var vac=Math.max(1,Math.round(c.units*(1-c.occ/100)/3));
+      for(var u=0;u<vac;u++){ var bed=[0,1,1,1,2,2,2,3][ri(0,7)]; var days=rnd()<0.45?0:ri(3,60); var d=new Date(today.getTime()+days*86400000);
+        UNITS.push({ property:c.name, unit:String(ri(1,4))+String(ri(0,2))+String(ri(1,9)), bedIdx:bed, bed:TYPES[bed], floorplan:PLANS[bed]+(rnd()<0.5?'':'+'),
+          status:days===0?'Vacant, ready':(days<15?'Make-ready':'On notice'), avail:days===0?'now':d.toISOString().slice(0,10), days:days,
+          rent:Math.round((1150+bed*360+rf(-60,140))/5)*5, website:rnd()<0.88, hiddenAI:rnd()<0.08 }); } });
+    UNITS.sort(function(x,y){return x.days-y.days||x.property.localeCompare(y.property);});
+    return UNITS;
+  }
+  function availability(raw){
+    var q={}; try{ q=JSON.parse(raw||'{}'); }catch(e){}
+    var list=availUnits().filter(function(u){
+      if(q.property&&u.property!==q.property) return false;
+      if(q.bedroom&&u.bed!==q.bedroom) return false;
+      if(q.moveInDate&&u.avail!=='now'&&u.avail>q.moveInDate) return false;
+      return true; });
+    var DEMAND={'Studio':16,'1 BR':58,'2 BR':84,'3 BR':27};
+    var bedrooms=TYPES.map(function(t){ return {k:t, available:list.filter(function(u){return u.bed===t;}).length, demand:q.property?Math.round(DEMAND[t]/8):DEMAND[t]}; }).filter(function(b){return !q.bedroom||b.k===q.bedroom;});
+    var plans=[]; PLANS.forEach(function(pl,i){ [pl,pl+'+'].forEach(function(name){ var us=list.filter(function(u){return u.floorplan===name;}); if(!us.length) return;
+      var rents=us.map(function(u){return u.rent;}); var lo=Math.min.apply(null,rents), hi=Math.max.apply(null,rents);
+      plans.push({plan:name, bed:TYPES[i], bath:BATH[i], sqft:SQFT[i]+(name.slice(-1)==='+'?60:0), count:us.length, rent:'$'+lo.toLocaleString()+(hi>lo?(' to $'+hi.toLocaleString()):''), earliest:us[0].avail}); }); });
+    return { ok:true, updated:new Date().toISOString(), source:'sheet', moveInDate:q.moveInDate||'', property:q.property||'',
+      totalAvailable:list.length, availableNow:list.filter(function(u){return u.days===0;}).length, comingSoon:list.filter(function(u){return u.days>0;}).length,
+      onWebsite:list.filter(function(u){return u.website;}).length, hiddenFromAI:list.filter(function(u){return u.hiddenAI;}).length,
+      units:list, bedrooms:bedrooms, plans:plans,
+      note:'Read from the Elise Units sheet: every open unit with its status, rent and move-in date. Units marked hidden are left out of what the leasing AI offers to prospects.' };
+  }
   var MODEL='claude-opus-4-6';
+  var LAST_OV=null;
+  function ovNow(){ return LAST_OV||(LAST_OV=overviewFor(COMM,'')); }
+  function analystText(){
+    var ov=ovNow(), k=ov.kpis, fl=ov.funnel, worst=null;
+    for(var i=1;i<fl.length;i++){ var d=1-fl[i].n/Math.max(1,fl[i-1].n); if(!worst||d>worst.d) worst={d:d,from:fl[i-1].k,to:fl[i].k}; }
+    var soft=COMM.slice().sort(function(x,y){return x.occ-y.occ;}).slice(0,2);
+    var conv=Math.round(k.leased/Math.max(1,k.prospects)*100);
+    var t='## Portfolio briefing\n'+
+      'Occupancy is **'+k.occupancy+'%** across '+k.props+' communities ('+k.occUnits.toLocaleString()+' of '+k.units.toLocaleString()+' homes), with **'+k.leased+'** leases signed from **'+k.prospects.toLocaleString()+'** prospects, a '+conv+'% close rate.\n'+
+      '## Priorities\n'+
+      '1. **Fix '+worst.from.toLowerCase()+' to '+worst.to.toLowerCase()+'.** About '+Math.round(worst.d*100)+'% of people drop out here, the biggest leak in the funnel. Faster first replies and a shorter form are the usual fixes.\n'+
+      '2. **Fill '+soft[0].name+' and '+soft[1].name+'.** They are the softest at '+soft[0].occ+'% and '+soft[1].occ+'% occupied. Move budget toward them and turn their empty homes first.\n'+
+      '3. **Protect renewals.** The renewal rate is **'+k.renewalRate+'%**. Send renewal offers 90 days out where it runs below average.\n'+
+      '## Watch\n'+
+      '- **'+k.delinquent+'** residents are flagged delinquent; collections are steady overall.\n'+
+      '- Two-bedroom demand is the strongest, so keep those turns moving.\n\n'+
+      'Illustrative analysis for this demo, powered by '+MODEL+'.';
+    return { text:t };
+  }
   function aiStruct(kind, a){
     return { updated:new Date().toISOString(), model:MODEL,
       overview:'Portfolio occupancy is 88.6% with MetroLine and Lumi the softest at 82% and 79%. The funnel is healthy through approval; the drop is at prospect to application.',
@@ -177,11 +223,12 @@ var SNOWMOCK = (function(){
   function aiChat(a){
     var last=''; try{ var h=JSON.parse(a[1]||'[]'); for(var i=h.length-1;i>=0;i--){ if(h[i].role==='user'){last=(h[i].content||'').toLowerCase();break;} } }catch(e){}
     var body;
-    if(/renew/.test(last)) body='Renewal rate is about **60%** portfolio-wide. **The Whitmore** and **Kova** lag the average, so start outreach earlier there.';
+    var k=ovNow().kpis;
+    if(/renew/.test(last)) body='The renewal rate is **'+k.renewalRate+'%** portfolio-wide. **The Whitmore** and **Kova** lag the average, so start outreach earlier there.';
     else if(/occup|vacant|soft/.test(last)) body='**Lumi (79%)** and **MetroLine (82%)** are the softest. Both have two-bedroom demand above availability, so prioritize turns.';
     else if(/funnel|convert|lead/.test(last)) body='The funnel is strong from application through approval. The leak is **prospect to application started**, near **46%**. Faster first response is the highest-leverage fix.';
-    else body='Occupancy is **88.6%** across 16 communities. The two soft spots are **Lumi** and **MetroLine**, and the main funnel leak is prospect to application.';
-    return { text: body+'\n\n_Illustrative analysis for this demo, powered by '+MODEL+'._' };
+    else body='Occupancy is **'+k.occupancy+'%** across 16 communities. The two soft spots are **Lumi** and **MetroLine**, and the main funnel leak is prospect to application.';
+    return { text: body+'\n\nIllustrative analysis for this demo, powered by '+MODEL+'.' };
   }
   return {route:route};
 })();
@@ -263,8 +310,9 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
 .deep{font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid rgba(91,141,255,.32);background:rgba(91,141,255,.08);border-radius:9px;padding:7px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s;white-space:nowrap}
 .deep:hover{background:rgba(91,141,255,.16)}
 .deep svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media(max-width:1000px){.two{grid-template-columns:1fr}}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.two>.card{min-width:0;overflow-x:auto}
+@media(max-width:1200px){.two{grid-template-columns:minmax(0,1fr)}}
 /* funnel (no scroll) */
 .fnl{display:flex;flex-direction:column;gap:10px}
 .fnl-row{display:grid;grid-template-columns:140px 1fr 132px;gap:16px;align-items:center;cursor:pointer;padding:7px 10px;border-radius:12px;transition:.14s}
@@ -881,4 +929,5 @@ DKB_MOBILE({
   wrap: ['setView']
 });
 </script>
+<style id="dkb-phone-density">/* Phones: tighter numbers and cards, so a screen holds more. */@media (max-width:640px){.kpi .v{font-size:23px;margin-top:7px}.kpi{padding:12px}.card{padding:14px}}</style>
 </body></html>
